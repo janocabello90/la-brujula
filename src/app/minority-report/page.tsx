@@ -10,6 +10,12 @@ export default async function MinorityReportPage() {
 
   if (!user) redirect("/login");
 
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("api_key")
+    .eq("id", user.id)
+    .single();
+
   const { data: brujulaData } = await supabase
     .from("brujula_data")
     .select("*")
@@ -24,8 +30,10 @@ export default async function MinorityReportPage() {
 
   return (
     <MinorityReportClient
+      userId={user.id}
       data={brujulaData}
       history={historyData?.map((h) => h.suggestion) || []}
+      hasApiKey={!!profile?.api_key}
     />
   );
 }
