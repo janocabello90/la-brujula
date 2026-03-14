@@ -1,0 +1,348 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import AppShell from "@/components/AppShell";
+import { OBJECTIVES, ENERGY_LEVELS, FORMAT_MAP } from "@/lib/constants";
+import { createClient } from "@/lib/supabase/client";
+import type { SuggestionResult, MaestroSelection } from "@/lib/types";
+
+interface Props {
+  userId: string;
+  data: any;
+  apiKey: string;
+  history: any[];
+}
+
+export default function MaestroClient({ userId, data, apiKey }: Props) {
+  const router = useRouter();
+  const [selection, setSelection] = useState<MaestroSelection>({
+    objetivo: null,
+    energia: null,
+    canal: null,
+    pilar: null,
+  });
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<SuggestionResult | null>(null);
+  const [error, setError] = useState("");
+  const [showPlanForm, setShowPlanForm] = useState(false);
+  const [planDate, setPlanDate] = useState("");
+  const [planTime, setPlanTime] = useState("10:00");
+  const [planSaving, setPlanSaving] = useState(false);
+  const [planSaved, setPlanSaved] = useState(false);
+
+  const pilares = data?.tree?.pilares || [];
+  const canales = data?.channels?.canales || [];
+
+  const selectOption = (field: keyof MaestroSelection, value: string) => {
+    setSelection((prev) => ({
+      ...prev,
+      [field]: prev[field] === value ? null : value,
+    }));
+  };
+
+  const canGenerate = selection.objetivo && selection.energia && selection.canal;
+
+  const generate = async () => {
+    if (!canGenerate) return;
+    if (!apiKey) {
+      setError("Necesitas configurar tu API Key de Anthropic en Ajustes para usar el Maestro.");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+    setResult(null);
+
+    try {
+      const res = await fetch("/api/suggest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId,
+          selection,
+        }),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || "Error al generar la sugerencia");
+      }
+
+      const data = await res.json();
+      setResult(data.suggestion);
+    } catch (err: any) {
+      setError(err.message || "Error inesperado");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const OptionGrid = ({
+    title,
+    field,
+    options,
+  }: {
+    title: string;
+    field: keyof MaestroSelection;
+    options: { value: string; label: string; icon?: string; desc?: string }[];
+  }) => (
+    <div className="mb-6">
+      <h3 className="text-sm font-semibold text-negro mb-2">{title}</h3>
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+        {options.map((opt) => (
+          <div
+            key={opt.value}
+            onClick={() => selectOption(field, opt.value)}
+            className={`option-card ${selection[field] === opt.value ? "selected" : ""}`}
+          >
+            {opt.icon && <div className="text-lg mb-1">{opt.icon}</div>}
+            <div className="font-medium text-sm">{opt.label}</div>
+            {opt.desc && <div className="text-xs text-muted mt-0.5">{opt.desc}</div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  return (
+    <AppShell>
+      <div className="max-w-3xl mx-auto">
+        <div className="mb-8">
+          <h1 className="font-heading text-3xl text-negro mb-1">El Maestro</h1>
+          <p className="text-muted text-sm">
+            Cuéntame cómo estás hoy y qué quieres lograr. Yo te digo qué crear.
+          </p>
+        </div>
+
+        {/* Step 1: Objetivo */}
+        <OptionGrid
+          title="¿Qué quieres conseguir?"
+          field="objetivo"
+          options={OBJECTIVES}
+        />
+
+        {/* Step 2: Energía */}
+        <OptionGrid
+          title="¿Cómo estás de energía?"
+          field="energia"
+          options={ENERGY_LEVELS.map((e) => ({
+            value: e.value,
+            label: e.label,
+            icon: e.icon,
+            desc: e.desc,
+          }))}
+        />
+
+        {/* Step 3: Canal */}
+        <div className="mb-6">
+          <h3 className="text-sm font-semibold text-negro mb-2">¿En qué canal?</h3>
+          <div className="flex flex-wrap gap-2">
+            {canales.map((ch: string) => (
+              <div
+                key={ch}
+                onClick={() => selectOption("canal", ch)}
+                className={`option-card !inline-block !w-auto px-4 ${
+                  selection.canal === ch ? "selected" : ""
+                }`}
+              >
+                {ch}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Step 4: Pilar (optional) */}
+        {pilares.length > 0 && (
+          <div className="mb-6">
+            <h3 className="text-sm font-semibold text-negro mb-1">
+              ¿Sobre qué pilar? <span className="text-muted font-normal">(opcional)</span>
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {pilares.map((p: any, i: number) => (
+                <div
+                  key={i}
+                  onClick={() => selectOption("pilar", p.nombre)}
+                  className={`option-card !inline-block !w-auto px-4 ${
+                    selection.pilar === p.nombre ? "selected" : ""
+                  }`}
+                >
+                  {p.nombre}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Formats preview */}
+        {selection.energia && (
+          <div className="bg-card border border-borde rounded-card p-4 mb-6">
+            <span className="text-xs font-semibold text-muted uppercase tracking-wide">
+              Formatos posibles para tu energía
+            </span>
+            <div className="flex flex-wrap gap-1.5 mt-2">
+              {FORMAT_MAP[selection.energia]?.map((f) => (
+                <span key={f} className="pill pill-light text-xs">{f}</span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Generate button */}
+        <button
+          onClick={generate}
+          disabled={!canGenerate || loading}
+          className="w-full bg-naranja text-white font-semibold py-3.5 rounded-lg hover:bg-naranja-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed mb-4"
+        >
+          {loading ? (
+            <span className="flex items-center justify-center gap-2">
+              <span className="loader" /> El Maestro está pensando...
+            </span>
+          ) : (
+            "🎯 Generar sugerencia"
+          )}
+        </button>
+
+        {!apiKey && (
+          <p className="text-center text-sm text-muted mb-4">
+            ⚠️ Necesitas{" "}
+            <Link href="/settings" className="text-naranja hover:underline">
+              configurar tu API Key
+            </Link>{" "}
+            para usar el Maestro.
+          </p>
+        )}
+
+        {error && (
+          <div className="bg-danger/10 border border-danger/30 rounded-lg p-4 text-danger text-sm mb-4">
+            {error}
+          </div>
+        )}
+
+        {/* Result */}
+        {result && (
+          <div className="suggestion-result">
+            <div className="flex flex-wrap gap-2 mb-4">
+              <span className="pill pill-dark">{result.pilar}</span>
+              <span className="pill pill-accent">{result.formato}</span>
+              <span className="pill pill-light">{result.tono}</span>
+            </div>
+
+            <h3 className="font-heading text-xl text-negro mb-1">{result.subtema}</h3>
+            <p className="text-sm text-muted mb-4">Ángulo: {result.angulo}</p>
+
+            <div className="border-t border-borde pt-4 mt-4">
+              <h4 className="text-sm font-semibold text-negro mb-2">💡 La sugerencia del Maestro</h4>
+              <div className="text-sm text-negro leading-relaxed whitespace-pre-line">
+                {result.sugerencia}
+              </div>
+            </div>
+
+            {result.estrategia && (
+              <div className="border-t border-borde pt-4 mt-4">
+                <h4 className="text-sm font-semibold text-negro mb-2">🧠 Estrategia detrás</h4>
+                <p className="text-sm text-muted leading-relaxed">{result.estrategia}</p>
+              </div>
+            )}
+
+            {result.porQueAhora && (
+              <div className="border-t border-borde pt-4 mt-4">
+                <h4 className="text-sm font-semibold text-negro mb-2">⏰ ¿Por qué ahora?</h4>
+                <p className="text-sm text-muted leading-relaxed">{result.porQueAhora}</p>
+              </div>
+            )}
+
+            {/* Planificar button */}
+            <div className="border-t border-borde pt-4 mt-4">
+              {!planSaved ? (
+                !showPlanForm ? (
+                  <button
+                    onClick={() => {
+                      setShowPlanForm(true);
+                      // Default to tomorrow
+                      const tomorrow = new Date();
+                      tomorrow.setDate(tomorrow.getDate() + 1);
+                      setPlanDate(tomorrow.toISOString().split("T")[0]);
+                    }}
+                    className="w-full py-3 border-2 border-dashed border-naranja/40 rounded-lg text-naranja font-medium hover:bg-naranja/5 transition-colors"
+                  >
+                    📅 Planificar esta pieza
+                  </button>
+                ) : (
+                  <div className="bg-crema rounded-lg p-4">
+                    <h4 className="text-sm font-semibold text-negro mb-3">
+                      📅 ¿Cuándo quieres crear esta pieza?
+                    </h4>
+                    <div className="grid grid-cols-2 gap-3 mb-3">
+                      <div>
+                        <label className="block text-xs text-muted mb-1">Fecha</label>
+                        <input
+                          type="date"
+                          value={planDate}
+                          onChange={(e) => setPlanDate(e.target.value)}
+                          className="w-full px-3 py-2 border border-borde rounded-lg bg-white text-negro text-sm focus:outline-none focus:border-naranja"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-muted mb-1">Hora</label>
+                        <input
+                          type="time"
+                          value={planTime}
+                          onChange={(e) => setPlanTime(e.target.value)}
+                          className="w-full px-3 py-2 border border-borde rounded-lg bg-white text-negro text-sm focus:outline-none focus:border-naranja"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={async () => {
+                          if (!planDate || !result) return;
+                          setPlanSaving(true);
+                          const supabase = createClient();
+                          await supabase.from("planner_items").insert({
+                            user_id: userId,
+                            scheduled_date: planDate,
+                            scheduled_time: planTime,
+                            title: result.subtema,
+                            pilar: result.pilar,
+                            formato: result.formato,
+                            tono: result.tono,
+                            canal: selection.canal || "",
+                            sugerencia: result.sugerencia,
+                            estrategia: result.estrategia || "",
+                            status: "scheduled",
+                          });
+                          setPlanSaving(false);
+                          setPlanSaved(true);
+                          setShowPlanForm(false);
+                        }}
+                        disabled={planSaving || !planDate}
+                        className="flex-1 bg-naranja text-white text-sm font-medium py-2.5 rounded-lg hover:bg-naranja-hover transition-colors disabled:opacity-50"
+                      >
+                        {planSaving ? "Guardando..." : "Confirmar"}
+                      </button>
+                      <button
+                        onClick={() => setShowPlanForm(false)}
+                        className="px-4 py-2.5 border border-borde rounded-lg text-muted text-sm hover:text-negro transition-colors"
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
+                )
+              ) : (
+                <div className="text-center py-2">
+                  <p className="text-success font-medium text-sm">✓ Añadida al planificador</p>
+                  <Link href="/planner" className="text-naranja text-xs hover:underline mt-1 inline-block">
+                    Ver planificador →
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </AppShell>
+  );
+}

@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: #faf7f2;
+  color: #111111;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loader {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 3px solid #e5e0d8;
+  border-top: 3px solid #e8920a;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Checkbox items */
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1.5px solid #e5e0d8;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+.checkbox-item:hover { border-color: #e8920a; }
+.checkbox-item.checked {
+  border-color: #e8920a;
+  background: rgba(232, 146, 10, 0.06);
+}
+
+/* Option cards */
+.option-card {
+  padding: 14px 16px;
+  border: 1.5px solid #e5e0d8;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  font-size: 0.88rem;
+}
+.option-card:hover { border-color: #e8920a; }
+.option-card.selected {
+  border-color: #e8920a;
+  background: rgba(232, 146, 10, 0.08);
+}
+
+/* Subtema tags */
+.subtema-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #faf7f2;
+  border: 1px solid #e5e0d8;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  margin: 3px;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #111111;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  z-index: 1000;
+  transition: transform 0.3s;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* Suggestion result */
+.suggestion-result {
+  background: white;
+  border: 2px solid #e8920a;
+  border-radius: 12px;
+  padding: 28px;
+  margin-top: 24px;
+}
+
+/* Pill tags */
+.pill {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  display: inline-block;
+}
+.pill-dark { background: #111111; color: white; }
+.pill-accent { background: #e8920a; color: white; }
+.pill-light { background: #faf7f2; border: 1px solid #e5e0d8; }
