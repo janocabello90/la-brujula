@@ -153,7 +153,7 @@ export default function PlannerClient({ userId }: Props) {
     items.filter((item) => item.scheduled_date === dateStr);
   const unassignedItems = items.filter((item) => !item.scheduled_date);
   const scheduledUnsyncedItems = items.filter(
-    (i) => i.scheduled_date && i.scheduled_time && !i.gcal_synced && i.status !== "published"
+    (i) => i.scheduled_date && !i.gcal_synced && i.status !== "published"
   );
 
   // ─── Drag & Drop ──────────────────────────────────
@@ -217,46 +217,61 @@ export default function PlannerClient({ userId }: Props) {
   // ─── Google Calendar Sync ─────────────────────────
   const buildGcalUrl = (item: PlannerItem): string => {
     const dateClean = (item.scheduled_date || "").replace(/-/g, "");
-    const timeClean = (item.scheduled_time || "10:00").replace(/:/g, "") + "00";
-    const startDateTime = `${dateClean}T${timeClean}`;
-    const startDate = new Date(`${item.scheduled_date}T${item.scheduled_time || "10:00"}:00`);
-    const endDate = new Date(startDate.getTime() + 60 * 60 * 1000);
-    const endDateClean = endDate.toISOString().split("T")[0].replace(/-/g, "");
-    const endTimeClean = endDate.toTimeString().split(":").slice(0, 2).join("") + "00";
-    const endDateTime = `${endDateClean}T${endTimeClean}`;
     const url = new URL("https://calendar.google.com/calendar/render");
     url.searchParams.set("action", "TEMPLATE");
     url.searchParams.set("text", `[${item.pilar}] ${item.formato} — ${item.title}`);
-    url.searchParams.set("dates", `${startDateTime}/${endDateTime}`);
-    url.searchParams.set("details", item.sugerencia || "Pieza de contenido de La Brújula");
+
+    if (item.scheduled_time) {
+      // Timed event: local times (no Z = Google treats as local timezone)
+      const [hh, mm] = item.scheduled_time.split(":");
+      const startTime = `${hh}${mm}00`;
+      const endH = String(Math.min(23, parseInt(hh) + 1)).padStart(2, "0");
+      const endTime = `${endH}${mm}00`;
+      url.searchParams.set("dates", `${dateClean}T${startTime}/${dateClean}T${endTime}`);
+    } else {
+      // All-day event
+      const nextDay = new Date(item.scheduled_date + "T12:00:00");
+      nextDay.setDate(nextDay.getDate() + 1);
+      const nextDayClean = nextDay.toISOString().split("T")[0].replace(/-/g, "");
+      url.searchParams.set("dates", `${dateClean}/${nextDayClean}`);
+    }
+
+    const details = [
+      item.sugerencia || "",
+      `Pilar: ${item.pilar}`,
+      item.canal ? `Canal: ${item.canal}` : "",
+      "— Creado con La Brújula de Contenido",
+    ].filter(Boolean).join("\n");
+    url.searchParams.set("details", details);
+
     return url.toString();
   };
 
   const syncToCalendar = (item: PlannerItem) => {
-    if (!item.scheduled_date || !item.scheduled_time) {
-      showToast("Asigna fecha y hora antes de sincronizar");
+    if (!item.scheduled_date) {
+      showToast("Asigna una fecha antes de sincronizar");
       return;
     }
-    window.open(buildGcalUrl(item), "_blank");
+    const opened = window.open(buildGcalUrl(item), "_blank", "noopener,noreferrer");
+    if (!opened) {
+      showToast("Tu navegador bloqueó la ventana. Permite popups para este sitio.");
+      return;
+    }
     setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, gcal_synced: true } : i)));
     const supabase = createClient();
     supabase.from("planner_items").update({ gcal_synced: true, updated_at: new Date().toISOString() }).eq("id", item.id).then(() => {});
-    showToast("Abierto en Google Calendar");
+    showToast("Abierto en Google Calendar ✓");
   };
 
   const syncAllToCalendar = () => {
     if (scheduledUnsyncedItems.length === 0) return;
     setSyncingAll(true);
-    let opened = 0;
-    scheduledUnsyncedItems.forEach((item, i) => {
-      setTimeout(() => {
-        syncToCalendar(item);
-        opened++;
-        if (opened === scheduledUnsyncedItems.length) {
-          setSyncingAll(false);
-        }
-      }, i * 600);
-    });
+    // Open one at a time to avoid popup blocker
+    syncToCalendar(scheduledUnsyncedItems[0]);
+    setSyncingAll(false);
+    if (scheduledUnsyncedItems.length > 1) {
+      showToast(`Sincronizado 1/${scheduledUnsyncedItems.length}. Pulsa de nuevo para el siguiente.`);
+    }
   };
 
   // ─── Navigation ────────────────────────────────────
@@ -335,7 +350,7 @@ export default function PlannerClient({ userId }: Props) {
                 <input type="time" value={item.scheduled_time || ""} onChange={(e) => updateTime(item.id, e.target.value)}
                   className="text-xs bg-transparent text-gray-700 focus:outline-none" onClick={(e) => e.stopPropagation()} />
               </div>
-              {item.scheduled_date && item.scheduled_time && !item.gcal_synced && (
+              {item.scheduled_date && !item.gcal_synced && (
                 <button onClick={(e) => { e.stopPropagation(); syncToCalendar(item); }}
                   className="text-xs px-2.5 py-1 rounded-lg bg-naranja/10 text-naranja font-medium hover:bg-naranja/20 transition-colors">
                   📅 Sync
@@ -417,7 +432,7 @@ export default function PlannerClient({ userId }: Props) {
           {/* Sync status */}
           {item.gcal_synced ? (
             <span className="text-[10px] text-success font-semibold">✓ Cal</span>
-          ) : item.scheduled_date && item.scheduled_time ? (
+          ) : item.scheduled_date ? (
             <button onClick={() => syncToCalendar(item)}
               className="text-xs px-2.5 py-1 rounded-lg bg-naranja/10 text-naranja font-medium hover:bg-naranja/20 transition-colors">
               📅
@@ -734,7 +749,7 @@ export default function PlannerClient({ userId }: Props) {
                       </button>
                       <input type="time" value={expandedItem.scheduled_time || ""} onChange={(e) => updateTime(expandedItem.id, e.target.value)}
                         className="text-xs bg-white border border-gray-200 rounded-lg px-2 py-1.5 text-gray-700 focus:outline-none focus:border-naranja" />
-                      {expandedItem.scheduled_date && expandedItem.scheduled_time && !expandedItem.gcal_synced && (
+                      {expandedItem.scheduled_date && !expandedItem.gcal_synced && (
                         <button onClick={() => syncToCalendar(expandedItem)}
                           className="text-xs px-3 py-1.5 rounded-lg bg-naranja/10 text-naranja font-medium hover:bg-naranja/20 transition-colors">
                           📅 Sync Calendar
