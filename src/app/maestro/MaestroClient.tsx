@@ -1,39 +1,25 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import AppShell from "@/components/AppShell";
 import { OBJECTIVES, ENERGY_LEVELS, FORMAT_MAP } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
 import type { SuggestionResult, MaestroSelection } from "@/lib/types";
 
-// ─── Frases célebres para la pantalla de carga ─────────────
-const LOADING_QUOTES = [
+// ─── Fallback quotes (used while Supabase loads) ──────────
+const FALLBACK_QUOTES = [
   { text: "El contenido es fuego. Las redes sociales son gasolina.", author: "Jay Baer" },
   { text: "La gente no compra lo que haces, compra por qué lo haces.", author: "Simon Sinek" },
   { text: "Tu marca personal es lo que dicen de ti cuando no estás en la sala.", author: "Jeff Bezos" },
   { text: "La mejor forma de predecir el futuro es creándolo.", author: "Peter Drucker" },
-  { text: "No busques clientes para tus productos, busca productos para tus clientes.", author: "Seth Godin" },
   { text: "La creatividad es la inteligencia divirtiéndose.", author: "Albert Einstein" },
-  { text: "Haz las cosas simples, no más simples.", author: "Albert Einstein" },
-  { text: "El marketing ya no va de las cosas que haces, sino de las historias que cuentas.", author: "Seth Godin" },
-  { text: "La estrategia sin táctica es el camino más lento hacia la victoria. La táctica sin estrategia es el ruido antes de la derrota.", author: "Sun Tzu" },
-  { text: "El que tiene un porqué para vivir puede soportar casi cualquier cómo.", author: "Friedrich Nietzsche" },
-  { text: "Invierte en ti mismo. Tu carrera es el motor de tu riqueza.", author: "Warren Buffett" },
-  { text: "La vida no se trata de encontrarte a ti mismo, se trata de crearte a ti mismo.", author: "George Bernard Shaw" },
-  { text: "Donde todos piensan igual, nadie piensa mucho.", author: "Walter Lippmann" },
-  { text: "El éxito no es la clave de la felicidad. La felicidad es la clave del éxito.", author: "Albert Schweitzer" },
-  { text: "Sé tú mismo; todos los demás ya están ocupados.", author: "Oscar Wilde" },
-  { text: "La mejor inversión que puedes hacer es en ti mismo.", author: "Warren Buffett" },
-  { text: "No tienes que ser grande para empezar, pero tienes que empezar para ser grande.", author: "Zig Ziglar" },
-  { text: "Tu tiempo es limitado, no lo malgastes viviendo la vida de otro.", author: "Steve Jobs" },
-  { text: "La marca personal no es lo que tú dices que eres. Es lo que Google dice que eres.", author: "Chris Anderson" },
-  { text: "El mundo hace sitio al hombre que sabe adónde va.", author: "Ralph Waldo Emerson" },
-  { text: "Crea contenido que enseñe. No puedes rendirte con eso.", author: "Gary Vaynerchuk" },
-  { text: "Lo que no se mide, no se puede mejorar.", author: "Peter Drucker" },
-  { text: "El secreto de ir adelante es empezar.", author: "Mark Twain" },
-  { text: "Haz lo que amas y no trabajarás un solo día de tu vida.", author: "Confucio" },
 ];
+
+interface Quote {
+  text: string;
+  author: string;
+}
 
 interface Props {
   userId: string;
@@ -57,13 +43,28 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
   const [planTime, setPlanTime] = useState("10:00");
   const [planSaving, setPlanSaving] = useState(false);
   const [planSaved, setPlanSaved] = useState(false);
-  const [currentQuote, setCurrentQuote] = useState(LOADING_QUOTES[0]);
+  const [currentQuote, setCurrentQuote] = useState<Quote>(FALLBACK_QUOTES[0]);
   const [quoteFading, setQuoteFading] = useState(false);
+  const quotesRef = useRef<Quote[]>(FALLBACK_QUOTES);
+
+  // ─── Load quotes from Supabase on mount ──────────────────
+  useEffect(() => {
+    fetch("/api/quotes")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.quotes && data.quotes.length > 0) {
+          quotesRef.current = data.quotes;
+        }
+      })
+      .catch(() => {
+        // Keep fallback quotes
+      });
+  }, []);
 
   // ─── Rotate quotes while loading ─────────────────────────
   const pickRandomQuote = useCallback(() => {
-    const idx = Math.floor(Math.random() * LOADING_QUOTES.length);
-    return LOADING_QUOTES[idx];
+    const quotes = quotesRef.current;
+    return quotes[Math.floor(Math.random() * quotes.length)];
   }, []);
 
   useEffect(() => {
