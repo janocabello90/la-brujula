@@ -136,42 +136,6 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
     }));
   };
 
-  // --- INPUT HELPER ---
-  const TextInput = ({
-    label,
-    value,
-    onChange,
-    placeholder,
-    textarea,
-  }: {
-    label: string;
-    value: string;
-    onChange: (v: string) => void;
-    placeholder?: string;
-    textarea?: boolean;
-  }) => (
-    <div className="mb-4">
-      <label className="block text-sm font-medium text-negro mb-1.5">{label}</label>
-      {textarea ? (
-        <textarea
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder}
-          rows={3}
-          className="w-full px-4 py-3 border border-borde rounded-lg bg-crema text-negro placeholder:text-muted-light focus:outline-none focus:border-naranja transition-colors resize-none"
-        />
-      ) : (
-        <input
-          type="text"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder}
-          className="w-full px-4 py-3 border border-borde rounded-lg bg-crema text-negro placeholder:text-muted-light focus:outline-none focus:border-naranja transition-colors"
-        />
-      )}
-    </div>
-  );
-
   // --- RENDER STEPS ---
   const renderStepContent = () => {
     switch (currentStep.id) {
@@ -408,6 +372,44 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
           </button>
         </div>
       </div>
+    </div>
+  );
+}
+
+// --- INPUT HELPER (outside main component to avoid re-mount on every render) ---
+function TextInput({
+  label,
+  value,
+  onChange,
+  placeholder,
+  textarea,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  textarea?: boolean;
+}) {
+  return (
+    <div className="mb-4">
+      <label className="block text-sm font-medium text-negro mb-1.5">{label}</label>
+      {textarea ? (
+        <textarea
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          rows={3}
+          className="w-full px-4 py-3 border border-borde rounded-lg bg-crema text-negro placeholder:text-muted-light focus:outline-none focus:border-naranja transition-colors resize-none"
+        />
+      ) : (
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          className="w-full px-4 py-3 border border-borde rounded-lg bg-crema text-negro placeholder:text-muted-light focus:outline-none focus:border-naranja transition-colors"
+        />
+      )}
     </div>
   );
 }
