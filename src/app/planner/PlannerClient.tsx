@@ -210,48 +210,69 @@ export default function PlannerClient({ userId }: Props) {
     showToast(newStatus === "published" ? "Marcada como publicada" : "Desmarcada");
   };
 
-  const syncToCalendar = async (item: PlannerItem) => {
-    if (!item.scheduled_date || !item.scheduled_time) return;
-    setSyncingId(item.id);
-    try {
-      const res = await fetch("/api/calendar/sync", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          itemId: item.id,
-          userId,
-          summary: `[${item.pilar}] ${item.formato} — ${item.title}`,
-          description: item.sugerencia,
-          date: item.scheduled_date,
-          time: item.scheduled_time,
-        }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setItems((prev) =>
-          prev.map((i) => (i.id === item.id ? { ...i, gcal_synced: true } : i))
-        );
-        if (data.gcalUrl) {
-          window.open(data.gcalUrl, "_blank");
-        }
-        showToast("Sincronizado con Google Calendar");
-      }
-    } catch {
-      showToast("Error al sincronizar");
-    }
-    setSyncingId(null);
+  // Build Google Calendar URL client-side (no API needed, avoids popup blocker)
+  const buildGcalUrl = (item: PlannerItem): string => {
+    const dateClean = (item.scheduled_date || "").replace(/-/g, "");
+    const timeClean = (item.scheduled_time || "10:00").replace(/:/g, "") + "00";
+    const startDateTime = `${dateClean}T${timeClean}`;
+
+    // End = start + 1h
+    const startDate = new Date(`${item.scheduled_date}T${item.scheduled_time || "10:00"}:00`);
+    const endDate = new Date(startDate.getTime() + 60 * 60 * 1000);
+    const endDateClean = endDate.toISOString().split("T")[0].replace(/-/g, "");
+    const endTimeClean = endDate.toTimeString().split(":").slice(0, 2).join("") + "00";
+    const endDateTime = `${endDateClean}T${endTimeClean}`;
+
+    const summary = `[${item.pilar}] ${item.formato} — ${item.title}`;
+    const details = item.sugerencia || "Pieza de contenido de La Brújula";
+
+    const url = new URL("https://calendar.google.com/calendar/render");
+    url.searchParams.set("action", "TEMPLATE");
+    url.searchParams.set("text", summary);
+    url.searchParams.set("dates", `${startDateTime}/${endDateTime}`);
+    url.searchParams.set("details", details);
+    return url.toString();
   };
 
-  const syncAllToCalendar = async () => {
-    if (scheduledUnsyncedItems.length === 0) return;
-    setSyncingAll(true);
-    for (const item of scheduledUnsyncedItems) {
-      await syncToCalendar(item);
-      // Small delay between syncs
-      await new Promise((r) => setTimeout(r, 300));
+  const syncToCalendar = (item: PlannerItem) => {
+    if (!item.scheduled_date || !item.scheduled_time) {
+      showToast("Asigna fecha y hora antes de sincronizar");
+      return;
     }
-    setSyncingAll(false);
-    showToast(`${scheduledUnsyncedItems.length} piezas sincronizadas`);
+
+    // 1. Open Google Calendar immediately (avoids popup blocker)
+    const gcalUrl = buildGcalUrl(item);
+    window.open(gcalUrl, "_blank");
+
+    // 2. Mark as synced in DB (background, no need to wait)
+    setItems((prev) =>
+      prev.map((i) => (i.id === item.id ? { ...i, gcal_synced: true } : i))
+    );
+    const supabase = createClient();
+    supabase
+      .from("planner_items")
+      .update({ gcal_synced: true, updated_at: new Date().toISOString() })
+      .eq("id", item.id)
+      .then(() => {});
+
+    showToast("Abierto en Google Calendar");
+  };
+
+  const syncAllToCalendar = () => {
+    if (scheduledUnsyncedItems.length === 0) return;
+    // For "sync all", open each one with a small delay so browser doesn't block them
+    setSyncingAll(true);
+    let opened = 0;
+    scheduledUnsyncedItems.forEach((item, i) => {
+      setTimeout(() => {
+        syncToCalendar(item);
+        opened++;
+        if (opened === scheduledUnsyncedItems.length) {
+          setSyncingAll(false);
+          showToast(`${scheduledUnsyncedItems.length} piezas abiertas en Calendar`);
+        }
+      }, i * 600);
+    });
   };
 
   // ─── Card component ────────────────────────────────
