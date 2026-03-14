@@ -132,16 +132,23 @@ Responde SOLO con un JSON válido (sin markdown, sin backticks) con esta estruct
   "angulo": "ángulo narrativo elegido",
   "tono": "tono recomendado (ej: cercano, provocador, reflexivo...)",
   "formato": "formato específico de la lista de formatos posibles",
-  "sugerencia": "Tu sugerencia narrativa. Escríbela como un director creativo hablándole a su creador estrella. 3-5 párrafos. Explica QUÉ crear, CÓMO enfocarlo, con qué GANCHO abrir, y qué SENSACIÓN debe dejar en quien lo lea/vea. Sé específico, no genérico.",
-  "estrategia": "Por qué esta pieza funciona estratégicamente dado el objetivo y el perfil",
-  "porQueAhora": "Por qué esta pieza tiene sentido AHORA, en este momento específico"
+  "titulares": ["Titular opción 1", "Titular opción 2", "Titular opción 3"],
+  "gancho": "La frase o pregunta de apertura que engancha desde el segundo 1 o la primera línea",
+  "enfoque": "En 1-2 frases, la idea central y el ángulo desde el que atacar esta pieza",
+  "pistas": ["Pista creativa 1: una referencia, dato, analogía o idea concreta para desarrollar", "Pista creativa 2: ...", "Pista creativa 3: ...", "Pista creativa 4: ..."],
+  "cta": "El cierre o llamada a la acción que debe dejar la pieza",
+  "estrategia": "En 1-2 frases, por qué esta pieza funciona estratégicamente dado el objetivo y el perfil",
+  "porQueAhora": "En 1 frase, por qué esta pieza tiene sentido AHORA"
 }
 
 IMPORTANTE:
 - Elige subtemas y ángulos del árbol del creador, no inventes nuevos
 - El formato DEBE ser de la lista de formatos posibles para su energía
-- La sugerencia debe ser narrativa, no una lista de bullet points
-- Sé concreto: da un título posible, un gancho de apertura, ejemplos específicos
+- Los titulares deben ser 3 opciones reales, listas para usar, con gancho
+- Las pistas son IDEAS SUELTAS para inspirar: datos curiosos, analogías, referencias culturales, preguntas retóricas, experiencias comunes, contradicciones... NO párrafos largos
+- Cada pista debe ser 1-2 frases máximo, concreta y accionable
+- Da entre 4 y 6 pistas variadas
+- El gancho debe ser la primera frase literal que abra la pieza
 - Si hay historial, NO repitas combinaciones recientes`;
 
     // Call Anthropic

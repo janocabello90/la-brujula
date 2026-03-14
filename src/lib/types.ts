@@ -73,9 +73,15 @@ export interface SuggestionResult {
   angulo: string;
   tono: string;
   formato: string;
-  sugerencia: string;
+  titulares: string[];
+  gancho: string;
+  enfoque: string;
+  pistas: string[];
+  cta: string;
   estrategia: string;
   porQueAhora: string;
+  // Legacy field (may exist in old history entries)
+  sugerencia?: string;
 }
 
 export interface MaestroSelection {

@@ -223,6 +223,7 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
         {/* Result */}
         {result && (
           <div className="suggestion-result">
+            {/* Header pills */}
             <div className="flex flex-wrap gap-2 mb-4">
               <span className="pill pill-dark">{result.pilar}</span>
               <span className="pill pill-accent">{result.formato}</span>
@@ -230,26 +231,85 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
             </div>
 
             <h3 className="font-heading text-xl text-negro mb-1">{result.subtema}</h3>
-            <p className="text-sm text-muted mb-4">Ángulo: {result.angulo}</p>
+            <p className="text-sm text-muted mb-5">Ángulo: {result.angulo}</p>
 
-            <div className="border-t border-borde pt-4 mt-4">
-              <h4 className="text-sm font-semibold text-negro mb-2">💡 La sugerencia del Maestro</h4>
-              <div className="text-sm text-negro leading-relaxed whitespace-pre-line">
-                {result.sugerencia}
-              </div>
-            </div>
-
-            {result.estrategia && (
-              <div className="border-t border-borde pt-4 mt-4">
-                <h4 className="text-sm font-semibold text-negro mb-2">🧠 Estrategia detrás</h4>
-                <p className="text-sm text-muted leading-relaxed">{result.estrategia}</p>
+            {/* Titulares */}
+            {result.titulares && result.titulares.length > 0 && (
+              <div className="bg-naranja/5 border border-naranja/20 rounded-xl p-4 mb-4">
+                <h4 className="text-xs font-bold text-naranja uppercase tracking-wider mb-3">Ideas de titular</h4>
+                <div className="space-y-2">
+                  {result.titulares.map((t, i) => (
+                    <div key={i} className="flex items-start gap-2.5">
+                      <span className="flex-shrink-0 w-5 h-5 rounded-full bg-naranja/15 text-naranja text-[10px] font-bold flex items-center justify-center mt-0.5">{i + 1}</span>
+                      <p className="text-sm text-negro font-medium leading-snug">{t}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
-            {result.porQueAhora && (
+            {/* Gancho */}
+            {result.gancho && (
+              <div className="bg-negro/[0.03] border-l-4 border-naranja rounded-r-lg px-4 py-3 mb-4">
+                <h4 className="text-[10px] font-bold text-muted uppercase tracking-wider mb-1">Gancho de apertura</h4>
+                <p className="text-sm text-negro font-medium italic leading-relaxed">&ldquo;{result.gancho}&rdquo;</p>
+              </div>
+            )}
+
+            {/* Enfoque */}
+            {result.enfoque && (
+              <div className="mb-4">
+                <h4 className="text-xs font-bold text-negro uppercase tracking-wider mb-2">Enfoque</h4>
+                <p className="text-sm text-negro/80 leading-relaxed">{result.enfoque}</p>
+              </div>
+            )}
+
+            {/* Pistas creativas */}
+            {result.pistas && result.pistas.length > 0 && (
+              <div className="bg-card border border-borde rounded-xl p-4 mb-4">
+                <h4 className="text-xs font-bold text-negro uppercase tracking-wider mb-3">Pistas creativas</h4>
+                <div className="space-y-2.5">
+                  {result.pistas.map((p, i) => (
+                    <div key={i} className="flex items-start gap-2.5">
+                      <span className="flex-shrink-0 text-naranja mt-0.5">▸</span>
+                      <p className="text-sm text-negro/80 leading-snug">{p}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* CTA */}
+            {result.cta && (
+              <div className="mb-4">
+                <h4 className="text-xs font-bold text-negro uppercase tracking-wider mb-2">Cierre / CTA</h4>
+                <p className="text-sm text-negro/80 leading-relaxed">{result.cta}</p>
+              </div>
+            )}
+
+            {/* Estrategia + Por qué ahora (compact) */}
+            {(result.estrategia || result.porQueAhora) && (
+              <div className="border-t border-borde pt-4 mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {result.estrategia && (
+                  <div>
+                    <h4 className="text-[10px] font-bold text-muted uppercase tracking-wider mb-1">🧠 Estrategia</h4>
+                    <p className="text-xs text-muted leading-relaxed">{result.estrategia}</p>
+                  </div>
+                )}
+                {result.porQueAhora && (
+                  <div>
+                    <h4 className="text-[10px] font-bold text-muted uppercase tracking-wider mb-1">⏰ Por qué ahora</h4>
+                    <p className="text-xs text-muted leading-relaxed">{result.porQueAhora}</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Legacy: show old sugerencia if present (old history entries) */}
+            {result.sugerencia && !result.pistas && (
               <div className="border-t border-borde pt-4 mt-4">
-                <h4 className="text-sm font-semibold text-negro mb-2">⏰ ¿Por qué ahora?</h4>
-                <p className="text-sm text-muted leading-relaxed">{result.porQueAhora}</p>
+                <h4 className="text-sm font-semibold text-negro mb-2">💡 Sugerencia</h4>
+                <div className="text-sm text-negro leading-relaxed whitespace-pre-line">{result.sugerencia}</div>
               </div>
             )}
 
@@ -300,16 +360,22 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
                           if (!planDate || !result) return;
                           setPlanSaving(true);
                           const supabase = createClient();
+                          const sugerenciaText = [
+                            result.enfoque ? `Enfoque: ${result.enfoque}` : "",
+                            result.gancho ? `Gancho: "${result.gancho}"` : "",
+                            ...(result.pistas || []).map((p) => `▸ ${p}`),
+                            result.cta ? `CTA: ${result.cta}` : "",
+                          ].filter(Boolean).join("\n");
                           await supabase.from("planner_items").insert({
                             user_id: userId,
                             scheduled_date: planDate,
                             scheduled_time: planTime,
-                            title: result.subtema,
+                            title: result.titulares?.[0] || result.subtema,
                             pilar: result.pilar,
                             formato: result.formato,
                             tono: result.tono,
                             canal: selection.canal || "",
-                            sugerencia: result.sugerencia,
+                            sugerencia: sugerenciaText || result.sugerencia || "",
                             estrategia: result.estrategia || "",
                             status: "scheduled",
                           });
