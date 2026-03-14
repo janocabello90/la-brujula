@@ -303,8 +303,29 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
             {/* API Key */}
             <div className="border-t border-borde pt-6 mt-4">
               <label className="block text-sm font-medium text-negro mb-1.5">
-                API Key de Anthropic <span className="text-muted text-xs">(opcional — la puedes poner después)</span>
+                API Key de Anthropic <span className="text-muted text-xs">(opcional — la puedes poner después desde Ajustes)</span>
               </label>
+
+              <div className="bg-white border border-borde rounded-lg p-4 mb-4 text-sm text-negro leading-relaxed">
+                <p className="font-semibold mb-2">¿Qué es esto y por qué la necesitas?</p>
+                <p className="mb-2">
+                  El Maestro usa Claude (la IA de Anthropic) para generar tus ideas de contenido. Para que funcione, necesitas tu propia API Key — es como una llave personal que conecta La Brújula con la IA.
+                </p>
+                <p className="font-semibold mb-2">¿Cómo conseguirla?</p>
+                <ol className="list-decimal list-inside space-y-1 mb-2">
+                  <li>Ve a <a href="https://console.anthropic.com" target="_blank" rel="noopener noreferrer" className="text-naranja underline hover:text-naranja-hover">console.anthropic.com</a> y crea una cuenta</li>
+                  <li>En <strong>Settings → API Keys</strong>, pulsa <strong>&quot;Create Key&quot;</strong></li>
+                  <li>Copia la key (empieza por <code className="bg-crema px-1 rounded">sk-ant-...</code>) y pégala aquí abajo</li>
+                </ol>
+                <p className="font-semibold mb-2">💳 Sobre el coste</p>
+                <p className="mb-1">
+                  Anthropic funciona con créditos de prepago. Necesitarás añadir saldo en <strong>Settings → Billing</strong> dentro de la consola. Con <strong>5 $</strong> tienes para cientos de ideas generadas — cada petición cuesta menos de 0,01 $.
+                </p>
+                <p className="text-muted text-xs">
+                  Tu key es privada y solo se usa para conectar tu cuenta con la IA. Nunca la compartimos ni la usamos para otra cosa.
+                </p>
+              </div>
+
               <input
                 type="password"
                 value={apiKey}
@@ -312,9 +333,6 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
                 placeholder="sk-ant-..."
                 className="w-full px-4 py-3 border border-borde rounded-lg bg-crema text-negro placeholder:text-muted-light focus:outline-none focus:border-naranja transition-colors font-mono text-sm"
               />
-              <p className="text-xs text-muted mt-1.5">
-                Necesaria para activar el Maestro. La guardamos cifrada en tu cuenta.
-              </p>
             </div>
           </>
         );
