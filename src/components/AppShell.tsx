@@ -4,7 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "@/lib/supabase/hooks";
 
-export default function AppShell({ children }: { children: React.ReactNode }) {
+interface AppShellProps {
+  children: React.ReactNode;
+  fullWidth?: boolean;
+}
+
+export default function AppShell({ children, fullWidth = false }: AppShellProps) {
   const pathname = usePathname();
 
   const navItems = [
@@ -19,7 +24,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen bg-crema">
       {/* Top nav */}
       <nav className="border-b border-borde bg-card/80 backdrop-blur-sm sticky top-0 z-40">
-        <div className="max-w-5xl mx-auto px-6 flex items-center justify-between h-14">
+        <div className={`${fullWidth ? "max-w-[1800px]" : "max-w-5xl"} mx-auto px-4 sm:px-6 flex items-center justify-between h-14`}>
           <Link href="/dashboard" className="flex items-center gap-2">
             <span className="text-xl">🧭</span>
             <span className="font-heading text-lg font-semibold text-negro hidden sm:inline">
@@ -53,7 +58,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       </nav>
 
       {/* Content */}
-      <main className="max-w-5xl mx-auto px-6 py-8">{children}</main>
+      <main className={`${fullWidth ? "max-w-[1800px]" : "max-w-5xl"} mx-auto px-4 sm:px-6 py-6 sm:py-8`}>{children}</main>
     </div>
   );
 }
