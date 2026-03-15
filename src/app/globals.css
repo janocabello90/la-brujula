@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
 
 /* ─── Base ──────────────────────────────────────────── */
 body {
@@ -16,9 +16,10 @@ body {
 }
 
 h1, h2, h3, h4 {
-  font-family: 'Cormorant Garamond', serif;
-  font-weight: 600;
-  line-height: 1.2;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
 }
 
 /* ─── Spinner ───────────────────────────────────────── */

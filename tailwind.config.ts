@@ -21,7 +21,7 @@ const config: Config = {
         success: '#27ae60',
       },
       fontFamily: {
-        heading: ['Cormorant Garamond', 'serif'],
+        heading: ['Bricolage Grotesque', 'sans-serif'],
         body: ['DM Sans', 'sans-serif'],
       },
       borderRadius: {

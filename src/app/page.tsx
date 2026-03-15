@@ -328,11 +328,11 @@ export default function Home() {
               <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-4">La Pirámide</p>
               <div className="space-y-2">
                 {[
-                  { level: "4", label: "Resultados", w: "w-full" },
-                  { level: "3", label: "Estrategia y canales", w: "w-[85%]" },
+                  { level: "4", label: "Resultados", w: "w-[40%]" },
+                  { level: "3", label: "Estrategia y canales", w: "w-[55%]" },
                   { level: "2", label: "Mercado y propuesta de valor", w: "w-[70%]" },
-                  { level: "1", label: "Valores, propósito y visión", w: "w-[55%]" },
-                  { level: "▼", label: "Historia y creencias", w: "w-[40%]" },
+                  { level: "1", label: "Valores, propósito y visión", w: "w-[85%]" },
+                  { level: "▼", label: "Historia y creencias", w: "w-full" },
                 ].map((item) => (
                   <div key={item.level} className={`${item.w} mx-auto`}>
                     <div className="bg-white/[0.08] border border-white/[0.1] rounded-lg px-3 py-2 text-center hover:bg-naranja/20 hover:border-naranja/30 transition-colors">
