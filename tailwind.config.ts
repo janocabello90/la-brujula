@@ -25,10 +25,12 @@ const config: Config = {
         body: ['DM Sans', 'sans-serif'],
       },
       borderRadius: {
-        card: '12px',
+        card: '14px',
       },
       boxShadow: {
-        card: '0 2px 12px rgba(0,0,0,0.06)',
+        card: '0 2px 16px rgba(0,0,0,0.05)',
+        'card-hover': '0 4px 24px rgba(0,0,0,0.08)',
+        glow: '0 0 24px rgba(232, 146, 10, 0.12)',
       },
     },
   },
