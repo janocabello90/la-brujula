@@ -68,24 +68,30 @@ export default function Home() {
             </div>
             {/* Mobile hero image */}
             <div className="mt-8 md:hidden flex justify-center">
-              <img
-                src="/gorila-brujula.png"
-                alt="El gorila con la brújula de contenido"
-                className="w-64 sm:w-72 rounded-xl"
-                style={{ filter: "drop-shadow(0 12px 24px rgba(0,0,0,0.1))" }}
-              />
+              <picture>
+                <source srcSet="/gorila-brujula.webp" type="image/webp" />
+                <img
+                  src="/gorila-brujula.png"
+                  alt="El gorila con la brújula de contenido"
+                  className="w-64 sm:w-72 rounded-xl"
+                  style={{ filter: "drop-shadow(0 12px 24px rgba(0,0,0,0.1))" }}
+                />
+              </picture>
             </div>
           </div>
 
           {/* Right: hero image */}
           <div className="relative hidden md:flex items-center justify-center">
             <div className="absolute inset-0 bg-gradient-to-br from-naranja/[0.06] to-transparent rounded-3xl pointer-events-none" />
-            <img
-              src="/gorila-brujula.png"
-              alt="El gorila con la brújula de contenido"
-              className="relative w-full max-w-md rounded-2xl"
-              style={{ filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.1))" }}
-            />
+            <picture>
+              <source srcSet="/gorila-brujula.webp" type="image/webp" />
+              <img
+                src="/gorila-brujula.png"
+                alt="El gorila con la brújula de contenido"
+                className="relative w-full max-w-md rounded-2xl"
+                style={{ filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.1))" }}
+              />
+            </picture>
           </div>
         </div>
       </section>
@@ -233,26 +239,45 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Minority Report + Excel */}
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-crema rounded-2xl p-7 sm:p-9 border border-borde/40">
+            {/* Minority Report */}
+            <div className="grid md:grid-cols-5 gap-6 items-center">
+              <div className="md:col-span-3 bg-negro rounded-2xl p-7 sm:p-9 overflow-hidden">
                 <div className="flex items-center gap-3 mb-4">
-                  <span className="w-10 h-10 rounded-xl bg-naranja/10 flex items-center justify-center text-xl">🗺️</span>
-                  <h3 className="font-heading text-2xl text-negro">Minority Report</h3>
+                  <span className="w-10 h-10 rounded-xl bg-naranja/20 flex items-center justify-center text-xl">🗺️</span>
+                  <h3 className="font-heading text-2xl text-white">Minority Report</h3>
                 </div>
-                <p className="text-sm text-muted leading-relaxed">
+                <p className="text-sm text-white/60 leading-relaxed mb-5">
                   Tu mapa estratégico completo: briefing, buyer persona, mapa de empatía, insight, árbol de contenidos y canales. Todo lo que necesitas en una vista. Exporta a Excel profesional con un clic.
                 </p>
-              </div>
-              <div className="bg-crema rounded-2xl p-7 sm:p-9 border border-borde/40">
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="w-10 h-10 rounded-xl bg-naranja/10 flex items-center justify-center text-xl">🧠</span>
-                  <h3 className="font-heading text-2xl text-negro">Basado en tu marca real</h3>
+                <div className="flex flex-wrap gap-2">
+                  <span className="px-3 py-1 rounded-full text-[11px] font-semibold bg-white/[0.08] text-white/70">Buyer persona</span>
+                  <span className="px-3 py-1 rounded-full text-[11px] font-semibold bg-white/[0.08] text-white/70">Insight estratégico</span>
+                  <span className="px-3 py-1 rounded-full text-[11px] font-semibold bg-white/[0.08] text-white/70">Árbol de contenidos</span>
+                  <span className="px-3 py-1 rounded-full text-[11px] font-semibold bg-white/[0.08] text-white/70">Export Excel</span>
                 </div>
-                <p className="text-sm text-muted leading-relaxed">
-                  Nada genérico. La Brújula parte de tu propuesta de valor, tu audiencia concreta y tus pilares de contenido. La IA genera sugerencias alineadas con quien eres — no con lo que está de moda.
-                </p>
               </div>
+              <div className="md:col-span-2 flex items-center justify-center">
+                <picture>
+                  <source srcSet="/minority-report.webp" type="image/webp" />
+                  <img
+                    src="/minority-report.png"
+                    alt="El gorila visualizando datos estratégicos — Minority Report"
+                    className="w-full max-w-xs rounded-2xl"
+                    style={{ filter: "drop-shadow(0 16px 32px rgba(0,0,0,0.12))" }}
+                  />
+                </picture>
+              </div>
+            </div>
+
+            {/* Basado en tu marca real */}
+            <div className="bg-crema rounded-2xl p-7 sm:p-9 border border-borde/40">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="w-10 h-10 rounded-xl bg-naranja/10 flex items-center justify-center text-xl">🧠</span>
+                <h3 className="font-heading text-2xl text-negro">Basado en tu marca real</h3>
+              </div>
+              <p className="text-sm text-muted leading-relaxed max-w-2xl">
+                Nada genérico. La Brújula parte de tu propuesta de valor, tu audiencia concreta y tus pilares de contenido. La IA genera sugerencias alineadas con quien eres — no con lo que está de moda.
+              </p>
             </div>
           </div>
         </div>
