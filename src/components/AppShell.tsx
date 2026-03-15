@@ -23,42 +23,48 @@ export default function AppShell({ children, fullWidth = false }: AppShellProps)
   return (
     <div className="min-h-screen bg-crema">
       {/* Top nav */}
-      <nav className="border-b border-borde bg-card/80 backdrop-blur-sm sticky top-0 z-40">
+      <nav className="border-b border-borde/70 bg-white/70 backdrop-blur-md sticky top-0 z-40">
         <div className={`${fullWidth ? "max-w-[1800px]" : "max-w-5xl"} mx-auto px-4 sm:px-6 flex items-center justify-between h-14`}>
-          <Link href="/dashboard" className="flex items-center gap-2">
+          <Link href="/dashboard" className="flex items-center gap-2.5">
             <span className="text-xl">🧭</span>
-            <span className="font-heading text-lg font-semibold text-negro hidden sm:inline">
+            <span className="font-heading text-lg text-negro hidden sm:inline">
               La Brújula
             </span>
           </Link>
 
-          <div className="flex items-center gap-1">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                  pathname === item.href
-                    ? "bg-naranja/10 text-naranja font-medium"
-                    : "text-muted hover:text-negro"
-                }`}
-              >
-                <span className="sm:hidden">{item.icon}</span>
-                <span className="hidden sm:inline">{item.icon} {item.label}</span>
-              </Link>
-            ))}
+          <div className="flex items-center gap-0.5">
+            {navItems.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`px-3 py-1.5 rounded-lg text-sm transition-all ${
+                    isActive
+                      ? "bg-negro text-white font-medium"
+                      : "text-muted hover:text-negro hover:bg-negro/[0.04]"
+                  }`}
+                >
+                  <span className="sm:hidden">{item.icon}</span>
+                  <span className="hidden sm:inline">{isActive ? item.label : `${item.icon} ${item.label}`}</span>
+                </Link>
+              );
+            })}
             <button
               onClick={signOut}
-              className="ml-2 px-3 py-1.5 rounded-lg text-sm text-muted hover:text-danger transition-colors"
+              className="ml-1.5 px-2.5 py-1.5 rounded-lg text-sm text-muted hover:text-danger hover:bg-danger/5 transition-all"
             >
-              Salir
+              <span className="sm:hidden">👋</span>
+              <span className="hidden sm:inline">Salir</span>
             </button>
           </div>
         </div>
       </nav>
 
       {/* Content */}
-      <main className={`${fullWidth ? "max-w-[1800px]" : "max-w-5xl"} mx-auto px-4 sm:px-6 py-6 sm:py-8`}>{children}</main>
+      <main className={`${fullWidth ? "max-w-[1800px]" : "max-w-5xl"} mx-auto px-4 sm:px-6 py-6 sm:py-8`}>
+        {children}
+      </main>
     </div>
   );
 }

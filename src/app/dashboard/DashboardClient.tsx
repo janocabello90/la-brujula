@@ -6,52 +6,67 @@ import AppShell from "@/components/AppShell";
 export default function DashboardClient() {
   return (
     <AppShell>
-      <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-10">
-          <h1 className="font-heading text-4xl text-negro mb-2">Tu Brújula</h1>
-          <p className="text-muted">Elige tu modo de trabajo</p>
+      <div className="max-w-4xl mx-auto">
+        <div className="mb-10">
+          <h1 className="font-heading text-3xl sm:text-4xl text-negro mb-1">Tu Brújula</h1>
+          <p className="text-muted text-sm">Elige tu modo de trabajo</p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          {/* Minority Report */}
-          <Link
-            href="/minority-report"
-            className="bg-card rounded-card shadow-card p-8 hover:shadow-lg transition-shadow group block"
-          >
-            <div className="text-4xl mb-4">🗺️</div>
-            <h2 className="font-heading text-2xl text-negro mb-2 group-hover:text-naranja transition-colors">
-              Minority Report
-            </h2>
-            <p className="text-muted text-sm leading-relaxed">
-              Tu mapa estratégico completo. Pilares, subtemas, ángulos, buyer
-              persona, insight... Todo lo que necesitas ver antes de crear.
-            </p>
-            <div className="mt-4 text-sm text-naranja font-medium">
-              Ver mi mapa →
-            </div>
-          </Link>
-
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* Maestro */}
           <Link
             href="/maestro"
-            className="bg-card rounded-card shadow-card p-8 hover:shadow-lg transition-shadow group block"
+            className="group relative bg-white rounded-2xl border border-borde/60 p-6 hover:border-naranja/40 hover:shadow-card-hover transition-all block"
           >
-            <div className="text-4xl mb-4">🎯</div>
-            <h2 className="font-heading text-2xl text-negro mb-2 group-hover:text-naranja transition-colors">
+            <div className="w-11 h-11 rounded-xl bg-naranja/10 flex items-center justify-center text-xl mb-4 group-hover:bg-naranja/15 transition-colors">🎯</div>
+            <h2 className="font-heading text-xl text-negro mb-1.5 group-hover:text-naranja transition-colors">
               El Maestro
             </h2>
-            <p className="text-muted text-sm leading-relaxed">
-              Dile cómo estás, qué quieres lograr y en qué canal. La IA analiza
-              tu perfil completo y te sugiere la pieza perfecta.
+            <p className="text-muted text-sm leading-relaxed mb-4">
+              Tu director creativo con IA. Te da titulares, ganchos y pistas creativas para tu siguiente pieza.
             </p>
-            <div className="mt-4 text-sm text-naranja font-medium">
-              Activar el Maestro →
-            </div>
+            <span className="text-sm text-naranja font-semibold">
+              Activar →
+            </span>
+          </Link>
+
+          {/* Planificador */}
+          <Link
+            href="/planner"
+            className="group relative bg-white rounded-2xl border border-borde/60 p-6 hover:border-naranja/40 hover:shadow-card-hover transition-all block"
+          >
+            <div className="w-11 h-11 rounded-xl bg-naranja/10 flex items-center justify-center text-xl mb-4 group-hover:bg-naranja/15 transition-colors">📅</div>
+            <h2 className="font-heading text-xl text-negro mb-1.5 group-hover:text-naranja transition-colors">
+              Planificador
+            </h2>
+            <p className="text-muted text-sm leading-relaxed mb-4">
+              Organiza tu contenido por semana o mes. Kanban, calendario y lista. Sincroniza con Google Calendar.
+            </p>
+            <span className="text-sm text-naranja font-semibold">
+              Planificar →
+            </span>
+          </Link>
+
+          {/* Minority Report */}
+          <Link
+            href="/minority-report"
+            className="group relative bg-white rounded-2xl border border-borde/60 p-6 hover:border-naranja/40 hover:shadow-card-hover transition-all block"
+          >
+            <div className="w-11 h-11 rounded-xl bg-naranja/10 flex items-center justify-center text-xl mb-4 group-hover:bg-naranja/15 transition-colors">🗺️</div>
+            <h2 className="font-heading text-xl text-negro mb-1.5 group-hover:text-naranja transition-colors">
+              Minority Report
+            </h2>
+            <p className="text-muted text-sm leading-relaxed mb-4">
+              Tu mapa estratégico completo. Pilares, audiencia, insight y árbol de contenidos en una vista.
+            </p>
+            <span className="text-sm text-naranja font-semibold">
+              Ver mapa →
+            </span>
           </Link>
         </div>
 
         {/* Quick actions */}
-        <div className="mt-8 flex justify-center gap-4">
+        <div className="mt-8 flex justify-center gap-6">
           <Link
             href="/onboarding"
             className="text-sm text-muted hover:text-naranja transition-colors"

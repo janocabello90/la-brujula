@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "La Brújula de Contenido",
   description: "Tu repositorio de conocimiento estratégico. No te dice qué escribir. Te dice hacia dónde apuntar.",
   icons: {
-    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧭</text></svg>"
+    icon: "/favicon.svg",
   }
 };
 
