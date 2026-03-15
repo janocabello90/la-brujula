@@ -66,59 +66,26 @@ export default function Home() {
                 Cómo funciona
               </a>
             </div>
+            {/* Mobile hero image */}
+            <div className="mt-8 md:hidden flex justify-center">
+              <img
+                src="/gorila-brujula.png"
+                alt="El gorila con la brújula de contenido"
+                className="w-64 sm:w-72 rounded-xl"
+                style={{ filter: "drop-shadow(0 12px 24px rgba(0,0,0,0.1))" }}
+              />
+            </div>
           </div>
 
-          {/* Right: visual card stack */}
-          <div className="relative hidden md:block">
-            <div className="absolute inset-0 bg-gradient-to-br from-naranja/[0.08] to-transparent rounded-3xl" />
-            {/* Stacked preview cards */}
-            <div className="relative space-y-4 p-6">
-              {/* Card 1: Maestro */}
-              <div className="bg-white rounded-2xl shadow-lg shadow-negro/[0.05] border border-borde/60 p-5 transform rotate-1 hover:rotate-0 transition-transform">
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="w-9 h-9 rounded-xl bg-naranja/10 flex items-center justify-center text-lg">🎯</span>
-                  <div>
-                    <p className="text-sm font-semibold text-negro">El Maestro</p>
-                    <p className="text-[11px] text-muted">IA que te sugiere qué crear</p>
-                  </div>
-                </div>
-                <div className="flex gap-1.5">
-                  <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-negro text-white">Liderazgo</span>
-                  <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-naranja text-white">Carrusel</span>
-                  <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-crema border border-borde text-negro">Cercano</span>
-                </div>
-              </div>
-
-              {/* Card 2: Planificador */}
-              <div className="bg-white rounded-2xl shadow-lg shadow-negro/[0.05] border border-borde/60 p-5 transform -rotate-1 hover:rotate-0 transition-transform">
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="w-9 h-9 rounded-xl bg-naranja/10 flex items-center justify-center text-lg">📅</span>
-                  <div>
-                    <p className="text-sm font-semibold text-negro">Planificador</p>
-                    <p className="text-[11px] text-muted">Kanban + Calendar + Lista</p>
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  {["Lun", "Mar", "Mié", "Jue", "Vie"].map((d) => (
-                    <div key={d} className="flex-1 text-center">
-                      <p className="text-[9px] font-bold text-muted uppercase">{d}</p>
-                      <div className={`mt-1 h-2 rounded-full ${d === "Mar" || d === "Jue" ? "bg-naranja" : d === "Mié" ? "bg-negro" : "bg-borde"}`} />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Card 3: Minority Report */}
-              <div className="bg-white rounded-2xl shadow-lg shadow-negro/[0.05] border border-borde/60 p-5 transform rotate-[0.5deg] hover:rotate-0 transition-transform">
-                <div className="flex items-center gap-3">
-                  <span className="w-9 h-9 rounded-xl bg-naranja/10 flex items-center justify-center text-lg">🗺️</span>
-                  <div>
-                    <p className="text-sm font-semibold text-negro">Minority Report</p>
-                    <p className="text-[11px] text-muted">Tu mapa estratégico completo</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+          {/* Right: hero image */}
+          <div className="relative hidden md:flex items-center justify-center">
+            <div className="absolute inset-0 bg-gradient-to-br from-naranja/[0.06] to-transparent rounded-3xl pointer-events-none" />
+            <img
+              src="/gorila-brujula.png"
+              alt="El gorila con la brújula de contenido"
+              className="relative w-full max-w-md rounded-2xl"
+              style={{ filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.1))" }}
+            />
           </div>
         </div>
       </section>
