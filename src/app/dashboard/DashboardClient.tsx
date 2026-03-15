@@ -12,7 +12,24 @@ export default function DashboardClient() {
           <p className="text-muted text-sm">Elige tu modo de trabajo</p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Ideas */}
+          <Link
+            href="/ideas"
+            className="group relative bg-white rounded-2xl border border-borde/60 p-6 hover:border-naranja/40 hover:shadow-card-hover transition-all block"
+          >
+            <div className="w-11 h-11 rounded-xl bg-naranja/10 flex items-center justify-center text-xl mb-4 group-hover:bg-naranja/15 transition-colors">💡</div>
+            <h2 className="font-heading text-xl text-negro mb-1.5 group-hover:text-naranja transition-colors">
+              Ideas
+            </h2>
+            <p className="text-muted text-sm leading-relaxed mb-4">
+              Tu cajón de ideas. Apunta lo que se te ocurra y la IA lo conecta con tu estrategia.
+            </p>
+            <span className="text-sm text-naranja font-semibold">
+              Apuntar →
+            </span>
+          </Link>
+
           {/* Maestro */}
           <Link
             href="/maestro"

@@ -5,7 +5,7 @@ import { FORMAT_MAP } from "@/lib/constants";
 
 export async function POST(request: Request) {
   try {
-    const { userId, selection } = await request.json();
+    const { userId, selection, ideaText, ideaId } = await request.json();
 
     if (!userId || !selection) {
       return NextResponse.json({ error: "Faltan datos" }, { status: 400 });
@@ -113,6 +113,7 @@ OBJETIVOS: ${(state.channels.objetivosPrincipales || []).join(", ") || "No defin
 - Canal elegido: ${selection.canal || "No especificado"}
 - Pilar preferido: ${selection.pilar || "Cualquiera (elige tú el mejor)"}
 - Formatos posibles para esta energía: ${formatosDisponibles.join(", ")}
+${ideaText ? `\n=== IDEA A TRABAJAR ===\nEl creador quiere desarrollar esta idea concreta: "${ideaText}"\nBasa tu sugerencia en esta idea. Conecta la idea con su árbol de contenidos y genera el brief creativo para desarrollarla.` : ""}
 
 ${
   history.length > 0
@@ -197,6 +198,14 @@ IMPORTANTE:
       suggestion: historyEntry,
       variables: selection,
     });
+
+    // Mark idea as worked if coming from Ideas
+    if (ideaId) {
+      await supabase
+        .from("ideas")
+        .update({ status: "worked" })
+        .eq("id", ideaId);
+    }
 
     return NextResponse.json({ suggestion });
   } catch (err: any) {

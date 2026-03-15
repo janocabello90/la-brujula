@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import AppShell from "@/components/AppShell";
 import { OBJECTIVES, ENERGY_LEVELS, FORMAT_MAP } from "@/lib/constants";
@@ -29,11 +30,16 @@ interface Props {
 }
 
 export default function MaestroClient({ userId, data, apiKey }: Props) {
+  const searchParams = useSearchParams();
+  const ideaText = searchParams.get("idea") || "";
+  const ideaId = searchParams.get("ideaId") || "";
+  const ideaPilar = searchParams.get("pilar") || "";
+
   const [selection, setSelection] = useState<MaestroSelection>({
     objetivo: null,
     energia: null,
     canal: null,
-    pilar: null,
+    pilar: ideaPilar || null,
   });
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<SuggestionResult | null>(null);
@@ -110,6 +116,8 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
         body: JSON.stringify({
           userId,
           selection,
+          ideaText: ideaText || undefined,
+          ideaId: ideaId || undefined,
         }),
       });
 
@@ -163,6 +171,14 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
             Cuéntame cómo estás hoy y qué quieres lograr. Yo te digo qué crear.
           </p>
         </div>
+
+        {/* Idea banner */}
+        {ideaText && (
+          <div className="bg-naranja/[0.06] border border-naranja/20 rounded-xl p-4 mb-6">
+            <p className="text-[10px] font-bold text-naranja uppercase tracking-wider mb-1">Trabajando idea</p>
+            <p className="text-sm text-negro font-medium">&ldquo;{ideaText}&rdquo;</p>
+          </div>
+        )}
 
         {/* Step 1: Objetivo */}
         <OptionGrid

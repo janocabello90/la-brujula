@@ -15,6 +15,7 @@ export default function AppShell({ children, fullWidth = false }: AppShellProps)
   const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: "🏠" },
     { href: "/minority-report", label: "Mi Mapa", icon: "🗺️" },
+    { href: "/ideas", label: "Ideas", icon: "💡" },
     { href: "/maestro", label: "Maestro", icon: "🎯" },
     { href: "/planner", label: "Planificador", icon: "📅" },
     { href: "/settings", label: "Ajustes", icon: "⚙️" },

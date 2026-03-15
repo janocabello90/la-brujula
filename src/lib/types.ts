@@ -91,6 +91,22 @@ export interface MaestroSelection {
   pilar: string | null;
 }
 
+export interface IdeaItem {
+  id: string;
+  user_id: string;
+  text: string;
+  pilar: string | null;
+  subtema: string | null;
+  status: "raw" | "enriched" | "worked";
+  enrichment: {
+    pilar: string;
+    subtema: string;
+    angulos: string[];
+    conexion: string;
+  } | null;
+  created_at: string;
+}
+
 export interface PlannerItem {
   id: string;
   user_id: string;
