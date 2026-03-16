@@ -16,6 +16,12 @@ interface AppShellProps {
 export default function AppShell({ children, fullWidth = false }: AppShellProps) {
   const pathname = usePathname();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  // Close menu on route change
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     const checkAdmin = async () => {
@@ -51,7 +57,8 @@ export default function AppShell({ children, fullWidth = false }: AppShellProps)
             </span>
           </Link>
 
-          <div className="flex items-center gap-0.5">
+          {/* Desktop nav */}
+          <div className="hidden md:flex items-center gap-0.5">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
               return (
@@ -64,8 +71,7 @@ export default function AppShell({ children, fullWidth = false }: AppShellProps)
                       : "text-muted hover:text-negro hover:bg-negro/[0.04]"
                   }`}
                 >
-                  <span className="sm:hidden">{item.icon}</span>
-                  <span className="hidden sm:inline">{isActive ? item.label : `${item.icon} ${item.label}`}</span>
+                  {isActive ? item.label : `${item.icon} ${item.label}`}
                 </Link>
               );
             })}
@@ -73,11 +79,53 @@ export default function AppShell({ children, fullWidth = false }: AppShellProps)
               onClick={signOut}
               className="ml-1.5 px-2.5 py-1.5 rounded-lg text-sm text-muted hover:text-danger hover:bg-danger/5 transition-all"
             >
-              <span className="sm:hidden">👋</span>
-              <span className="hidden sm:inline">Salir</span>
+              Salir
             </button>
           </div>
+
+          {/* Mobile hamburger */}
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="md:hidden flex flex-col items-center justify-center w-9 h-9 rounded-lg hover:bg-negro/[0.04] transition-colors"
+            aria-label="Menú"
+          >
+            <span className={`block w-5 h-0.5 bg-negro rounded-full transition-all duration-200 ${menuOpen ? "rotate-45 translate-y-[3px]" : ""}`} />
+            <span className={`block w-5 h-0.5 bg-negro rounded-full transition-all duration-200 mt-1 ${menuOpen ? "opacity-0" : ""}`} />
+            <span className={`block w-5 h-0.5 bg-negro rounded-full transition-all duration-200 mt-1 ${menuOpen ? "-rotate-45 -translate-y-[7px]" : ""}`} />
+          </button>
         </div>
+
+        {/* Mobile menu */}
+        {menuOpen && (
+          <div className="md:hidden border-t border-borde/50 bg-white/95 backdrop-blur-md">
+            <div className="px-4 py-3 space-y-1">
+              {navItems.map((item) => {
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all ${
+                      isActive
+                        ? "bg-negro text-white font-medium"
+                        : "text-negro/70 hover:bg-negro/[0.04]"
+                    }`}
+                  >
+                    <span className="text-base">{item.icon}</span>
+                    {item.label}
+                  </Link>
+                );
+              })}
+              <button
+                onClick={signOut}
+                className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm text-danger/70 hover:bg-danger/5 transition-all"
+              >
+                <span className="text-base">👋</span>
+                Cerrar sesión
+              </button>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* Content */}
