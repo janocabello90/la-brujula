@@ -32,7 +32,7 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser()
 
   // Protected routes
-  const protectedPaths = ['/dashboard', '/onboarding', '/minority-report', '/maestro', '/planner', '/settings', '/admin', '/ideas', '/piezas']
+  const protectedPaths = ['/dashboard', '/onboarding', '/minority-report', '/maestro', '/planner', '/settings', '/admin', '/ideas', '/piezas', '/arbol']
   const isProtected = protectedPaths.some(path => request.nextUrl.pathname.startsWith(path))
 
   if (isProtected && !user) {

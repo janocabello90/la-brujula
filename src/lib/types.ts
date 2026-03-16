@@ -137,3 +137,97 @@ export interface PlannerItem {
   created_at: string;
   updated_at: string;
 }
+
+// ===== EL ÁRBOL DE LA MARCA PERSONAL =====
+
+export interface ArbolSemilla {
+  quienEres: string;          // Descripción breve de quién eres
+  valoresCore: string[];      // 3-5 valores fundamentales
+  proposito: string;          // Para qué haces lo que haces
+  superpoder: string;         // Tu talento diferencial
+}
+
+export interface ArbolRaices {
+  historia: string;           // Tu historia profesional/personal relevante
+  momentosClave: string[];    // Momentos que te formaron
+  aprendizajes: string;       // Qué aprendiste del camino
+  deQueHuyes: string;         // Qué no quieres volver a vivir
+}
+
+export interface ArbolTronco {
+  propuestaValor: string;     // Tu propuesta de valor central
+  etiquetaProfesional: string; // Cómo te defines profesionalmente
+  problemaQueResuelves: string; // El problema principal que solucionas
+  aQuienAyudas: string;       // A quién ayudas (descripción general)
+  comoLoHaces: string;        // Tu método o enfoque único
+}
+
+export interface ArbolRamas {
+  pilares: {
+    nombre: string;
+    descripcion: string;
+    subtemas: string[];
+  }[];
+}
+
+export interface ArbolCopa {
+  vision: string;             // Dónde quieres llegar
+  mision: string;             // Qué haces cada día para lograrlo
+  impacto: string;            // Qué cambio quieres generar en el mundo
+  fraseBrujula: string;       // Una frase que te guíe (recordatorio)
+}
+
+export interface ArbolFrutos {
+  productoEstrella: string;   // Tu producto/servicio principal
+  otrosProductos: string[];   // Otros productos o servicios
+  resultadoCliente: string;   // Qué consigue tu cliente
+  testimonioIdeal: string;    // La frase que te gustaría que dijeran de ti
+}
+
+export interface ArbolEntorno {
+  audienciaPrincipal: string; // Descripción de tu audiencia ideal
+  dondeEstan: string[];       // Dónde se mueve tu audiencia (canales)
+  competencia: string;        // Quién más habla de lo tuyo
+  aliadosPotenciales: string; // Con quién podrías colaborar
+  posicionamiento: string;    // Qué te hace diferente en ese entorno
+}
+
+export interface ArbolTiempo {
+  ritmoPublicacion: string;   // Frecuencia y canales (ej: "3x semana en IG, 1 newsletter")
+  proximoHito: string;        // Siguiente meta a 90 días
+  metaAnual: string;          // Meta a 12 meses
+  buenaVida: string;          // Tu definición de éxito/buena vida
+}
+
+export interface ArbolProducto {
+  nombreProducto: string;     // Nombre del producto/servicio estrella
+  paraQuien: string;          // Público objetivo específico
+  queConsigue: string;        // Transformación que ofrece
+  precio: string;             // Rango de precio
+  canalVenta: string;         // Cómo lo vendes
+  estadoActual: string;       // "idea" | "en_desarrollo" | "validado" | "vendiendo"
+}
+
+export interface ArbolData {
+  semilla: ArbolSemilla;
+  raices: ArbolRaices;
+  tronco: ArbolTronco;
+  ramas: ArbolRamas;
+  copa: ArbolCopa;
+  frutos: ArbolFrutos;
+  entorno: ArbolEntorno;
+  tiempo: ArbolTiempo;
+  producto: ArbolProducto;
+}
+
+export const DEFAULT_ARBOL: ArbolData = {
+  semilla: { quienEres: "", valoresCore: [], proposito: "", superpoder: "" },
+  raices: { historia: "", momentosClave: [], aprendizajes: "", deQueHuyes: "" },
+  tronco: { propuestaValor: "", etiquetaProfesional: "", problemaQueResuelves: "", aQuienAyudas: "", comoLoHaces: "" },
+  ramas: { pilares: [{ nombre: "", descripcion: "", subtemas: [] }] },
+  copa: { vision: "", mision: "", impacto: "", fraseBrujula: "" },
+  frutos: { productoEstrella: "", otrosProductos: [], resultadoCliente: "", testimonioIdeal: "" },
+  entorno: { audienciaPrincipal: "", dondeEstan: [], competencia: "", aliadosPotenciales: "", posicionamiento: "" },
+  tiempo: { ritmoPublicacion: "", proximoHito: "", metaAnual: "", buenaVida: "" },
+  producto: { nombreProducto: "", paraQuien: "", queConsigue: "", precio: "", canalVenta: "", estadoActual: "idea" },
+};

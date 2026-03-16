@@ -135,9 +135,9 @@ export default function Home() {
             {
               icon: "🌳",
               title: "El Árbol",
-              desc: "Diseña tu sistema de contenidos: pilares, subtemas, formatos y canales. La estructura que hace que tu mensaje sea consistente y escalable.",
-              accent: "bg-naranja/[0.04]",
-              tag: "Próximamente",
+              desc: "Tu marca personal en una sola vista. 9 secciones — desde quién eres hasta qué vendes. El framework rápido para tener claridad sobre tu propuesta de valor.",
+              accent: "bg-naranja/[0.06]",
+              tag: "Disponible",
             },
             {
               icon: "🧭",
@@ -355,7 +355,7 @@ export default function Home() {
             <span className="text-naranja">merece un sistema.</span>
           </h2>
           <p className="text-white/50 text-sm mb-8 max-w-md mx-auto">
-            Empieza con La Brújula. Pronto tendrás La Pirámide y El Árbol para completar el recorrido.
+            Empieza con El Árbol y La Brújula. Pronto La Pirámide completará el recorrido.
           </p>
           <Link
             href="/login"

@@ -235,6 +235,22 @@ JSON válido sin markdown ni backticks:
     return NextResponse.json({ suggestion });
   } catch (err: any) {
     console.error("API suggest error:", err);
+
+    // Handle Anthropic API auth errors specifically
+    if (err?.status === 401 || err?.error?.type === "authentication_error") {
+      return NextResponse.json(
+        { error: "Tu API Key de Anthropic no es válida. Ve a Ajustes y comprueba que la has copiado bien (empieza por sk-ant-)." },
+        { status: 401 }
+      );
+    }
+
+    if (err?.status === 429) {
+      return NextResponse.json(
+        { error: "Has superado el límite de uso de tu API Key. Espera un momento o revisa tu plan en console.anthropic.com." },
+        { status: 429 }
+      );
+    }
+
     return NextResponse.json(
       { error: err.message || "Error interno del servidor" },
       { status: 500 }
