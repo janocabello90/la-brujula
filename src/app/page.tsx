@@ -1,5 +1,5 @@
 export default function Home() {
-  const SKOOL_URL = "https://www.skool.com/buena-vida";
+  const SKOOL_URL = "https://www.skool.com/una-buena-vida-comunidad-2471";
 
   return (
     <div className="min-h-screen bg-crema overflow-hidden">
