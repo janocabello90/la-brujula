@@ -91,7 +91,43 @@ export default function AppShell({ children, fullWidth = false }: AppShellProps)
         </p>
       )}
 
-      {/* La Brújula — Expandable */}
+      {/* 1. La Pirámide — Próximamente */}
+      <div className="mb-1 opacity-40 cursor-default">
+        <div className="flex items-center gap-2.5 px-2.5 py-2 rounded-xl">
+          <span className="text-lg flex-shrink-0">🔺</span>
+          {!sidebarCollapsed && (
+            <div className="flex-1 min-w-0">
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-sm text-negro/70">La Pirámide</span>
+                <span className="text-[10px] text-naranja italic">estructura</span>
+              </div>
+              <span className="text-[10px] text-muted block">Próximamente</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* 2. El Árbol — Active */}
+      <div className="mb-1">
+        <Link
+          href="/arbol"
+          className={`flex items-center gap-2.5 px-2.5 py-2 rounded-xl transition-all ${
+            pathname.startsWith("/arbol")
+              ? "bg-naranja/10 text-naranja font-semibold"
+              : "text-negro/70 hover:bg-negro/[0.04]"
+          }`}
+        >
+          <span className="text-lg flex-shrink-0">🌳</span>
+          {!sidebarCollapsed && (
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-sm">El Árbol</span>
+              <span className={`text-[10px] italic ${pathname.startsWith("/arbol") ? "text-naranja/70" : "text-naranja"}`}>identidad</span>
+            </div>
+          )}
+        </Link>
+      </div>
+
+      {/* 3. La Brújula — Expandable */}
       <div className="mb-1">
         <button
           onClick={() => setBrujulaOpen(!brujulaOpen)}
@@ -104,7 +140,10 @@ export default function AppShell({ children, fullWidth = false }: AppShellProps)
           <span className="text-lg flex-shrink-0">🧭</span>
           {!sidebarCollapsed && (
             <>
-              <span className="text-sm flex-1">La Brújula</span>
+              <div className="flex items-baseline gap-1.5 flex-1">
+                <span className="text-sm">La Brújula</span>
+                <span className={`text-[10px] italic ${isBrujulaRoute ? "text-naranja/70" : "text-naranja"}`}>contenido</span>
+              </div>
               <svg className={`w-3.5 h-3.5 transition-transform ${isBrujulaExpanded ? "rotate-90" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
               </svg>
@@ -155,34 +194,6 @@ export default function AppShell({ children, fullWidth = false }: AppShellProps)
             })}
           </div>
         )}
-      </div>
-
-      {/* La Pirámide — Próximamente */}
-      <div className="mb-1 opacity-40 cursor-default">
-        <div className="flex items-center gap-2.5 px-2.5 py-2 rounded-xl">
-          <span className="text-lg flex-shrink-0">🔺</span>
-          {!sidebarCollapsed && (
-            <div className="flex-1 min-w-0">
-              <span className="text-sm text-negro/70 block">La Pirámide</span>
-              <span className="text-[10px] text-muted block">Próximamente</span>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* El Árbol — Active */}
-      <div className="mb-1">
-        <Link
-          href="/arbol"
-          className={`flex items-center gap-2.5 px-2.5 py-2 rounded-xl transition-all ${
-            pathname.startsWith("/arbol")
-              ? "bg-naranja/10 text-naranja font-semibold"
-              : "text-negro/70 hover:bg-negro/[0.04]"
-          }`}
-        >
-          <span className="text-lg flex-shrink-0">🌳</span>
-          {!sidebarCollapsed && <span className="text-sm">El Árbol</span>}
-        </Link>
       </div>
 
       {/* Divider */}
