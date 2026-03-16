@@ -171,10 +171,11 @@ export interface ArbolRamas {
 }
 
 export interface ArbolCopa {
-  vision: string;             // Dónde quieres llegar
-  mision: string;             // Qué haces cada día para lograrlo
-  impacto: string;            // Qué cambio quieres generar en el mundo
-  fraseBrujula: string;       // Una frase que te guíe (recordatorio)
+  tonoDeVoz: string;          // Cómo suenas (cercano, directo, provocador...)
+  narrativa: string;          // La historia que cuenta tu marca
+  arquetipoMarca: string;     // Arquetipo dominante (El Sabio, El Rebelde, etc.)
+  percepcion: string;         // Cómo quieres que te perciban
+  palabrasClave: string[];    // Palabras que definen tu estilo comunicativo
 }
 
 export interface ArbolFrutos {
@@ -225,7 +226,7 @@ export const DEFAULT_ARBOL: ArbolData = {
   raices: { historia: "", momentosClave: [], aprendizajes: "", deQueHuyes: "" },
   tronco: { propuestaValor: "", etiquetaProfesional: "", problemaQueResuelves: "", aQuienAyudas: "", comoLoHaces: "" },
   ramas: { pilares: [{ nombre: "", descripcion: "", subtemas: [] }] },
-  copa: { vision: "", mision: "", impacto: "", fraseBrujula: "" },
+  copa: { tonoDeVoz: "", narrativa: "", arquetipoMarca: "", percepcion: "", palabrasClave: [] },
   frutos: { productoEstrella: "", otrosProductos: [], resultadoCliente: "", testimonioIdeal: "" },
   entorno: { audienciaPrincipal: "", dondeEstan: [], competencia: "", aliadosPotenciales: "", posicionamiento: "" },
   tiempo: { ritmoPublicacion: "", proximoHito: "", metaAnual: "", buenaVida: "" },

@@ -40,8 +40,8 @@ const ARBOL_STEPS = [
     id: "copa",
     icon: "☁️",
     title: "La Copa",
-    subtitle: "Tu visión y misión",
-    desc: "A dónde te diriges, qué impacto quieres generar y la frase que te guía cuando todo se complica.",
+    subtitle: "Tu tono, narrativa y arquetipo",
+    desc: "Lo que se ve desde fuera. Cómo suenas, qué historia cuenta tu marca y cómo quieres que te perciban.",
   },
   {
     id: "frutos",
@@ -469,23 +469,57 @@ function StepRamas({ data, setData }: { data: any; setData: (v: any) => void }) 
 }
 
 function StepCopa({ data, update }: { data: any; update: (f: string, v: any) => void }) {
+  const arquetipos = [
+    { value: "El Sabio", desc: "Conocimiento, reflexión, verdad" },
+    { value: "El Rebelde", desc: "Romper reglas, provocar, desafiar" },
+    { value: "El Creador", desc: "Innovación, originalidad, hacer cosas nuevas" },
+    { value: "El Héroe", desc: "Superación, esfuerzo, valentía" },
+    { value: "El Cuidador", desc: "Servicio, empatía, protección" },
+    { value: "El Explorador", desc: "Libertad, aventura, descubrimiento" },
+    { value: "El Mago", desc: "Transformación, visión, inspiración" },
+    { value: "El Bufón", desc: "Humor, cercanía, irreverencia" },
+    { value: "El Amante", desc: "Pasión, conexión, estética" },
+    { value: "El Gobernante", desc: "Liderazgo, orden, autoridad" },
+    { value: "El Inocente", desc: "Optimismo, sencillez, autenticidad" },
+    { value: "El Hombre Corriente", desc: "Cercanía, pertenencia, realismo" },
+  ];
+
   return (
     <div className="space-y-5">
       <div>
-        <FieldLabel hint="¿Dónde quieres estar en 3-5 años?">Tu visión</FieldLabel>
-        <TextInput value={data.vision} onChange={(v) => update("vision", v)} placeholder="En unos años quiero..." multiline />
+        <FieldLabel hint="¿Cómo suenas cuando comunicas? Ej: cercano pero directo, provocador con humor, técnico y cálido...">Tu tono de voz</FieldLabel>
+        <TextInput value={data.tonoDeVoz} onChange={(v) => update("tonoDeVoz", v)} placeholder="Ej: Directo, cercano, con un punto provocador pero siempre desde el cariño" multiline />
       </div>
       <div>
-        <FieldLabel hint="¿Qué haces cada día para acercarte a esa visión?">Tu misión</FieldLabel>
-        <TextInput value={data.mision} onChange={(v) => update("mision", v)} placeholder="Cada día me dedico a..." multiline />
+        <FieldLabel hint="La historia que cuenta tu marca. El hilo conductor de todo lo que comunicas.">Tu narrativa</FieldLabel>
+        <TextInput value={data.narrativa} onChange={(v) => update("narrativa", v)} placeholder="Ej: Un profesional que dejó lo seguro para construir algo propio y ahora ayuda a otros a hacer lo mismo..." multiline />
       </div>
       <div>
-        <FieldLabel hint="¿Qué cambio quieres generar en las personas o en tu entorno?">Impacto deseado</FieldLabel>
-        <TextInput value={data.impacto} onChange={(v) => update("impacto", v)} placeholder="Quiero que la gente..." multiline />
+        <FieldLabel hint="El arquetipo de marca que más te representa. Elige el que sientas más tuyo.">Arquetipo de marca</FieldLabel>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-1">
+          {arquetipos.map((a) => (
+            <button
+              key={a.value}
+              onClick={() => update("arquetipoMarca", a.value)}
+              className={`text-left text-xs px-3 py-2.5 rounded-lg border transition-colors ${
+                data.arquetipoMarca === a.value
+                  ? "border-naranja bg-naranja/10 text-naranja font-medium"
+                  : "border-borde text-muted hover:border-naranja/40"
+              }`}
+            >
+              <span className="font-semibold block">{a.value}</span>
+              <span className="text-[10px] opacity-70">{a.desc}</span>
+            </button>
+          ))}
+        </div>
       </div>
       <div>
-        <FieldLabel hint="Una frase que puedas releer cuando tengas dudas. Tu Norte.">Tu frase brújula</FieldLabel>
-        <TextInput value={data.fraseBrujula} onChange={(v) => update("fraseBrujula", v)} placeholder="Cuando pierda el rumbo, recordaré que..." />
+        <FieldLabel hint="¿Cómo quieres que la gente te describa a un amigo?">Percepción deseada</FieldLabel>
+        <TextInput value={data.percepcion} onChange={(v) => update("percepcion", v)} placeholder="Ej: Alguien que sabe de lo que habla, que es real y que te dice las cosas como son..." multiline />
+      </div>
+      <div>
+        <FieldLabel hint="Palabras que definen tu estilo al comunicar. Escribe y pulsa Enter.">Palabras clave de tu voz</FieldLabel>
+        <TagInput tags={data.palabrasClave || []} onChange={(v) => update("palabrasClave", v)} placeholder="Ej: Honesto, Directo, Cálido, Sin filtros..." />
       </div>
     </div>
   );
@@ -672,10 +706,11 @@ function ArbolCanvas({
     {
       icon: "☁️",
       title: "La Copa",
-      summary: data.copa.vision || "Sin completar",
+      summary: data.copa.tonoDeVoz || "Sin completar",
       highlights: [
-        data.copa.mision && `Misión: ${data.copa.mision.slice(0, 60)}...`,
-        data.copa.fraseBrujula && `"${data.copa.fraseBrujula}"`,
+        data.copa.arquetipoMarca && `Arquetipo: ${data.copa.arquetipoMarca}`,
+        data.copa.percepcion && `Percepción: ${data.copa.percepcion.slice(0, 60)}...`,
+        data.copa.palabrasClave?.length > 0 && `Voz: ${data.copa.palabrasClave.join(", ")}`,
       ].filter(Boolean),
     },
     {
