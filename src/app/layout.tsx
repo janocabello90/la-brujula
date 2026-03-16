@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "La Brújula de Contenido",
-  description: "Tu repositorio de conocimiento estratégico. No te dice qué escribir. Te dice hacia dónde apuntar.",
+  title: "El Sistema de Buena Vida — Jano Cabello",
+  description: "Conocimiento y sistemas para seguir generando valor. Tres herramientas conectadas para construir, estructurar y ejecutar tu marca personal con estrategia.",
   icons: {
     icon: "/favicon.svg",
   }
