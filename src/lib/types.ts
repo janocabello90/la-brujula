@@ -179,9 +179,10 @@ export interface ArbolCopa {
 }
 
 export interface ArbolFrutos {
-  productoEstrella: string;   // Tu producto/servicio principal
-  otrosProductos: string[];   // Otros productos o servicios
-  resultadoCliente: string;   // Qué consigue tu cliente
+  queDeseasRecibir: string;   // Qué esperas obtener de tu trabajo bien hecho
+  metaSeguidores: string;     // Cuántos seguidores/alcance te gustaría
+  mensajesQueQuieres: string; // Qué tipo de mensajes quieres recibir
+  impactoDeseado: string;     // Qué impacto quieres dejar en los demás
   testimonioIdeal: string;    // La frase que te gustaría que dijeran de ti
 }
 
@@ -200,13 +201,17 @@ export interface ArbolTiempo {
   buenaVida: string;          // Tu definición de éxito/buena vida
 }
 
-export interface ArbolProducto {
-  nombreProducto: string;     // Nombre del producto/servicio estrella
-  paraQuien: string;          // Público objetivo específico
-  queConsigue: string;        // Transformación que ofrece
-  precio: string;             // Rango de precio
-  canalVenta: string;         // Cómo lo vendes
+export interface ProductoItem {
+  nombreProducto: string;
+  paraQuien: string;
+  queConsigue: string;
+  precio: string;
+  canalVenta: string;
   estadoActual: string;       // "idea" | "en_desarrollo" | "validado" | "vendiendo"
+}
+
+export interface ArbolProducto {
+  productos: ProductoItem[];
 }
 
 export interface ArbolData {
@@ -227,8 +232,8 @@ export const DEFAULT_ARBOL: ArbolData = {
   tronco: { propuestaValor: "", etiquetaProfesional: "", problemaQueResuelves: "", aQuienAyudas: "", comoLoHaces: "" },
   ramas: { pilares: [{ nombre: "", descripcion: "", subtemas: [] }] },
   copa: { tonoDeVoz: "", narrativa: "", arquetipoMarca: "", percepcion: "", palabrasClave: [] },
-  frutos: { productoEstrella: "", otrosProductos: [], resultadoCliente: "", testimonioIdeal: "" },
+  frutos: { queDeseasRecibir: "", metaSeguidores: "", mensajesQueQuieres: "", impactoDeseado: "", testimonioIdeal: "" },
   entorno: { audienciaPrincipal: "", dondeEstan: [], competencia: "", aliadosPotenciales: "", posicionamiento: "" },
   tiempo: { ritmoPublicacion: "", proximoHito: "", metaAnual: "", buenaVida: "" },
-  producto: { nombreProducto: "", paraQuien: "", queConsigue: "", precio: "", canalVenta: "", estadoActual: "idea" },
+  producto: { productos: [{ nombreProducto: "", paraQuien: "", queConsigue: "", precio: "", canalVenta: "", estadoActual: "idea" }] },
 };

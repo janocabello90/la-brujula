@@ -47,8 +47,8 @@ const ARBOL_STEPS = [
     id: "frutos",
     icon: "🍎",
     title: "Los Frutos",
-    subtitle: "Lo que ofreces al mundo",
-    desc: "Tus productos, servicios y la transformación que generas en quienes confían en ti.",
+    subtitle: "El resultado de tu trabajo bien hecho",
+    desc: "¿Qué deseas recibir? Seguidores, reconocimiento, mensajes, impacto. Los frutos que esperas recoger de tu marca.",
   },
   {
     id: "entorno",
@@ -68,8 +68,8 @@ const ARBOL_STEPS = [
     id: "producto",
     icon: "📦",
     title: "El Producto",
-    subtitle: "Tu oferta concreta",
-    desc: "El producto o servicio estrella que monetiza tu marca. Nombre, precio, para quién y cómo lo vendes.",
+    subtitle: "Tus productos y servicios",
+    desc: "Todo lo que vendes o quieres vender. Puedes añadir tantos como quieras — desde ideas hasta productos validados.",
   },
 ];
 
@@ -257,7 +257,7 @@ export default function ArbolClient({ userId, userName, initialData, brujulaData
           {step === 5 && <StepFrutos data={data.frutos} update={(f, v) => updateField("frutos", f, v)} />}
           {step === 6 && <StepEntorno data={data.entorno} update={(f, v) => updateField("entorno", f, v)} />}
           {step === 7 && <StepTiempo data={data.tiempo} update={(f, v) => updateField("tiempo", f, v)} />}
-          {step === 8 && <StepProducto data={data.producto} update={(f, v) => updateField("producto", f, v)} />}
+          {step === 8 && <StepProducto data={data.producto} setData={(producto) => setData((prev) => ({ ...prev, producto }))} />}
         </div>
 
         {/* Navigation */}
@@ -529,16 +529,20 @@ function StepFrutos({ data, update }: { data: any; update: (f: string, v: any) =
   return (
     <div className="space-y-5">
       <div>
-        <FieldLabel hint="Tu servicio o producto principal. Lo que te da de comer.">Producto estrella</FieldLabel>
-        <TextInput value={data.productoEstrella} onChange={(v) => update("productoEstrella", v)} placeholder="Ej: Mentoría 1:1 de marca personal, Curso online de..." />
+        <FieldLabel hint="¿Qué esperas recibir cuando haces bien tu trabajo? Reconocimiento, ingresos, agradecimiento, oportunidades...">¿Qué deseas recibir?</FieldLabel>
+        <TextInput value={data.queDeseasRecibir} onChange={(v) => update("queDeseasRecibir", v)} placeholder="Ej: Reconocimiento de mi comunidad, ingresos que me den libertad, mensajes de agradecimiento..." multiline />
       </div>
       <div>
-        <FieldLabel hint="Otros productos, servicios o fuentes de ingreso.">Otros productos</FieldLabel>
-        <TagInput tags={data.otrosProductos || []} onChange={(v) => update("otrosProductos", v)} placeholder="Ej: Comunidad de pago, Ebook, Consultoría..." />
+        <FieldLabel hint="Sé concreto. ¿Cuántos seguidores, suscriptores o alcance te gustaría tener? ¿En qué plazo?">Meta de alcance</FieldLabel>
+        <TextInput value={data.metaSeguidores} onChange={(v) => update("metaSeguidores", v)} placeholder="Ej: 10.000 seguidores en IG en 12 meses, 1.000 suscriptores de newsletter..." multiline />
       </div>
       <div>
-        <FieldLabel hint="¿Qué consigue tu cliente ideal después de trabajar contigo?">Resultado para el cliente</FieldLabel>
-        <TextInput value={data.resultadoCliente} onChange={(v) => update("resultadoCliente", v)} placeholder="Después de trabajar conmigo, mis clientes..." multiline />
+        <FieldLabel hint="¿Qué tipo de mensajes te gustaría encontrar en tu bandeja de entrada?">Mensajes que quieres recibir</FieldLabel>
+        <TextInput value={data.mensajesQueQuieres} onChange={(v) => update("mensajesQueQuieres", v)} placeholder="Ej: 'Gracias, tu contenido me ayudó a dar el paso', 'Quiero trabajar contigo'..." multiline />
+      </div>
+      <div>
+        <FieldLabel hint="¿Qué cambio quieres provocar en los demás con tu marca?">Impacto deseado</FieldLabel>
+        <TextInput value={data.impactoDeseado} onChange={(v) => update("impactoDeseado", v)} placeholder="Quiero que la gente..." multiline />
       </div>
       <div>
         <FieldLabel hint="La frase que te encantaría leer en un testimonio.">Testimonio ideal</FieldLabel>
@@ -598,7 +602,7 @@ function StepTiempo({ data, update }: { data: any; update: (f: string, v: any) =
   );
 }
 
-function StepProducto({ data, update }: { data: any; update: (f: string, v: any) => void }) {
+function StepProducto({ data, setData }: { data: any; setData: (v: any) => void }) {
   const estados = [
     { value: "idea", label: "Es una idea" },
     { value: "en_desarrollo", label: "En desarrollo" },
@@ -606,46 +610,91 @@ function StepProducto({ data, update }: { data: any; update: (f: string, v: any)
     { value: "vendiendo", label: "Ya se vende" },
   ];
 
+  const productos = data.productos || [{ nombreProducto: "", paraQuien: "", queConsigue: "", precio: "", canalVenta: "", estadoActual: "idea" }];
+
+  const addProducto = () => {
+    setData({ productos: [...productos, { nombreProducto: "", paraQuien: "", queConsigue: "", precio: "", canalVenta: "", estadoActual: "idea" }] });
+  };
+
+  const removeProducto = (i: number) => {
+    setData({ productos: productos.filter((_: any, idx: number) => idx !== i) });
+  };
+
+  const updateProducto = (i: number, field: string, value: any) => {
+    const updated = [...productos];
+    updated[i] = { ...updated[i], [field]: value };
+    setData({ productos: updated });
+  };
+
   return (
     <div className="space-y-5">
-      <div>
-        <FieldLabel hint="El nombre de tu producto o servicio estrella.">Nombre del producto</FieldLabel>
-        <TextInput value={data.nombreProducto} onChange={(v) => update("nombreProducto", v)} placeholder="Ej: Mentoría 'De Cero a Marca', Curso 'Brújula de Contenido'..." />
-      </div>
-      <div>
-        <FieldLabel hint="¿Para quién es este producto exactamente?">Para quién</FieldLabel>
-        <TextInput value={data.paraQuien} onChange={(v) => update("paraQuien", v)} placeholder="Profesionales que quieren..." multiline />
-      </div>
-      <div>
-        <FieldLabel hint="¿Qué transformación obtiene quien lo compra?">Qué consigue el cliente</FieldLabel>
-        <TextInput value={data.queConsigue} onChange={(v) => update("queConsigue", v)} placeholder="Al terminar, tendrán..." multiline />
-      </div>
-      <div>
-        <FieldLabel hint="Rango de precio o precio exacto.">Precio</FieldLabel>
-        <TextInput value={data.precio} onChange={(v) => update("precio", v)} placeholder="Ej: 497€, 97€/mes, Gratuito..." />
-      </div>
-      <div>
-        <FieldLabel hint="¿Cómo llegas a tus clientes? ¿Dónde se compra?">Canal de venta</FieldLabel>
-        <TextInput value={data.canalVenta} onChange={(v) => update("canalVenta", v)} placeholder="Ej: Web propia, Llamada de venta, DMs de Instagram..." />
-      </div>
-      <div>
-        <FieldLabel>Estado actual</FieldLabel>
-        <div className="flex flex-wrap gap-2 mt-1">
-          {estados.map((e) => (
-            <button
-              key={e.value}
-              onClick={() => update("estadoActual", e.value)}
-              className={`text-xs px-3 py-2 rounded-lg border transition-colors ${
-                data.estadoActual === e.value
-                  ? "border-naranja bg-naranja/10 text-naranja font-medium"
-                  : "border-borde text-muted hover:border-naranja"
-              }`}
-            >
-              {e.label}
-            </button>
-          ))}
+      <p className="text-xs text-muted">
+        Define todos tus productos o servicios. Puedes tener desde una idea hasta algo que ya estés vendiendo.
+      </p>
+      {productos.map((prod: any, i: number) => (
+        <div key={i} className="bg-crema/50 rounded-xl border border-borde/40 p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-muted uppercase">Producto {i + 1}</span>
+            {productos.length > 1 && (
+              <button onClick={() => removeProducto(i)} className="text-xs text-danger/60 hover:text-danger">
+                Eliminar
+              </button>
+            )}
+          </div>
+          <TextInput
+            value={prod.nombreProducto}
+            onChange={(v) => updateProducto(i, "nombreProducto", v)}
+            placeholder="Nombre del producto o servicio"
+          />
+          <TextInput
+            value={prod.paraQuien}
+            onChange={(v) => updateProducto(i, "paraQuien", v)}
+            placeholder="¿Para quién es?"
+            multiline
+          />
+          <TextInput
+            value={prod.queConsigue}
+            onChange={(v) => updateProducto(i, "queConsigue", v)}
+            placeholder="¿Qué consigue el cliente?"
+            multiline
+          />
+          <div className="grid grid-cols-2 gap-3">
+            <TextInput
+              value={prod.precio}
+              onChange={(v) => updateProducto(i, "precio", v)}
+              placeholder="Precio (ej: 497€)"
+            />
+            <TextInput
+              value={prod.canalVenta}
+              onChange={(v) => updateProducto(i, "canalVenta", v)}
+              placeholder="Canal de venta"
+            />
+          </div>
+          <div>
+            <p className="text-xs text-muted mb-1">Estado</p>
+            <div className="flex flex-wrap gap-1.5">
+              {estados.map((e) => (
+                <button
+                  key={e.value}
+                  onClick={() => updateProducto(i, "estadoActual", e.value)}
+                  className={`text-[11px] px-2.5 py-1.5 rounded-lg border transition-colors ${
+                    prod.estadoActual === e.value
+                      ? "border-naranja bg-naranja/10 text-naranja font-medium"
+                      : "border-borde text-muted hover:border-naranja/40"
+                  }`}
+                >
+                  {e.label}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
+      ))}
+      {productos.length < 8 && (
+        <button onClick={addProducto} className="text-sm text-naranja hover:underline">
+          + Añadir producto
+        </button>
+      )}
     </div>
   );
 }
@@ -716,10 +765,11 @@ function ArbolCanvas({
     {
       icon: "🍎",
       title: "Los Frutos",
-      summary: data.frutos.productoEstrella || "Sin completar",
+      summary: data.frutos.queDeseasRecibir || "Sin completar",
       highlights: [
-        data.frutos.otrosProductos?.length > 0 && `+${data.frutos.otrosProductos.length} productos más`,
-        data.frutos.resultadoCliente && `Resultado: ${data.frutos.resultadoCliente.slice(0, 60)}...`,
+        data.frutos.metaSeguidores && `Meta: ${data.frutos.metaSeguidores.slice(0, 60)}...`,
+        data.frutos.impactoDeseado && `Impacto: ${data.frutos.impactoDeseado.slice(0, 60)}...`,
+        data.frutos.testimonioIdeal && `"${data.frutos.testimonioIdeal.slice(0, 60)}..."`,
       ].filter(Boolean),
     },
     {
@@ -743,11 +793,10 @@ function ArbolCanvas({
     {
       icon: "📦",
       title: "El Producto",
-      summary: data.producto.nombreProducto || "Sin completar",
-      highlights: [
-        data.producto.precio && `Precio: ${data.producto.precio}`,
-        data.producto.estadoActual && `Estado: ${data.producto.estadoActual}`,
-      ].filter(Boolean),
+      summary: data.producto.productos?.filter((p: any) => p.nombreProducto).map((p: any) => p.nombreProducto).join(" · ") || "Sin completar",
+      highlights: data.producto.productos?.filter((p: any) => p.nombreProducto).map((p: any) =>
+        `${p.nombreProducto}${p.precio ? ` — ${p.precio}` : ""}${p.estadoActual ? ` (${p.estadoActual})` : ""}`
+      ) || [],
     },
   ];
 
