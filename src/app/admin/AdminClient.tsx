@@ -8,6 +8,60 @@ interface Props {
   stats: AdminStats;
 }
 
+function exportCSV(users: AdminUser[], stats: AdminStats) {
+  const header = [
+    "Nombre", "Email", "Tema raíz", "Onboarding", "API Key",
+    "Pilares", "Buyers", "Insight", "Ideas", "Sugerencias",
+    "Piezas", "Planificadas", "Publicadas", "Coste est.", "Última actividad", "Registro"
+  ];
+
+  const rows = users.map((u) => {
+    const setupSteps = [u.onboardingCompleted, u.hasApiKey, u.pillarCount >= 3, u.buyerCount > 0, u.hasInsight];
+    const setupDone = setupSteps.filter(Boolean).length;
+    return [
+      u.displayName || u.email.split("@")[0],
+      u.email,
+      u.temaRaiz || "",
+      `${setupDone}/5`,
+      u.hasApiKey ? "Sí" : "No",
+      u.pillarCount,
+      u.buyerCount,
+      u.hasInsight ? "Sí" : "No",
+      u.ideasCount,
+      u.suggestionsCount,
+      u.piecesCount,
+      u.plannedCount,
+      u.publishedCount,
+      `$${(u.suggestionsCount * 0.008).toFixed(2)}`,
+      u.lastSuggestionAt ? new Date(u.lastSuggestionAt).toLocaleDateString("es-ES") : "—",
+      u.createdAt ? new Date(u.createdAt).toLocaleDateString("es-ES") : "—",
+    ];
+  });
+
+  // Summary row
+  rows.push([]);
+  rows.push(["TOTALES", "", "", "", "",
+    "", "", "",
+    stats.totalIdeas, stats.totalSuggestions,
+    stats.totalPieces, "", stats.totalPublished,
+    stats.estimatedCost, "", ""
+  ]);
+
+  const escapeCSV = (v: unknown) => {
+    const s = String(v ?? "");
+    return s.includes(",") || s.includes('"') || s.includes("\n") ? `"${s.replace(/"/g, '""')}"` : s;
+  };
+
+  const csv = [header, ...rows].map((row) => row.map(escapeCSV).join(",")).join("\n");
+  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `brujula-admin-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 export default function AdminClient({ stats }: Props) {
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState<"recent" | "active" | "suggestions">("recent");
@@ -68,6 +122,12 @@ export default function AdminClient({ stats }: Props) {
                 {s === "recent" ? "Recientes" : s === "active" ? "Más activos" : "Más sugerencias"}
               </button>
             ))}
+            <button
+              onClick={() => exportCSV(filtered, stats)}
+              className="text-xs px-3 py-2 rounded-lg border border-borde text-muted hover:border-naranja hover:text-naranja transition-colors"
+            >
+              Exportar CSV
+            </button>
           </div>
         </div>
 
