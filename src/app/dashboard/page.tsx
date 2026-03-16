@@ -44,7 +44,7 @@ export default async function DashboardPage() {
   // Check onboarding
   const { data: profile } = await supabase
     .from("profiles")
-    .select("onboarding_completed, api_key")
+    .select("onboarding_completed, api_key, display_name")
     .eq("id", user.id)
     .single();
 
@@ -108,7 +108,7 @@ export default async function DashboardPage() {
     hasTree: tree.pilares?.length > 0 && !!tree.pilares[0]?.nombre,
     hasApiKey: !!profile?.api_key,
     pillarCount: tree.pilares?.filter((p: any) => p.nombre).length || 0,
-    userName: user.user_metadata?.full_name || user.email?.split("@")[0] || "",
+    userName: profile?.display_name || user.user_metadata?.full_name || user.email?.split("@")[0] || "",
   };
 
   // Generate smart tasks

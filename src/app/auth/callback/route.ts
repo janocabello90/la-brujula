@@ -11,16 +11,22 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (!error) {
-      // Check if user has completed onboarding
       const {
         data: { user },
       } = await supabase.auth.getUser();
 
       if (user) {
+        // Get display name from Google or email
+        const displayName =
+          user.user_metadata?.full_name ||
+          user.user_metadata?.name ||
+          user.email?.split("@")[0] ||
+          "";
+
         // Ensure profile exists
         const { data: profile } = await supabase
           .from("profiles")
-          .select("onboarding_completed")
+          .select("onboarding_completed, display_name")
           .eq("id", user.id)
           .single();
 
@@ -29,9 +35,18 @@ export async function GET(request: Request) {
           await supabase.from("profiles").insert({
             id: user.id,
             email: user.email,
+            display_name: displayName,
             onboarding_completed: false,
           });
           return NextResponse.redirect(`${origin}/onboarding`);
+        }
+
+        // Update display name from Google if not set yet
+        if (!profile.display_name && displayName) {
+          await supabase
+            .from("profiles")
+            .update({ display_name: displayName })
+            .eq("id", user.id);
         }
 
         if (!profile.onboarding_completed) {

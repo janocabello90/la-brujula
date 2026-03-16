@@ -12,7 +12,7 @@ export default async function SettingsPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("api_key, email")
+    .select("api_key, email, display_name")
     .eq("id", user.id)
     .single();
 
@@ -20,6 +20,7 @@ export default async function SettingsPage() {
     <SettingsClient
       userId={user.id}
       email={profile?.email || user.email || ""}
+      displayName={profile?.display_name || user.user_metadata?.full_name || ""}
       currentApiKey={profile?.api_key || ""}
     />
   );

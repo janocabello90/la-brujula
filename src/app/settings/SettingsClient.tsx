@@ -7,21 +7,34 @@ import { createClient } from "@/lib/supabase/client";
 interface Props {
   userId: string;
   email: string;
+  displayName: string;
   currentApiKey: string;
 }
 
-export default function SettingsClient({ userId, email, currentApiKey }: Props) {
+export default function SettingsClient({ userId, email, displayName: initialName, currentApiKey }: Props) {
   const [apiKey, setApiKey] = useState(currentApiKey);
-  const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const [displayName, setDisplayName] = useState(initialName);
+  const [savingKey, setSavingKey] = useState(false);
+  const [savedKey, setSavedKey] = useState(false);
+  const [savingName, setSavingName] = useState(false);
+  const [savedName, setSavedName] = useState(false);
 
   const saveKey = async () => {
-    setSaving(true);
+    setSavingKey(true);
     const supabase = createClient();
     await supabase.from("profiles").update({ api_key: apiKey }).eq("id", userId);
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    setSavingKey(false);
+    setSavedKey(true);
+    setTimeout(() => setSavedKey(false), 2000);
+  };
+
+  const saveName = async () => {
+    setSavingName(true);
+    const supabase = createClient();
+    await supabase.from("profiles").update({ display_name: displayName }).eq("id", userId);
+    setSavingName(false);
+    setSavedName(true);
+    setTimeout(() => setSavedName(false), 2000);
   };
 
   return (
@@ -31,9 +44,33 @@ export default function SettingsClient({ userId, email, currentApiKey }: Props) 
 
         {/* Account */}
         <div className="bg-white rounded-2xl border border-borde/60 p-6 mb-4">
-          <h2 className="text-xs font-bold text-muted uppercase tracking-wider mb-3">Cuenta</h2>
-          <div className="text-sm">
-            <span className="text-negro font-medium">{email}</span>
+          <h2 className="text-xs font-bold text-muted uppercase tracking-wider mb-4">Cuenta</h2>
+
+          <div className="text-sm mb-4">
+            <span className="text-muted text-xs">Email</span>
+            <div className="text-negro font-medium">{email}</div>
+          </div>
+
+          <label className="block text-xs text-muted mb-1">Tu nombre</label>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              placeholder="¿Cómo te llamas?"
+              className="flex-1 px-4 py-2.5 border border-borde rounded-xl bg-crema text-negro placeholder:text-muted-light focus:outline-none focus:border-naranja transition-colors text-sm"
+            />
+            <button
+              onClick={saveName}
+              disabled={savingName || displayName === initialName}
+              className={`text-sm font-semibold px-4 py-2.5 rounded-xl transition-all flex-shrink-0 ${
+                savedName
+                  ? "bg-success/10 text-success border border-success/30"
+                  : "bg-naranja text-white hover:bg-naranja-hover disabled:opacity-30"
+              }`}
+            >
+              {savingName ? "..." : savedName ? "✓" : "Guardar"}
+            </button>
           </div>
         </div>
 
@@ -60,14 +97,14 @@ export default function SettingsClient({ userId, email, currentApiKey }: Props) 
           />
           <button
             onClick={saveKey}
-            disabled={saving}
+            disabled={savingKey}
             className={`text-sm font-semibold px-5 py-2.5 rounded-xl transition-all ${
-              saved
+              savedKey
                 ? "bg-success/10 text-success border border-success/30"
                 : "bg-naranja text-white hover:bg-naranja-hover"
             } disabled:opacity-50`}
           >
-            {saving ? "Guardando..." : saved ? "✓ Guardada" : "Guardar API Key"}
+            {savingKey ? "Guardando..." : savedKey ? "✓ Guardada" : "Guardar API Key"}
           </button>
         </div>
 
