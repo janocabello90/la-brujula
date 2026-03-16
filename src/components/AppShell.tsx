@@ -43,7 +43,7 @@ export default function AppShell({ children, fullWidth = false }: AppShellProps)
     checkAdmin();
   }, []);
 
-  const isBrujulaPage = ["/dashboard", "/minority-report", "/ideas", "/maestro", "/piezas", "/planner", "/onboarding", "/settings", "/admin"].some(
+  const isBrujulaPage = ["/dashboard", "/minority-report", "/ideas", "/maestro", "/piezas", "/planner", "/onboarding"].some(
     (p) => pathname.startsWith(p)
   );
 
@@ -90,30 +90,6 @@ export default function AppShell({ children, fullWidth = false }: AppShellProps)
                 </Link>
               );
             })}
-            <Link
-              href="/settings"
-              className={`flex items-center gap-2 px-2 py-1.5 rounded-lg text-[13px] transition-all ${
-                pathname === "/settings"
-                  ? "bg-negro text-white font-medium"
-                  : "text-negro/60 hover:text-negro hover:bg-negro/[0.03]"
-              }`}
-            >
-              <span className="text-xs">⚙️</span>
-              Ajustes
-            </Link>
-            {isAdmin && (
-              <Link
-                href="/admin"
-                className={`flex items-center gap-2 px-2 py-1.5 rounded-lg text-[13px] transition-all ${
-                  pathname === "/admin"
-                    ? "bg-negro text-white font-medium"
-                    : "text-negro/60 hover:text-negro hover:bg-negro/[0.03]"
-                }`}
-              >
-                <span className="text-xs">👑</span>
-                Admin
-              </Link>
-            )}
           </div>
         )}
 
@@ -236,8 +212,32 @@ export default function AppShell({ children, fullWidth = false }: AppShellProps)
           {sidebarContent}
         </div>
 
-        {/* Sign out */}
-        <div className="border-t border-borde/40 px-2 py-3 flex-shrink-0">
+        {/* Bottom: Settings, Admin, Sign out */}
+        <div className="border-t border-borde/40 px-2 py-3 flex-shrink-0 space-y-0.5">
+          <Link
+            href="/settings"
+            className={`flex items-center gap-2.5 w-full px-2.5 py-2 rounded-xl text-sm transition-all ${
+              pathname === "/settings"
+                ? "bg-negro text-white font-medium"
+                : "text-muted hover:text-negro hover:bg-negro/[0.04]"
+            }`}
+          >
+            <span className="text-lg flex-shrink-0">⚙️</span>
+            {!sidebarCollapsed && <span>Ajustes</span>}
+          </Link>
+          {isAdmin && (
+            <Link
+              href="/admin"
+              className={`flex items-center gap-2.5 w-full px-2.5 py-2 rounded-xl text-sm transition-all ${
+                pathname === "/admin"
+                  ? "bg-negro text-white font-medium"
+                  : "text-muted hover:text-negro hover:bg-negro/[0.04]"
+              }`}
+            >
+              <span className="text-lg flex-shrink-0">👑</span>
+              {!sidebarCollapsed && <span>Admin</span>}
+            </Link>
+          )}
           <button
             onClick={signOut}
             className="flex items-center gap-2.5 w-full px-2.5 py-2 rounded-xl text-sm text-muted hover:text-danger hover:bg-danger/5 transition-all"
