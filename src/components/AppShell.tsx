@@ -234,7 +234,7 @@ export default function AppShell({ children, fullWidth = false }: AppShellProps)
             <span className="text-xl flex-shrink-0">🎓</span>
             {!sidebarCollapsed && (
               <span className="font-heading text-[15px] text-negro whitespace-nowrap truncate">
-                Escuela de Buena Vida
+                El Sistema de Buena Vida
               </span>
             )}
           </Link>
@@ -320,7 +320,7 @@ export default function AppShell({ children, fullWidth = false }: AppShellProps)
           </button>
           <Link href="/dashboard" className="flex items-center gap-2">
             <span className="text-lg">🎓</span>
-            <span className="font-heading text-base text-negro">Escuela de Buena Vida</span>
+            <span className="font-heading text-base text-negro">El Sistema de Buena Vida</span>
           </Link>
         </header>
 

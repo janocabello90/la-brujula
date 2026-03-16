@@ -89,7 +89,7 @@ function generateArbolHTML(data: any, name: string, analysis: any): string {
 </head>
 <body>
   <h1>🌳 El Árbol de ${name}</h1>
-  <p class="subtitle">Generado el ${date} · Escuela de Buena Vida</p>
+  <p class="subtitle">Generado el ${date} · El Sistema de Buena Vida</p>
 
   ${analysis?.fraseMarca ? `<div class="highlight">"${analysis.fraseMarca}"</div>` : ""}
 
@@ -213,8 +213,8 @@ function generateArbolHTML(data: any, name: string, analysis: any): string {
   ` : ""}
 
   <div class="footer">
-    <p>🌳 El Árbol de la Marca Personal · Escuela de Buena Vida</p>
-    <p>escuela.janocabello.com</p>
+    <p>🌳 El Árbol de la Marca Personal · El Sistema de Buena Vida</p>
+    <p>sistema.janocabello.com</p>
   </div>
 </body>
 </html>`;

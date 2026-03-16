@@ -181,7 +181,7 @@ ${(val(frutos.impactoDeseado) || val(frutos.testimonioIdeal) || val(tiempo.buena
 
 <div class="footer">
   <p>🪞 El Espejo · ${name} · ${date}</p>
-  <p>Escuela de Buena Vida · escuela.janocabello.com</p>
+  <p>El Sistema de Buena Vida · sistema.janocabello.com</p>
 </div>
 
 </body>

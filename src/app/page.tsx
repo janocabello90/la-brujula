@@ -7,7 +7,7 @@ export default function Home() {
       <nav className="relative z-10 flex items-center justify-between px-6 sm:px-10 py-5 max-w-6xl mx-auto">
         <div className="flex items-center gap-2.5">
           <span className="text-2xl">🎓</span>
-          <span className="font-heading text-xl font-semibold text-negro tracking-tight">Escuela de Buena Vida</span>
+          <span className="font-heading text-xl font-semibold text-negro tracking-tight">El Sistema de Buena Vida</span>
         </div>
         <div className="flex items-center gap-6">
           <a
@@ -39,10 +39,13 @@ export default function Home() {
             <p className="inline-block text-xs font-bold text-naranja uppercase tracking-widest bg-naranja/[0.08] px-3 py-1.5 rounded-full mb-6">
               Por Jano Cabello
             </p>
-            <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl text-negro leading-[1.1] mb-6">
-              Escuela de<br />
+            <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl text-negro leading-[1.1] mb-4">
+              El Sistema de<br />
               <span className="text-naranja">Buena Vida</span>
             </h1>
+            <p className="text-sm text-naranja/80 font-medium italic mb-6">
+              Conocimiento y sistemas para seguir generando valor
+            </p>
             <p className="text-base sm:text-lg text-muted leading-relaxed mb-4 max-w-lg">
               Las herramientas de tu marca personal. Todas en un mismo sitio.
             </p>
@@ -54,7 +57,7 @@ export default function Home() {
                 href="/login"
                 className="inline-flex items-center gap-2 bg-naranja text-white font-semibold px-7 py-3.5 rounded-xl hover:bg-naranja-hover transition-colors text-sm"
               >
-                Entrar a la Escuela
+                Entrar al Sistema
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
@@ -374,7 +377,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6 sm:px-10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <span className="text-lg">🎓</span>
-            <span className="font-heading text-sm text-white/60">Escuela de Buena Vida</span>
+            <span className="font-heading text-sm text-white/60">El Sistema de Buena Vida</span>
           </div>
           <p className="text-white/30 text-xs">
             Un proyecto de{" "}
