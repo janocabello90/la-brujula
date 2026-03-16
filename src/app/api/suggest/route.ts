@@ -100,7 +100,7 @@ EMOCIONES Y TENSIONES DE SU AUDIENCIA:
 ${state.tree.pilares
   .map(
     (p: any) =>
-      `PILAR: ${p.nombre}\n  Subtemas: ${(p.subtemas || []).join(", ") || "ninguno"}\n  Ángulos que usa: ${(p.angulos || []).join(", ") || "ninguno"}`
+      `PILAR: ${p.nombre}\n  Subtemas: ${(p.subtemas || []).join(", ") || "ninguno"}\n  Ángulos que usa: ${(p.angulos || []).join(", ") || "todos los disponibles"}${(p.titulares || []).length > 0 ? `\n  Titulares de referencia (estilo del creador):\n${(p.titulares || []).map((t: string) => `    - "${t}"`).join("\n")}` : ""}`
   )
   .join("\n\n")}
 

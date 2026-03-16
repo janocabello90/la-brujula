@@ -59,7 +59,7 @@ INSIGHT: ${state.insight.insight || "No definido"}
 ${state.tree.pilares
   .map(
     (p: any) =>
-      `- Pilar: ${p.nombre}\n  Subtemas: ${(p.subtemas || []).join(", ") || "ninguno"}\n  Ángulos: ${(p.angulos || []).join(", ") || "ninguno"}`
+      `- Pilar: ${p.nombre}\n  Subtemas: ${(p.subtemas || []).join(", ") || "ninguno"}\n  Ángulos: ${(p.angulos || []).join(", ") || "todos"}${(p.titulares || []).length > 0 ? `\n  Titulares ref: ${(p.titulares || []).map((t: string) => `"${t}"`).join(", ")}` : ""}`
   )
   .join("\n")}
 

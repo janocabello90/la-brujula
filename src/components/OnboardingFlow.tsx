@@ -62,7 +62,7 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
   // --- PILLAR MANAGEMENT ---
   const addPilar = () => {
     setTree((prev) => ({
-      pilares: [...prev.pilares, { nombre: "", subtemas: [], angulos: [] }],
+      pilares: [...prev.pilares, { nombre: "", subtemas: [], angulos: [], titulares: [] }],
     }));
   };
 
@@ -112,6 +112,29 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
         angulos: current.includes(angulo)
           ? current.filter((a) => a !== angulo)
           : [...current, angulo],
+      };
+      return { pilares: copy };
+    });
+  };
+
+  const addTitular = (pilarIdx: number, titular: string) => {
+    if (!titular.trim()) return;
+    setTree((prev) => {
+      const copy = [...prev.pilares];
+      copy[pilarIdx] = {
+        ...copy[pilarIdx],
+        titulares: [...(copy[pilarIdx].titulares || []), titular.trim()],
+      };
+      return { pilares: copy };
+    });
+  };
+
+  const removeTitular = (pilarIdx: number, titIdx: number) => {
+    setTree((prev) => {
+      const copy = [...prev.pilares];
+      copy[pilarIdx] = {
+        ...copy[pilarIdx],
+        titulares: (copy[pilarIdx].titulares || []).filter((_, i) => i !== titIdx),
       };
       return { pilares: copy };
     });
@@ -197,6 +220,9 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
       case "tree":
         return (
           <div>
+            <p className="text-sm text-muted mb-4">
+              Define entre 3 y 5 pilares. Cada pilar es un gran tema del que hablas. Dentro de cada uno, añade subtemas concretos y, si quieres, ejemplos de titulares que te inspiren.
+            </p>
             {tree.pilares.map((pilar, i) => (
               <div key={i} className="bg-card border border-borde rounded-card p-5 mb-4">
                 <div className="flex items-center justify-between mb-3">
@@ -212,12 +238,14 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
                   type="text"
                   value={pilar.nombre}
                   onChange={(e) => updatePilar(i, "nombre", e.target.value)}
-                  placeholder="Nombre del pilar"
+                  placeholder="Ej: Marca Personal, Filosofía, Negocios Digitales..."
                   className="w-full px-4 py-2.5 border border-borde rounded-lg bg-crema text-negro placeholder:text-muted-light focus:outline-none focus:border-naranja transition-colors mb-3"
                 />
 
                 {/* Subtemas */}
-                <label className="block text-xs font-medium text-muted mb-1">Subtemas</label>
+                <label className="block text-xs font-medium text-muted mb-1">
+                  Subtemas <span className="text-muted-light">— los temas específicos dentro de este pilar</span>
+                </label>
                 <div className="flex flex-wrap gap-1 mb-2">
                   {pilar.subtemas.map((sub, j) => (
                     <span key={j} className="subtema-tag">
@@ -226,24 +254,32 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
                     </span>
                   ))}
                 </div>
-                <SubtemaInput onAdd={(v) => addSubtema(i, v)} />
+                <SubtemaInput onAdd={(v) => addSubtema(i, v)} placeholder={
+                  i === 0 ? "Ej: briefing, valores, identidad, estrategia... (Enter para añadir)" :
+                  i === 1 ? "Ej: estoicismo, lecturas, atención, pensamiento crítico... (Enter)" :
+                  "Escribe un subtema y pulsa Enter"
+                } />
 
-                {/* Ángulos */}
-                <label className="block text-xs font-medium text-muted mt-3 mb-1">Ángulos</label>
-                <div className="flex flex-wrap gap-1.5">
-                  {ANGLES.map((ang) => (
-                    <button
-                      key={ang}
-                      onClick={() => toggleAngulo(i, ang)}
-                      className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
-                        pilar.angulos.includes(ang)
-                          ? "border-naranja bg-naranja/10 text-naranja"
-                          : "border-borde text-muted hover:border-naranja"
-                      }`}
-                    >
-                      {ang}
-                    </button>
-                  ))}
+                {/* Titulares (opcional) */}
+                <div className="mt-3">
+                  <label className="block text-xs font-medium text-muted mb-1">
+                    Titulares de ejemplo <span className="text-muted-light">— opcional, ayuda a la IA a entender tu estilo</span>
+                  </label>
+                  {(pilar.titulares || []).length > 0 && (
+                    <div className="space-y-1 mb-2">
+                      {(pilar.titulares || []).map((tit, j) => (
+                        <div key={j} className="flex items-start gap-2 text-sm text-negro bg-crema rounded-lg px-3 py-2">
+                          <span className="flex-1">{tit}</span>
+                          <button onClick={() => removeTitular(i, j)} className="text-muted hover:text-danger text-xs mt-0.5">×</button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <TitularInput onAdd={(v) => addTitular(i, v)} placeholder={
+                    i === 0 ? 'Ej: "Tardé 8 años en entender cuáles eran mis valores" (Enter)' :
+                    i === 1 ? 'Ej: "La mayor mentira del siglo XXI: más información = pensar mejor" (Enter)' :
+                    'Escribe un titular de ejemplo y pulsa Enter (opcional)'
+                  } />
                 </div>
               </div>
             ))}
@@ -433,7 +469,7 @@ function TextInput({
 }
 
 // Subtema input with Enter key
-function SubtemaInput({ onAdd }: { onAdd: (v: string) => void }) {
+function SubtemaInput({ onAdd, placeholder }: { onAdd: (v: string) => void; placeholder?: string }) {
   const [value, setValue] = useState("");
 
   return (
@@ -448,7 +484,31 @@ function SubtemaInput({ onAdd }: { onAdd: (v: string) => void }) {
           setValue("");
         }
       }}
-      placeholder="Escribe un subtema y pulsa Enter"
+      placeholder={placeholder || "Escribe un subtema y pulsa Enter"}
+      className="w-full px-3 py-2 border border-borde rounded-lg bg-crema text-negro text-sm placeholder:text-muted-light focus:outline-none focus:border-naranja transition-colors"
+    />
+  );
+}
+
+// Titular input with Enter key
+function TitularInput({ onAdd, placeholder }: { onAdd: (v: string) => void; placeholder?: string }) {
+  const [value, setValue] = useState("");
+
+  return (
+    <input
+      type="text"
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          if (value.trim()) {
+            onAdd(value);
+            setValue("");
+          }
+        }
+      }}
+      placeholder={placeholder || "Escribe un titular de ejemplo y pulsa Enter (opcional)"}
       className="w-full px-3 py-2 border border-borde rounded-lg bg-crema text-negro text-sm placeholder:text-muted-light focus:outline-none focus:border-naranja transition-colors"
     />
   );

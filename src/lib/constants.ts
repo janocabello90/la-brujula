@@ -43,7 +43,7 @@ export const DEFAULT_STATE = {
   buyer: { nombre: '', edad: '', profesion: '', queQuiere: '', queLeFrena: '', queConsumo: '', dondeEsta: '', lenguaje: '' },
   empathy: { queVe: '', queOye: '', queDiceHace: '', quePiensaSiente: '', dolores: '', deseos: '' },
   insight: { insight: '', fraseAudiencia: '' },
-  tree: { pilares: [{ nombre: '', subtemas: [] as string[], angulos: [] as string[] }] },
+  tree: { pilares: [{ nombre: '', subtemas: [] as string[], angulos: [] as string[], titulares: [] as string[] }] },
   channels: { canales: [] as string[], objetivosPrincipales: [] as string[] },
   history: [] as any[],
   apiKey: ''

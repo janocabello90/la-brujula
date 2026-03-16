@@ -34,6 +34,7 @@ export interface Pilar {
   nombre: string;
   subtemas: string[];
   angulos: string[];
+  titulares?: string[];
 }
 
 export interface TreeData {

@@ -89,7 +89,7 @@ FRASE AUDIENCIA: "${state.insight.fraseAudiencia || "No definida"}"
 ${state.tree.pilares
   .map(
     (p: any) =>
-      `- Pilar: ${p.nombre}\n  Subtemas: ${(p.subtemas || []).join(", ") || "ninguno"}\n  Ángulos: ${(p.angulos || []).join(", ") || "ninguno"}`
+      `- Pilar: ${p.nombre}\n  Subtemas: ${(p.subtemas || []).join(", ") || "ninguno"}\n  Ángulos: ${(p.angulos || []).join(", ") || "todos"}${(p.titulares || []).length > 0 ? `\n  Titulares ref: ${(p.titulares || []).join(", ")}` : ""}`
   )
   .join("\n")}
 

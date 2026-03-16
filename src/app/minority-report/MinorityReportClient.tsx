@@ -500,6 +500,16 @@ export default function MinorityReportClient({ userId, data, history, hasApiKey 
                   ))}
                 </div>
               )}
+              {pilar.titulares?.length > 0 && (
+                <div className="mt-2">
+                  <span className="text-xs text-muted">Titulares de referencia:</span>
+                  <div className="mt-1 space-y-1">
+                    {pilar.titulares.map((tit: string, j: number) => (
+                      <p key={j} className="text-xs text-negro/70 italic pl-2 border-l-2 border-naranja/30">&ldquo;{tit}&rdquo;</p>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </Section>
