@@ -213,7 +213,7 @@ export default function AppShell({ children, fullWidth = false }: AppShellProps)
   );
 
   return (
-    <div className="min-h-screen bg-crema flex">
+    <div className={`min-h-screen bg-crema flex ${mobileOpen ? "overflow-hidden h-screen" : ""}`}>
       {/* Mobile overlay */}
       {mobileOpen && (
         <div
@@ -325,7 +325,7 @@ export default function AppShell({ children, fullWidth = false }: AppShellProps)
         </header>
 
         {/* Page content */}
-        <main className={`flex-1 w-full ${fullWidth ? "max-w-[1800px]" : "max-w-5xl"} mx-auto px-4 sm:px-6 py-6 sm:py-8`}>
+        <main className={`flex-1 w-full ${fullWidth ? "max-w-[1800px]" : "max-w-5xl"} mx-auto px-3 sm:px-6 py-4 sm:py-8`}>
           {children}
         </main>
       </div>

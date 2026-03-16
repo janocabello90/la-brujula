@@ -112,21 +112,23 @@ export default function ResultadoClient({ userId, userName, hasApiKey, arbolData
     <AppShell>
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="mb-8 flex items-start justify-between gap-4">
-          <div>
-            <h1 className="font-heading text-2xl sm:text-3xl text-negro mb-1">
-              Tu Árbol Completo
-            </h1>
-            <p className="text-muted text-sm">
-              {completedCount}/9 secciones · {userName}
-            </p>
+        <div className="mb-6 sm:mb-8">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h1 className="font-heading text-xl sm:text-3xl text-negro mb-1">
+                Tu Árbol Completo
+              </h1>
+              <p className="text-muted text-xs sm:text-sm">
+                {completedCount}/9 secciones · {userName}
+              </p>
+            </div>
+            <Link
+              href="/arbol"
+              className="text-xs px-3 sm:px-4 py-2 border border-borde rounded-xl hover:border-naranja/40 transition-colors text-muted hover:text-negro flex-shrink-0"
+            >
+              ← Volver
+            </Link>
           </div>
-          <Link
-            href="/arbol"
-            className="text-xs px-4 py-2 border border-borde rounded-xl hover:border-naranja/40 transition-colors text-muted hover:text-negro flex-shrink-0"
-          >
-            ← Volver al Árbol
-          </Link>
         </div>
 
         {/* ===== VISUAL TREE INFOGRAPHIC ===== */}
@@ -269,7 +271,7 @@ function TreeInfographic({ data, userName }: { data: any; userName: string }) {
       </div>
 
       {/* FRUTOS — Top of tree */}
-      <div className="px-6 pb-2">
+      <div className="px-3 sm:px-6 pb-2">
         <div className="flex justify-center gap-2 flex-wrap">
           {frutos.queDeseasRecibir && (
             <TreeTag icon="🍎" text={frutos.queDeseasRecibir} color="red" />
@@ -284,7 +286,7 @@ function TreeInfographic({ data, userName }: { data: any; userName: string }) {
       </div>
 
       {/* COPA — Canopy */}
-      <div className="mx-6 rounded-2xl bg-green-100/60 border border-green-200/50 p-5 mb-2">
+      <div className="mx-3 sm:mx-6 rounded-2xl bg-green-100/60 border border-green-200/50 p-3 sm:p-5 mb-2">
         <div className="text-center mb-3">
           <span className="text-xs font-semibold text-green-700 uppercase tracking-wide">☁️ La Copa</span>
         </div>
@@ -315,8 +317,8 @@ function TreeInfographic({ data, userName }: { data: any; userName: string }) {
       </div>
 
       {/* RAMAS — Branches */}
-      <div className="mx-6 mb-2">
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+      <div className="mx-3 sm:mx-6 mb-2">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
           {ramas.pasiones?.length > 0 && (
             <BranchGroup label="Pasiones" items={ramas.pasiones} emoji="🔥" />
           )}
@@ -356,10 +358,10 @@ function TreeInfographic({ data, userName }: { data: any; userName: string }) {
       </div>
 
       {/* RAÍCES — Roots */}
-      <div className="mx-6 mb-3">
-        <div className="bg-amber-50/60 border border-amber-200/40 rounded-xl p-5">
+      <div className="mx-3 sm:mx-6 mb-3">
+        <div className="bg-amber-50/60 border border-amber-200/40 rounded-xl p-3 sm:p-5">
           <span className="text-xs font-semibold text-amber-700 uppercase tracking-wide block mb-3 text-center">🌿 Las Raíces</span>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {raices.valores?.length > 0 && (
               <div>
                 <span className="text-[10px] text-amber-600 font-medium block mb-1">Valores</span>
@@ -464,8 +466,8 @@ function TreeTag({ icon, text }: { icon: string; text: string; color?: string })
 
 function TreePill({ label, value }: { label: string; value: string }) {
   return (
-    <span className="text-[11px] bg-white/60 text-green-800 border border-green-200/50 px-3 py-1.5 rounded-lg">
-      <span className="text-green-600/70">{label}:</span> {value}
+    <span className="text-[10px] sm:text-[11px] bg-white/60 text-green-800 border border-green-200/50 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg max-w-[200px] sm:max-w-xs">
+      <span className="text-green-600/70">{label}:</span> <span className="line-clamp-2">{value}</span>
     </span>
   );
 }

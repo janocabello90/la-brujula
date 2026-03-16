@@ -400,7 +400,7 @@ function MirrorCard({ block }: { block: MirrorBlock }) {
         </div>
         <Link
           href={block.editHref}
-          className="text-[10px] text-muted/40 hover:text-naranja transition-colors flex-shrink-0 opacity-0 group-hover:opacity-100"
+          className="text-[10px] text-muted/40 hover:text-naranja transition-colors flex-shrink-0 sm:opacity-0 sm:group-hover:opacity-100"
           title={`Editar en ${block.editLabel}`}
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

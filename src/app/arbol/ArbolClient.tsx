@@ -213,9 +213,9 @@ export default function ArbolClient({ userId, userName, initialData, brujulaData
           <div className="w-full h-1.5 bg-borde/40 rounded-full overflow-hidden">
             <div className="h-full bg-naranja rounded-full transition-all duration-500" style={{ width: `${((step + 1) / ARBOL_STEPS.length) * 100}%` }} />
           </div>
-          <div className="flex justify-between mt-2">
+          <div className="flex justify-between mt-2 overflow-x-auto gap-1 pb-1 -mx-1 px-1 scrollbar-hide">
             {ARBOL_STEPS.map((s, i) => (
-              <button key={s.id} onClick={() => { save(step); setStep(i); }} className={`text-sm transition-all ${i === step ? "scale-125" : i < step ? "opacity-70" : "opacity-30"}`} title={s.title}>
+              <button key={s.id} onClick={() => { save(step); setStep(i); }} className={`text-sm transition-all flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg ${i === step ? "scale-110 bg-naranja/10" : i < step ? "opacity-70" : "opacity-30"}`} title={s.title}>
                 {s.icon}
               </button>
             ))}
@@ -248,9 +248,9 @@ export default function ArbolClient({ userId, userName, initialData, brujulaData
         </div>
 
         {/* Navigation */}
-        <div className="flex items-center justify-between mt-6">
-          <button onClick={goPrev} disabled={step === 0} className="text-sm text-muted hover:text-negro disabled:opacity-30 transition-colors">← Anterior</button>
-          <button onClick={goNext} disabled={saving} className="bg-naranja text-white font-semibold px-6 py-2.5 rounded-xl hover:bg-naranja-hover transition-colors disabled:opacity-50 text-sm">
+        <div className="flex items-center justify-between mt-6 gap-3">
+          <button onClick={goPrev} disabled={step === 0} className="text-sm text-muted hover:text-negro disabled:opacity-30 transition-colors py-2">← Anterior</button>
+          <button onClick={goNext} disabled={saving} className="bg-naranja text-white font-semibold px-5 sm:px-6 py-2.5 rounded-xl hover:bg-naranja-hover transition-colors disabled:opacity-50 text-sm min-w-0">
             {saving ? "Guardando..." : step === ARBOL_STEPS.length - 1 ? "Ver mi Árbol 🌳" : "Siguiente →"}
           </button>
         </div>
@@ -512,8 +512,8 @@ function StepCopa({ data, update }: { data: any; update: (f: string, v: any) => 
           <div className="space-y-3 bg-white rounded-xl border border-borde/40 p-4">
             <p className="text-xs text-muted">¿Cuánto te identificas con cada uno? (0% = nada, 100% = totalmente)</p>
             {arquetipos.map((a) => (
-              <div key={a.nombre} className="flex items-center gap-3">
-                <span className="text-xs font-semibold text-negro w-36 flex-shrink-0">{a.nombre}</span>
+              <div key={a.nombre} className="flex items-center gap-2 sm:gap-3">
+                <span className="text-xs font-semibold text-negro w-20 sm:w-36 flex-shrink-0 truncate">{a.nombre}</span>
                 <input
                   type="range"
                   min={0}
@@ -677,7 +677,7 @@ function StepCofre({ data, setData }: { data: any; setData: (v: any) => void }) 
           <TextInput value={prod.oferta} onChange={(v) => updateProducto(i, "oferta", v)} placeholder="¿Qué lo hace deseable? (promesa, transformación, dolor que alivia)" multiline />
           <TextInput value={prod.packagingNarrativo} onChange={(v) => updateProducto(i, "packagingNarrativo", v)} placeholder="¿Cómo lo cuentas? (tu relato de venta, la historia que lo envuelve)" multiline />
           <TextInput value={prod.cliente} onChange={(v) => updateProducto(i, "cliente", v)} placeholder="¿Quién lo necesita? ¿Cómo lo quiere consumir?" multiline />
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <TextInput value={prod.canales} onChange={(v) => updateProducto(i, "canales", v)} placeholder="¿Cómo se accede?" />
             <TextInput value={prod.precio} onChange={(v) => updateProducto(i, "precio", v)} placeholder="Precio" />
           </div>
@@ -787,19 +787,19 @@ function ArbolCanvas({ data, setData, userName, onSave, saving, onEditSection }:
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="mb-8 flex items-start justify-between gap-3">
-        <div>
-          <h1 className="font-heading text-2xl sm:text-3xl text-negro mb-1">🌳 El Árbol de {userName || "tu Marca"}</h1>
-          <p className="text-muted text-sm">Tu marca personal en una sola vista. Haz clic en cualquier sección para editarla.</p>
+      <div className="mb-6 sm:mb-8">
+        <div className="flex items-start justify-between gap-3">
+          <h1 className="font-heading text-xl sm:text-3xl text-negro mb-1">🌳 El Árbol de {userName || "tu Marca"}</h1>
+          <div className="flex gap-2 flex-shrink-0">
+            <a href="/arbol/resultado" className="text-xs px-3 sm:px-4 py-2 bg-negro text-white rounded-xl hover:bg-negro/80 transition-colors font-medium">
+              Resultado
+            </a>
+            <button onClick={onSave} disabled={saving} className="text-xs px-3 sm:px-4 py-2 bg-naranja text-white rounded-xl hover:bg-naranja-hover transition-colors disabled:opacity-50 font-medium">
+              {saving ? "..." : "Guardar"}
+            </button>
+          </div>
         </div>
-        <div className="flex gap-2 flex-shrink-0">
-          <a href="/arbol/resultado" className="text-xs px-4 py-2 bg-negro text-white rounded-xl hover:bg-negro/80 transition-colors font-medium">
-            Ver resultado
-          </a>
-          <button onClick={onSave} disabled={saving} className="text-xs px-4 py-2 bg-naranja text-white rounded-xl hover:bg-naranja-hover transition-colors disabled:opacity-50 font-medium">
-            {saving ? "Guardando..." : "Guardar"}
-          </button>
-        </div>
+        <p className="text-muted text-xs sm:text-sm mt-1">Tu marca personal en una sola vista. Haz clic en cualquier sección para editarla.</p>
       </div>
 
       <div className="space-y-3">
@@ -808,7 +808,7 @@ function ArbolCanvas({ data, setData, userName, onSave, saving, onEditSection }:
           const isEmpty = section.summary === "Sin completar";
           return (
             <div key={idx} className={`rounded-2xl border transition-all ${isEmpty ? "border-borde/40 bg-white/50 opacity-60" : isExpanded ? "border-naranja/40 bg-white shadow-card" : "border-borde/60 bg-white hover:border-naranja/30 hover:shadow-card-hover"}`}>
-              <button onClick={() => setExpandedSection(isExpanded ? null : idx)} className="w-full text-left px-5 py-4 flex items-center gap-4">
+              <button onClick={() => setExpandedSection(isExpanded ? null : idx)} className="w-full text-left px-3 sm:px-5 py-3 sm:py-4 flex items-center gap-3 sm:gap-4">
                 <span className="text-2xl flex-shrink-0">{section.icon}</span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
@@ -822,7 +822,7 @@ function ArbolCanvas({ data, setData, userName, onSave, saving, onEditSection }:
                 </svg>
               </button>
               {isExpanded && (
-                <div className="px-5 pb-5 pt-0 border-t border-borde/30">
+                <div className="px-3 sm:px-5 pb-4 sm:pb-5 pt-0 border-t border-borde/30">
                   <div className="mt-4 space-y-2">
                     {section.highlights.map((h, hi) => (<p key={hi} className="text-sm text-negro/70 leading-relaxed">{h}</p>))}
                     {section.highlights.length === 0 && <p className="text-sm text-muted italic">Aún no has completado esta sección.</p>}

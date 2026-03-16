@@ -405,7 +405,7 @@ export default function PlannerClient({ userId }: Props) {
           </button>
 
           {/* Date */}
-          <div className="w-20 flex-shrink-0 text-center">
+          <div className="w-16 sm:w-20 flex-shrink-0 text-center">
             {item.scheduled_date ? (
               <span className="text-xs font-semibold text-gray-600">
                 {new Date(item.scheduled_date + "T00:00:00").toLocaleDateString("es-ES", { day: "numeric", month: "short" })}
@@ -548,7 +548,7 @@ export default function PlannerClient({ userId }: Props) {
           <div className="flex gap-2 sm:gap-3 overflow-x-auto pb-4">
             {/* Backlog */}
             <div
-              className={`w-44 sm:w-52 flex-shrink-0 rounded-2xl transition-all ${
+              className={`w-36 sm:w-44 lg:w-52 flex-shrink-0 rounded-2xl transition-all ${
                 dropTarget === "backlog" ? "bg-naranja/10 ring-2 ring-naranja/30" : "bg-gray-50"
               }`}
               onDragOver={(e) => handleDragOver(e, null)}
@@ -585,7 +585,7 @@ export default function PlannerClient({ userId }: Props) {
 
               return (
                 <div key={dateStr}
-                  className={`flex-1 min-w-[150px] sm:min-w-[170px] rounded-2xl transition-all ${
+                  className={`flex-1 min-w-[120px] sm:min-w-[150px] lg:min-w-[170px] rounded-2xl transition-all ${
                     isDropHere ? "bg-naranja/10 ring-2 ring-naranja/30 scale-[1.01]"
                     : today ? "bg-naranja/5" : past ? "bg-gray-50/70" : "bg-white/50"
                   }`}
@@ -626,7 +626,8 @@ export default function PlannerClient({ userId }: Props) {
             MONTH VIEW (Calendar grid)
         ═══════════════════════════════════════════ */}
         {view === "month" && (
-          <div className="bg-white rounded-2xl border border-borde shadow-sm overflow-hidden">
+          <div className="bg-white rounded-2xl border border-borde shadow-sm overflow-x-auto">
+            <div className="min-w-[500px]">
             {/* Day headers */}
             <div className="grid grid-cols-7 border-b border-borde">
               {DAYS_SHORT.map((d) => (
@@ -671,6 +672,7 @@ export default function PlannerClient({ userId }: Props) {
                   </div>
                 );
               })}
+            </div>
             </div>
           </div>
         )}

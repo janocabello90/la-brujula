@@ -393,7 +393,7 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
               {/* Planificar */}
               {!planSaved ? (
                 !showPlanForm ? (
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <button
                       onClick={() => {
                         setShowPlanForm(true);
@@ -435,7 +435,7 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
                     <h4 className="text-sm font-semibold text-negro mb-3">
                       📅 ¿Cuándo quieres crear esta pieza?
                     </h4>
-                    <div className="grid grid-cols-2 gap-3 mb-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
                       <div>
                         <label className="block text-xs text-muted mb-1">Fecha</label>
                         <input
