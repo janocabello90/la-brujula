@@ -81,7 +81,7 @@ export default async function DashboardPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/login");
+  if (!user) redirect("/acceso-buena-vida");
 
   // Check onboarding
   const { data: existingProfile } = await supabase

@@ -8,7 +8,7 @@ export default async function IdeasPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/login");
+  if (!user) redirect("/acceso-buena-vida");
 
   const { data: profile } = await supabase
     .from("profiles")

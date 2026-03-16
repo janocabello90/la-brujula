@@ -59,5 +59,5 @@ export async function GET(request: Request) {
   }
 
   // Auth error — redirect to login
-  return NextResponse.redirect(`${origin}/login`);
+  return NextResponse.redirect(`${origin}/acceso-buena-vida`);
 }

@@ -8,7 +8,7 @@ export default async function ArbolPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/login");
+  if (!user) redirect("/acceso-buena-vida");
 
   // Check profile exists
   const { data: profile } = await supabase
@@ -17,7 +17,7 @@ export default async function ArbolPage() {
     .eq("id", user.id)
     .single();
 
-  if (!profile) redirect("/login");
+  if (!profile) redirect("/acceso-buena-vida");
 
   // Load existing árbol data
   const { data: arbolData } = await supabase

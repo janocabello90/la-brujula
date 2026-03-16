@@ -44,7 +44,7 @@ export default async function AdminPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/login");
+  if (!user) redirect("/acceso-buena-vida");
 
   // Check admin access
   if (!ADMIN_EMAILS.includes(user.email || "")) {

@@ -8,7 +8,7 @@ export default async function PlannerPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/login");
+  if (!user) redirect("/acceso-buena-vida");
 
   return <PlannerClient userId={user.id} />;
 }

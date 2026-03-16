@@ -8,7 +8,7 @@ export default async function ResultadoPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/login");
+  if (!user) redirect("/acceso-buena-vida");
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -16,7 +16,7 @@ export default async function ResultadoPage() {
     .eq("id", user.id)
     .single();
 
-  if (!profile) redirect("/login");
+  if (!profile) redirect("/acceso-buena-vida");
 
   const { data: arbolData } = await supabase
     .from("arbol_data")

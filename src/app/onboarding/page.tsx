@@ -8,7 +8,7 @@ export default async function OnboardingPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/login");
+  if (!user) redirect("/acceso-buena-vida");
 
   // Load existing data if any
   const { data: brujulaData } = await supabase

@@ -8,7 +8,7 @@ export default async function MaestroPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/login");
+  if (!user) redirect("/acceso-buena-vida");
 
   const { data: brujulaData } = await supabase
     .from("brujula_data")

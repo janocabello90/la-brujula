@@ -37,12 +37,19 @@ export async function updateSession(request: NextRequest) {
 
   if (isProtected && !user) {
     const url = request.nextUrl.clone()
-    url.pathname = '/login'
+    url.pathname = '/acceso-buena-vida'
     return NextResponse.redirect(url)
   }
 
-  // Redirect logged-in users from login to dashboard
-  if (request.nextUrl.pathname === '/login' && user) {
+  // Redirect old /login to home
+  if (request.nextUrl.pathname === '/login') {
+    const url = request.nextUrl.clone()
+    url.pathname = '/'
+    return NextResponse.redirect(url)
+  }
+
+  // Redirect logged-in users from acceso page to dashboard
+  if (request.nextUrl.pathname === '/acceso-buena-vida' && user) {
     const url = request.nextUrl.clone()
     url.pathname = '/dashboard'
     return NextResponse.redirect(url)
