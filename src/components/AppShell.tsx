@@ -1,8 +1,12 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "@/lib/supabase/hooks";
+import { createClient } from "@/lib/supabase/client";
+
+const ADMIN_EMAILS = ["janocabellom@gmail.com", "jano.cmg@gmail.com"];
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -11,6 +15,18 @@ interface AppShellProps {
 
 export default function AppShell({ children, fullWidth = false }: AppShellProps) {
   const pathname = usePathname();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const checkAdmin = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user?.email && ADMIN_EMAILS.includes(user.email)) {
+        setIsAdmin(true);
+      }
+    };
+    checkAdmin();
+  }, []);
 
   const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: "🏠" },
@@ -20,6 +36,7 @@ export default function AppShell({ children, fullWidth = false }: AppShellProps)
     { href: "/piezas", label: "Piezas", icon: "📝" },
     { href: "/planner", label: "Planificador", icon: "📅" },
     { href: "/settings", label: "Ajustes", icon: "⚙️" },
+    ...(isAdmin ? [{ href: "/admin", label: "Admin", icon: "👑" }] : []),
   ];
 
   return (

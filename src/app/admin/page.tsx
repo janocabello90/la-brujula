@@ -3,7 +3,7 @@ import { createServerClient } from "@/lib/supabase/server";
 import AdminClient from "./AdminClient";
 
 // Only these emails can access admin
-const ADMIN_EMAILS = ["janocabellom@gmail.com"];
+const ADMIN_EMAILS = ["janocabellom@gmail.com", "jano.cmg@gmail.com"];
 
 export interface AdminUser {
   id: string;
