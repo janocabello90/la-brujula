@@ -17,6 +17,7 @@ export default function AppShell({ children, fullWidth = false }: AppShellProps)
     { href: "/minority-report", label: "Mi Mapa", icon: "🗺️" },
     { href: "/ideas", label: "Ideas", icon: "💡" },
     { href: "/maestro", label: "Maestro", icon: "🎯" },
+    { href: "/piezas", label: "Piezas", icon: "📝" },
     { href: "/planner", label: "Planificador", icon: "📅" },
     { href: "/settings", label: "Ajustes", icon: "⚙️" },
   ];

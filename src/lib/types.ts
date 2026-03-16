@@ -107,6 +107,17 @@ export interface IdeaItem {
   created_at: string;
 }
 
+export interface SavedPiece {
+  id: string;
+  user_id: string;
+  suggestion: SuggestionResult;
+  canal: string;
+  notes: string;
+  status: "saved" | "editing" | "planned";
+  created_at: string;
+  updated_at: string;
+}
+
 export interface PlannerItem {
   id: string;
   user_id: string;

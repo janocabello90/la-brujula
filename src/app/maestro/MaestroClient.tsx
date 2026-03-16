@@ -49,6 +49,8 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
   const [planTime, setPlanTime] = useState("10:00");
   const [planSaving, setPlanSaving] = useState(false);
   const [planSaved, setPlanSaved] = useState(false);
+  const [pieceSaved, setPieceSaved] = useState(false);
+  const [pieceSaving, setPieceSaving] = useState(false);
   const [currentQuote, setCurrentQuote] = useState<Quote>(FALLBACK_QUOTES[0]);
   const [quoteFading, setQuoteFading] = useState(false);
   const quotesRef = useRef<Quote[]>(FALLBACK_QUOTES);
@@ -386,22 +388,48 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
               </div>
             )}
 
-            {/* Planificar button */}
-            <div className="border-t border-borde pt-4 mt-4">
+            {/* Action buttons */}
+            <div className="border-t border-borde pt-4 mt-4 space-y-3">
+              {/* Planificar */}
               {!planSaved ? (
                 !showPlanForm ? (
-                  <button
-                    onClick={() => {
-                      setShowPlanForm(true);
-                      // Default to tomorrow
-                      const tomorrow = new Date();
-                      tomorrow.setDate(tomorrow.getDate() + 1);
-                      setPlanDate(tomorrow.toISOString().split("T")[0]);
-                    }}
-                    className="w-full py-3 border-2 border-dashed border-naranja/40 rounded-lg text-naranja font-medium hover:bg-naranja/5 transition-colors"
-                  >
-                    📅 Planificar esta pieza
-                  </button>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => {
+                        setShowPlanForm(true);
+                        const tomorrow = new Date();
+                        tomorrow.setDate(tomorrow.getDate() + 1);
+                        setPlanDate(tomorrow.toISOString().split("T")[0]);
+                      }}
+                      className="py-3 bg-naranja text-white rounded-lg font-medium hover:bg-naranja-hover transition-colors text-sm"
+                    >
+                      📅 Planificar
+                    </button>
+                    <button
+                      onClick={async () => {
+                        if (!result || pieceSaved) return;
+                        setPieceSaving(true);
+                        const supabase = createClient();
+                        await supabase.from("saved_pieces").insert({
+                          user_id: userId,
+                          suggestion: result,
+                          canal: selection.canal || "",
+                          notes: "",
+                          status: "saved",
+                        });
+                        setPieceSaving(false);
+                        setPieceSaved(true);
+                      }}
+                      disabled={pieceSaving || pieceSaved}
+                      className={`py-3 rounded-lg font-medium text-sm transition-colors ${
+                        pieceSaved
+                          ? "bg-success/10 text-success border border-success/30"
+                          : "border-2 border-negro/15 text-negro hover:border-negro/30"
+                      }`}
+                    >
+                      {pieceSaving ? "..." : pieceSaved ? "✓ Guardada" : "💾 Guardar para después"}
+                    </button>
+                  </div>
                 ) : (
                   <div className="bg-crema rounded-lg p-4">
                     <h4 className="text-sm font-semibold text-negro mb-3">
@@ -475,6 +503,15 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
                   <p className="text-success font-medium text-sm">✓ Añadida al planificador</p>
                   <Link href="/planner" className="text-naranja text-xs hover:underline mt-1 inline-block">
                     Ver planificador →
+                  </Link>
+                </div>
+              )}
+
+              {/* Link to saved pieces */}
+              {pieceSaved && (
+                <div className="text-center">
+                  <Link href="/piezas" className="text-naranja text-xs hover:underline">
+                    Ver mis piezas guardadas →
                   </Link>
                 </div>
               )}
