@@ -2,6 +2,22 @@ import { redirect } from "next/navigation";
 import { createServerClient } from "@/lib/supabase/server";
 import DashboardClient from "./DashboardClient";
 
+export interface ArbolSection {
+  key: string;
+  label: string;
+  completed: boolean;
+}
+
+export interface TodayItem {
+  id: string;
+  title: string;
+  pilar: string;
+  formato: string;
+  canal: string;
+  scheduled_time: string | null;
+  status: string;
+}
+
 export interface DashboardStats {
   ideasTotal: number;
   ideasRaw: number;
@@ -23,6 +39,13 @@ export interface DashboardStats {
   hasApiKey: boolean;
   pillarCount: number;
   userName: string;
+  // Árbol
+  arbolSections: ArbolSection[];
+  arbolCompleted: number;
+  arbolTotal: number;
+  hasArbol: boolean;
+  // Today
+  todayItems: TodayItem[];
 }
 
 export interface SmartTask {
@@ -31,6 +54,25 @@ export interface SmartTask {
   href: string;
   done: boolean;
   priority: "high" | "medium" | "low";
+  icon: string;
+}
+
+// Check if an árbol section has meaningful content
+function isArbolSectionComplete(data: any, section: string): boolean {
+  if (!data) return false;
+  const s = data[section];
+  if (!s || typeof s !== "object") return false;
+
+  // Check if at least one field has meaningful content
+  return Object.values(s).some((v: any) => {
+    if (Array.isArray(v)) return v.length > 0 && v.some((item: any) => {
+      if (typeof item === "string") return item.trim().length > 0;
+      if (typeof item === "object") return Object.values(item).some((iv: any) => typeof iv === "string" && iv.trim().length > 0);
+      return false;
+    });
+    if (typeof v === "string") return v.trim().length > 0;
+    return false;
+  });
 }
 
 export default async function DashboardPage() {
@@ -66,9 +108,14 @@ export default async function DashboardPage() {
 
   const profile = existingProfile;
 
+  // Today's date for planner query
+  const today = new Date().toISOString().split("T")[0];
+
   // Fetch all data in parallel
   const [
     { data: brujulaData },
+    { data: arbolData },
+    { data: todayPlanner },
     { count: ideasTotal },
     { count: ideasRaw },
     { count: ideasEnriched },
@@ -84,6 +131,8 @@ export default async function DashboardPage() {
     { count: plannedDraft },
   ] = await Promise.all([
     supabase.from("brujula_data").select("*").eq("user_id", user.id).single(),
+    supabase.from("arbol_data").select("*").eq("user_id", user.id).single(),
+    supabase.from("planner_items").select("id, title, pilar, formato, canal, scheduled_time, status").eq("user_id", user.id).eq("scheduled_date", today).order("scheduled_time", { ascending: true }),
     supabase.from("ideas").select("*", { count: "exact", head: true }).eq("user_id", user.id),
     supabase.from("ideas").select("*", { count: "exact", head: true }).eq("user_id", user.id).eq("status", "raw"),
     supabase.from("ideas").select("*", { count: "exact", head: true }).eq("user_id", user.id).eq("status", "enriched"),
@@ -101,6 +150,38 @@ export default async function DashboardPage() {
 
   const tree = brujulaData?.tree || { pilares: [] };
   const buyers = brujulaData?.buyers || (brujulaData?.buyer?.nombre ? [brujulaData.buyer] : []);
+
+  // Árbol section progress
+  const arbolSectionDefs = [
+    { key: "semilla", label: "La Semilla" },
+    { key: "raices", label: "Las Raíces" },
+    { key: "tronco", label: "El Tronco" },
+    { key: "ramas", label: "Las Ramas" },
+    { key: "copa", label: "La Copa" },
+    { key: "frutos", label: "Los Frutos" },
+    { key: "entorno", label: "El Entorno" },
+    { key: "tiempo", label: "El Tiempo" },
+    { key: "cofre", label: "El Cofre" },
+  ];
+
+  const arbolSections: ArbolSection[] = arbolSectionDefs.map((s) => ({
+    key: s.key,
+    label: s.label,
+    completed: isArbolSectionComplete(arbolData, s.key),
+  }));
+
+  const arbolCompleted = arbolSections.filter((s) => s.completed).length;
+
+  // Today items
+  const todayItems: TodayItem[] = (todayPlanner || []).map((item: any) => ({
+    id: item.id,
+    title: item.title,
+    pilar: item.pilar || "",
+    formato: item.formato || "",
+    canal: item.canal || "",
+    scheduled_time: item.scheduled_time,
+    status: item.status,
+  }));
 
   const stats: DashboardStats = {
     ideasTotal: ideasTotal || 0,
@@ -123,48 +204,79 @@ export default async function DashboardPage() {
     hasApiKey: !!profile?.api_key,
     pillarCount: tree.pilares?.filter((p: any) => p.nombre).length || 0,
     userName: profile?.display_name || user.user_metadata?.full_name || user.email?.split("@")[0] || "",
+    arbolSections,
+    arbolCompleted,
+    arbolTotal: 9,
+    hasArbol: !!arbolData,
+    todayItems,
   };
 
   // Generate smart tasks
   const tasks: SmartTask[] = [];
 
+  // Priority 1: Árbol setup (the foundation)
+  if (!stats.hasArbol || arbolCompleted < 3) {
+    tasks.push({
+      id: "arbol-start",
+      text: arbolCompleted === 0
+        ? "Empieza El Árbol — es el mapa de tu marca personal"
+        : `Llevas ${arbolCompleted}/9 secciones del Árbol — sigue construyendo`,
+      href: "/arbol",
+      done: false,
+      priority: "high",
+      icon: "tree",
+    });
+  } else if (arbolCompleted < 9) {
+    tasks.push({
+      id: "arbol-continue",
+      text: `Te faltan ${9 - arbolCompleted} secciones del Árbol para completarlo`,
+      href: "/arbol",
+      done: false,
+      priority: "medium",
+      icon: "tree",
+    });
+  }
+
+  // Priority 2: Brújula setup
   if (!stats.hasMinorityReport) {
-    tasks.push({ id: "mr", text: "Completa tu Minority Report — es la base de todo", href: "/onboarding", done: false, priority: "high" });
+    tasks.push({ id: "mr", text: "Completa tu Minority Report — la base de La Brújula", href: "/onboarding", done: false, priority: "high", icon: "compass" });
   }
   if (!stats.hasApiKey) {
-    tasks.push({ id: "api", text: "Configura tu API Key para activar el Maestro", href: "/settings", done: false, priority: "high" });
+    tasks.push({ id: "api", text: "Configura tu API Key para activar el Maestro", href: "/settings", done: false, priority: "high", icon: "key" });
   }
   if (!stats.hasBuyerPersona) {
-    tasks.push({ id: "buyer", text: "Define al menos un buyer persona", href: "/onboarding", done: false, priority: "high" });
+    tasks.push({ id: "buyer", text: "Define al menos un buyer persona", href: "/onboarding", done: false, priority: "high", icon: "user" });
   }
   if (!stats.hasInsight) {
-    tasks.push({ id: "insight", text: "Escribe tu insight estratégico", href: "/onboarding", done: false, priority: "high" });
+    tasks.push({ id: "insight", text: "Escribe tu insight estratégico", href: "/onboarding", done: false, priority: "medium", icon: "bulb" });
   }
   if (stats.pillarCount < 3) {
-    tasks.push({ id: "pillars", text: `Tienes ${stats.pillarCount} pilar${stats.pillarCount !== 1 ? "es" : ""} — intenta llegar a 3-5`, href: "/onboarding", done: false, priority: "medium" });
+    tasks.push({ id: "pillars", text: `Tienes ${stats.pillarCount} pilar${stats.pillarCount !== 1 ? "es" : ""} — intenta llegar a 3-5`, href: "/onboarding", done: false, priority: "medium", icon: "pillars" });
   }
-  if (stats.ideasTotal === 0) {
-    tasks.push({ id: "first-idea", text: "Apunta tu primera idea en el cajón", href: "/ideas", done: false, priority: "medium" });
+
+  // Priority 3: Content creation
+  if (stats.ideasTotal === 0 && stats.hasMinorityReport) {
+    tasks.push({ id: "first-idea", text: "Apunta tu primera idea en el cajón", href: "/ideas", done: false, priority: "medium", icon: "idea" });
   }
-  if (stats.suggestionsTotal === 0 && stats.hasApiKey) {
-    tasks.push({ id: "first-maestro", text: "Genera tu primera pieza con el Maestro", href: "/maestro", done: false, priority: "medium" });
+  if (stats.suggestionsTotal === 0 && stats.hasApiKey && stats.hasMinorityReport) {
+    tasks.push({ id: "first-maestro", text: "Genera tu primera pieza con el Maestro", href: "/maestro", done: false, priority: "medium", icon: "wand" });
   }
   if (stats.ideasRaw > 0) {
-    tasks.push({ id: "enrich", text: `Tienes ${stats.ideasRaw} idea${stats.ideasRaw !== 1 ? "s" : ""} sin conectar — dale a enriquecer`, href: "/ideas", done: false, priority: "low" });
+    tasks.push({ id: "enrich", text: `Tienes ${stats.ideasRaw} idea${stats.ideasRaw !== 1 ? "s" : ""} sin conectar — dale a enriquecer`, href: "/ideas", done: false, priority: "low", icon: "sparkle" });
   }
   if (stats.piecesTotal > 0 && stats.plannedTotal === 0) {
-    tasks.push({ id: "plan", text: "Planifica alguna de tus piezas guardadas", href: "/piezas", done: false, priority: "low" });
+    tasks.push({ id: "plan", text: "Planifica alguna de tus piezas guardadas", href: "/piezas", done: false, priority: "low", icon: "calendar" });
   }
   if (stats.suggestionsTotal > 0 && stats.piecesTotal === 0) {
-    tasks.push({ id: "save-piece", text: "Guarda alguna pieza del Maestro que te guste", href: "/maestro", done: false, priority: "low" });
+    tasks.push({ id: "save-piece", text: "Guarda alguna pieza del Maestro que te guste", href: "/maestro", done: false, priority: "low", icon: "save" });
   }
   if (stats.plannedScheduled > 0 && stats.plannedPublished === 0) {
-    tasks.push({ id: "publish", text: "Marca como publicada tu primera pieza planificada", href: "/planner", done: false, priority: "low" });
+    tasks.push({ id: "publish", text: "Marca como publicada tu primera pieza planificada", href: "/planner", done: false, priority: "low", icon: "rocket" });
   }
 
   // If everything is set up, encourage creation
   if (tasks.length === 0) {
-    tasks.push({ id: "create", text: "Todo listo — ve al Maestro y crea tu siguiente pieza", href: "/maestro", done: false, priority: "medium" });
+    tasks.push({ id: "create", text: "Todo listo — ve al Maestro y crea tu siguiente pieza", href: "/maestro", done: false, priority: "medium", icon: "wand" });
   }
 
   return <DashboardClient stats={stats} tasks={tasks} />;

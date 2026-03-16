@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import Link from "next/link";
 import AppShell from "@/components/AppShell";
-import type { DashboardStats, SmartTask } from "./page";
+import type { DashboardStats, SmartTask, ArbolSection } from "./page";
 
 // Frases rotativas — estilo Jano
 const QUOTES = [
@@ -24,14 +24,27 @@ const QUOTES = [
   "Hoy es un buen día para crear algo que importe.",
 ];
 
+const TASK_ICONS: Record<string, string> = {
+  tree: "🌳",
+  compass: "🧭",
+  key: "🔑",
+  user: "👤",
+  bulb: "💡",
+  pillars: "🏛️",
+  idea: "💭",
+  wand: "✨",
+  sparkle: "🔗",
+  calendar: "📅",
+  save: "💾",
+  rocket: "🚀",
+};
+
 interface Props {
   stats: DashboardStats;
   tasks: SmartTask[];
 }
 
-
 export default function DashboardClient({ stats, tasks }: Props) {
-  // Pick a quote based on today's date so it's consistent within a day
   const quote = useMemo(() => {
     const dayOfYear = Math.floor(
       (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000
@@ -42,9 +55,15 @@ export default function DashboardClient({ stats, tasks }: Props) {
   const highTasks = tasks.filter((t) => t.priority === "high");
   const otherTasks = tasks.filter((t) => t.priority !== "high");
 
-  // Summary line
-  const totalCreated = stats.suggestionsTotal;
-  const totalPublished = stats.plannedPublished;
+  // Brújula setup progress
+  const brujulaSteps = [
+    { label: "Briefing", done: stats.hasMinorityReport },
+    { label: "Buyer Persona", done: stats.hasBuyerPersona },
+    { label: "Insight", done: stats.hasInsight },
+    { label: "Árbol de contenidos", done: stats.hasTree },
+    { label: "API Key", done: stats.hasApiKey },
+  ];
+  const brujulaCompleted = brujulaSteps.filter((s) => s.done).length;
 
   return (
     <AppShell>
@@ -57,15 +76,132 @@ export default function DashboardClient({ stats, tasks }: Props) {
           <p className="text-muted text-sm italic mt-1">&ldquo;{quote}&rdquo;</p>
         </div>
 
-        {/* Stats bar */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
-          <StatCard label="Ideas" value={stats.ideasTotal} sub={stats.ideasRaw > 0 ? `${stats.ideasRaw} sin conectar` : undefined} href="/ideas" />
-          <StatCard label="Piezas generadas" value={totalCreated} href="/maestro" />
-          <StatCard label="Guardadas" value={stats.piecesTotal} sub={stats.piecesEditing > 0 ? `${stats.piecesEditing} editando` : undefined} href="/piezas" />
-          <StatCard label="Publicadas" value={totalPublished} sub={stats.plannedScheduled > 0 ? `${stats.plannedScheduled} planificadas` : undefined} accent href="/planner" />
+        {/* ===== PROGRESS SECTION ===== */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+          {/* Árbol Progress */}
+          <Link href="/arbol" className="rounded-xl border bg-white border-borde/60 hover:border-naranja/40 p-5 transition-all hover:shadow-card-hover group">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-sm font-semibold text-negro flex items-center gap-2">
+                <span>🌳</span> El Árbol
+              </h2>
+              <span className="text-xs text-muted">
+                {stats.arbolCompleted}/{stats.arbolTotal}
+              </span>
+            </div>
+            <ProgressBar value={stats.arbolCompleted} max={stats.arbolTotal} />
+            <div className="flex flex-wrap gap-1.5 mt-3">
+              {stats.arbolSections.map((s) => (
+                <SectionPill key={s.key} section={s} />
+              ))}
+            </div>
+            {stats.arbolCompleted === 9 ? (
+              <p className="text-xs text-green-600 mt-3 font-medium">Árbol completado</p>
+            ) : (
+              <p className="text-xs text-muted mt-3 group-hover:text-naranja transition-colors">
+                {stats.arbolCompleted === 0 ? "Empieza a construir tu árbol →" : "Sigue completando →"}
+              </p>
+            )}
+          </Link>
+
+          {/* Brújula Progress */}
+          <Link href="/onboarding" className="rounded-xl border bg-white border-borde/60 hover:border-naranja/40 p-5 transition-all hover:shadow-card-hover group">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-sm font-semibold text-negro flex items-center gap-2">
+                <span>🧭</span> La Brújula
+              </h2>
+              <span className="text-xs text-muted">
+                {brujulaCompleted}/{brujulaSteps.length}
+              </span>
+            </div>
+            <ProgressBar value={brujulaCompleted} max={brujulaSteps.length} />
+            <div className="flex flex-wrap gap-1.5 mt-3">
+              {brujulaSteps.map((s) => (
+                <span
+                  key={s.label}
+                  className={`text-[10px] px-2 py-0.5 rounded-full ${
+                    s.done
+                      ? "bg-green-50 text-green-700 border border-green-200"
+                      : "bg-gray-50 text-muted border border-borde/40"
+                  }`}
+                >
+                  {s.done ? "✓ " : ""}{s.label}
+                </span>
+              ))}
+            </div>
+            {brujulaCompleted === brujulaSteps.length ? (
+              <p className="text-xs text-green-600 mt-3 font-medium">Brújula configurada</p>
+            ) : (
+              <p className="text-xs text-muted mt-3 group-hover:text-naranja transition-colors">
+                Configura tu estrategia →
+              </p>
+            )}
+          </Link>
         </div>
 
-        {/* Smart Tasks */}
+        {/* ===== TODAY'S PLAN ===== */}
+        {stats.todayItems.length > 0 ? (
+          <div className="mb-8">
+            <h2 className="text-xs font-semibold text-muted uppercase tracking-wide mb-3 px-1">
+              Hoy tienes {stats.todayItems.length} pieza{stats.todayItems.length !== 1 ? "s" : ""} planificada{stats.todayItems.length !== 1 ? "s" : ""}
+            </h2>
+            <div className="flex flex-col gap-2">
+              {stats.todayItems.map((item) => (
+                <Link
+                  key={item.id}
+                  href="/planner"
+                  className="flex items-center gap-3 rounded-xl border bg-naranja/5 border-naranja/20 hover:border-naranja/50 px-4 py-3 transition-all group"
+                >
+                  <div className="flex-shrink-0 text-xs font-mono text-naranja/70 w-12">
+                    {item.scheduled_time ? item.scheduled_time.slice(0, 5) : "--:--"}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm text-negro font-medium truncate">{item.title}</div>
+                    <div className="flex gap-2 mt-0.5">
+                      {item.pilar && (
+                        <span className="text-[10px] text-muted bg-gray-100 px-1.5 py-0.5 rounded">{item.pilar}</span>
+                      )}
+                      {item.formato && (
+                        <span className="text-[10px] text-muted">{item.formato}</span>
+                      )}
+                      {item.canal && (
+                        <span className="text-[10px] text-muted">{item.canal}</span>
+                      )}
+                    </div>
+                  </div>
+                  <StatusBadge status={item.status} />
+                </Link>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="mb-8 rounded-xl border border-dashed border-borde/60 bg-gray-50/50 px-5 py-6 text-center">
+            <p className="text-sm text-muted mb-2">No tienes nada planificado para hoy</p>
+            <div className="flex justify-center gap-3">
+              <Link
+                href="/maestro"
+                className="text-xs bg-naranja text-white px-4 py-2 rounded-lg hover:bg-naranja/90 transition-colors font-medium"
+              >
+                Generar contenido
+              </Link>
+              <Link
+                href="/planner"
+                className="text-xs bg-white text-negro border border-borde px-4 py-2 rounded-lg hover:border-naranja/40 transition-colors"
+              >
+                Ir al planificador
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {/* ===== STATS BAR ===== */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+          <StatCard label="Ideas" value={stats.ideasTotal} sub={stats.ideasRaw > 0 ? `${stats.ideasRaw} sin conectar` : undefined} href="/ideas" />
+          <StatCard label="Generadas" value={stats.suggestionsTotal} href="/maestro" />
+          <StatCard label="Guardadas" value={stats.piecesTotal} sub={stats.piecesEditing > 0 ? `${stats.piecesEditing} editando` : undefined} href="/piezas" />
+          <StatCard label="Publicadas" value={stats.plannedPublished} sub={stats.plannedScheduled > 0 ? `${stats.plannedScheduled} planificadas` : undefined} accent href="/planner" />
+        </div>
+
+        {/* ===== SMART TASKS ===== */}
         {tasks.length > 0 && (
           <div className="mb-8">
             <h2 className="text-xs font-semibold text-muted uppercase tracking-wide mb-3 px-1">
@@ -98,6 +234,52 @@ export default function DashboardClient({ stats, tasks }: Props) {
 
 // --- Helper Components ---
 
+function ProgressBar({ value, max }: { value: number; max: number }) {
+  const pct = max > 0 ? Math.round((value / max) * 100) : 0;
+  return (
+    <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+      <div
+        className={`h-full rounded-full transition-all duration-500 ${
+          pct === 100 ? "bg-green-500" : "bg-naranja"
+        }`}
+        style={{ width: `${pct}%` }}
+      />
+    </div>
+  );
+}
+
+function SectionPill({ section }: { section: ArbolSection }) {
+  return (
+    <span
+      className={`text-[10px] px-2 py-0.5 rounded-full ${
+        section.completed
+          ? "bg-green-50 text-green-700 border border-green-200"
+          : "bg-gray-50 text-muted border border-borde/40"
+      }`}
+    >
+      {section.completed ? "✓ " : ""}{section.label}
+    </span>
+  );
+}
+
+function StatusBadge({ status }: { status: string }) {
+  const styles: Record<string, string> = {
+    draft: "bg-gray-100 text-gray-600",
+    scheduled: "bg-blue-50 text-blue-600",
+    published: "bg-green-50 text-green-600",
+  };
+  const labels: Record<string, string> = {
+    draft: "Borrador",
+    scheduled: "Planificada",
+    published: "Publicada",
+  };
+  return (
+    <span className={`text-[10px] px-2 py-0.5 rounded-full flex-shrink-0 ${styles[status] || styles.draft}`}>
+      {labels[status] || status}
+    </span>
+  );
+}
+
 function StatCard({ label, value, sub, accent, href }: { label: string; value: number; sub?: string; accent?: boolean; href: string }) {
   return (
     <Link
@@ -118,6 +300,7 @@ function StatCard({ label, value, sub, accent, href }: { label: string; value: n
 }
 
 function TaskRow({ task, urgent }: { task: SmartTask; urgent?: boolean }) {
+  const icon = TASK_ICONS[task.icon] || "→";
   return (
     <Link
       href={task.href}
@@ -127,15 +310,7 @@ function TaskRow({ task, urgent }: { task: SmartTask; urgent?: boolean }) {
           : "bg-white border-borde/60 hover:border-naranja/40"
       }`}
     >
-      <div className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center ${
-        urgent ? "border-naranja" : "border-borde"
-      }`}>
-        {task.done && (
-          <svg className="w-3 h-3 text-naranja" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-          </svg>
-        )}
-      </div>
+      <span className="text-base flex-shrink-0">{icon}</span>
       <span className={`text-sm flex-1 ${urgent ? "font-medium text-negro" : "text-negro/80"}`}>
         {task.text}
       </span>
