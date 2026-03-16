@@ -422,17 +422,14 @@ function StepCopa({ data, update }: { data: any; update: (f: string, v: any) => 
     const exists = arquetipos.find((a) => a.nombre === nombre);
     if (exists) {
       update("arquetipos", arquetipos.filter((a) => a.nombre !== nombre));
-    } else if (arquetipos.length < 3) {
-      update("arquetipos", [...arquetipos, { nombre, porcentaje: 0 }]);
+    } else {
+      update("arquetipos", [...arquetipos, { nombre, porcentaje: 50 }]);
     }
   };
 
   const updatePorcentaje = (nombre: string, porcentaje: number) => {
     update("arquetipos", arquetipos.map((a) => a.nombre === nombre ? { ...a, porcentaje } : a));
   };
-
-  // Auto-balance percentages
-  const totalPct = arquetipos.reduce((acc, a) => acc + a.porcentaje, 0);
 
   // Generate personality description
   const getPersonalityDesc = () => {
@@ -459,14 +456,12 @@ function StepCopa({ data, update }: { data: any; update: (f: string, v: any) => 
     const dominantData = archData[dominant.nombre];
     if (!dominantData) return null;
 
-    let desc = `Tu personalidad de marca es principalmente **${dominant.nombre}** (${dominant.porcentaje}%): ${dominantData.comunicacion}. Tu mayor fortaleza es ${dominantData.fortaleza}. Cuidado con ${dominantData.riesgo}.`;
+    let desc = `Tu arquetipo dominante es ${dominant.nombre} (${dominant.porcentaje}%): ${dominantData.comunicacion}. Tu mayor fortaleza es ${dominantData.fortaleza}. Cuidado con ${dominantData.riesgo}.`;
 
-    if (sorted.length > 1 && sorted[1].porcentaje > 0) {
-      const second = sorted[1];
-      desc += ` Con un toque de **${second.nombre}** (${second.porcentaje}%) que le da matiz y profundidad a tu comunicación.`;
-    }
-    if (sorted.length > 2 && sorted[2].porcentaje > 0) {
-      desc += ` Y un ${sorted[2].porcentaje}% de **${sorted[2].nombre}** que aparece en momentos puntuales.`;
+    const others = sorted.filter((_, i) => i > 0 && sorted[i].porcentaje > 0);
+    if (others.length > 0) {
+      const otherDescs = others.map((a) => `${a.nombre} (${a.porcentaje}%)`);
+      desc += ` También te identificas con ${otherDescs.join(", ")}, lo que da riqueza y matices a tu personalidad de marca.`;
     }
     return desc;
   };
@@ -483,7 +478,7 @@ function StepCopa({ data, update }: { data: any; update: (f: string, v: any) => 
       {/* Archetype Calculator */}
       <div>
         <div className="flex items-center justify-between mb-1.5">
-          <FieldLabel hint="Selecciona hasta 3 arquetipos y reparte el porcentaje. Así definirás tu personalidad de marca.">Tu arquetipo de marca</FieldLabel>
+          <FieldLabel hint="Selecciona los arquetipos con los que te identificas y pon el % de cada uno (independientes, no tienen que sumar 100).">Tu arquetipo de marca</FieldLabel>
           <button onClick={() => setShowArchCalc(!showArchCalc)} className="text-xs text-naranja hover:underline">
             {showArchCalc ? "Ocultar guía" : "Ver los 12 arquetipos"}
           </button>
@@ -491,7 +486,7 @@ function StepCopa({ data, update }: { data: any; update: (f: string, v: any) => 
 
         {showArchCalc && (
           <div className="bg-crema/60 rounded-xl border border-borde/40 p-4 mb-3 space-y-2">
-            <p className="text-xs text-muted mb-2">Haz clic para seleccionar (máx. 3):</p>
+            <p className="text-xs text-muted mb-2">Haz clic para seleccionar los que te representen:</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {ARQUETIPOS.map((a) => {
                 const selected = arquetipos.some((s) => s.nombre === a.nombre);
@@ -499,9 +494,8 @@ function StepCopa({ data, update }: { data: any; update: (f: string, v: any) => 
                   <button
                     key={a.nombre}
                     onClick={() => toggleArquetipo(a.nombre)}
-                    disabled={!selected && arquetipos.length >= 3}
                     className={`text-left text-xs px-3 py-2.5 rounded-lg border transition-colors ${
-                      selected ? "border-naranja bg-naranja/10 text-naranja" : "border-borde text-muted hover:border-naranja/40 disabled:opacity-30"
+                      selected ? "border-naranja bg-naranja/10 text-naranja" : "border-borde text-muted hover:border-naranja/40"
                     }`}
                   >
                     <span className="font-semibold">{a.emoji} {a.nombre}</span>
@@ -516,7 +510,7 @@ function StepCopa({ data, update }: { data: any; update: (f: string, v: any) => 
         {/* Selected archetypes with percentage sliders */}
         {arquetipos.length > 0 && (
           <div className="space-y-3 bg-white rounded-xl border border-borde/40 p-4">
-            <p className="text-xs text-muted">Reparte el peso de cada arquetipo (debe sumar 100%):</p>
+            <p className="text-xs text-muted">¿Cuánto te identificas con cada uno? (0% = nada, 100% = totalmente)</p>
             {arquetipos.map((a) => (
               <div key={a.nombre} className="flex items-center gap-3">
                 <span className="text-xs font-semibold text-negro w-36 flex-shrink-0">{a.nombre}</span>
@@ -529,15 +523,12 @@ function StepCopa({ data, update }: { data: any; update: (f: string, v: any) => 
                   onChange={(e) => updatePorcentaje(a.nombre, Number(e.target.value))}
                   className="flex-1 accent-naranja"
                 />
-                <span className={`text-xs font-bold w-10 text-right ${totalPct === 100 ? "text-naranja" : "text-muted"}`}>{a.porcentaje}%</span>
+                <span className="text-xs font-bold w-10 text-right text-naranja">{a.porcentaje}%</span>
               </div>
             ))}
-            <div className={`text-xs text-right font-semibold ${totalPct === 100 ? "text-naranja" : "text-danger"}`}>
-              Total: {totalPct}% {totalPct !== 100 && "(debe ser 100%)"}
-            </div>
 
             {/* Personality result */}
-            {personality && totalPct === 100 && (
+            {personality && (
               <div className="mt-3 bg-naranja/[0.06] rounded-xl p-4 border border-naranja/20">
                 <p className="text-xs font-semibold text-naranja mb-1">Tu personalidad de marca:</p>
                 <p className="text-sm text-negro/80 leading-relaxed">{personality.replace(/\*\*(.*?)\*\*/g, "$1")}</p>
