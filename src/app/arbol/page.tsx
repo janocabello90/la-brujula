@@ -29,7 +29,7 @@ export default async function ArbolPage() {
   // Load brújula data for pre-filling / sync
   const { data: brujulaData } = await supabase
     .from("brujula_data")
-    .select("briefing, buyer, buyers, tree, channels")
+    .select("briefing, buyer, buyers, tree, channels, insight")
     .eq("user_id", user.id)
     .single();
 

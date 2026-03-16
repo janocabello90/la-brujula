@@ -141,41 +141,51 @@ export interface PlannerItem {
 // ===== EL ÁRBOL DE LA MARCA PERSONAL =====
 
 export interface ArbolSemilla {
-  quienEres: string;          // Descripción breve de quién eres
-  valoresCore: string[];      // 3-5 valores fundamentales
-  proposito: string;          // Para qué haces lo que haces
-  superpoder: string;         // Tu talento diferencial
+  proposito: string;          // ¿Para qué existe tu marca personal?
+  vision: string;             // ¿Hacia dónde quieres llevar tu vida y trabajo?
+  intencion: string;          // ¿Qué quieres provocar en los demás?
+  objetivos: string;          // ¿Qué te gustaría conseguir comunicando mejor?
 }
 
 export interface ArbolRaices {
-  historia: string;           // Tu historia profesional/personal relevante
-  momentosClave: string[];    // Momentos que te formaron
-  aprendizajes: string;       // Qué aprendiste del camino
-  deQueHuyes: string;         // Qué no quieres volver a vivir
+  creencias: string;          // Tus creencias clave
+  valores: string[];          // Tus valores no negociables
+  identidad: string;          // Cómo te defines de verdad
+  historia: string;           // Tu historia personal
+  conocimientoHabilidades: string; // Conocimiento y habilidades reales
+  fortalezas: string[];       // Tus fortalezas
+  experiencia: string;        // Tu experiencia (incluso la invisible)
+  intuicion: string;          // Tu intuición — lo que sabes sin saber explicar
 }
 
 export interface ArbolTronco {
-  propuestaValor: string;     // Tu propuesta de valor central
-  etiquetaProfesional: string; // Cómo te defines profesionalmente
-  problemaQueResuelves: string; // El problema principal que solucionas
-  aQuienAyudas: string;       // A quién ayudas (descripción general)
-  comoLoHaces: string;        // Tu método o enfoque único
+  temaPrincipal: string;      // ¿De qué va tu marca personal?
+  propuestaValor: string;     // ¿Qué aportas a la vida de los demás?
+  zonaGenialidad: string;     // ¿Qué sabes hacer excepcionalmente bien?
 }
 
 export interface ArbolRamas {
-  pilares: {
-    nombre: string;
-    descripcion: string;
-    subtemas: string[];
-  }[];
+  pasiones: string[];         // Cosas que te mueven
+  intereses: string[];        // Aquello que te gusta explorar
+  hobbies: string[];          // Lo que disfrutas sin presión
+  habilidadesSecundarias: string[]; // Cosas que suman a tu perfil
+  contextosProfesionales: string[]; // Dónde actúas hoy
+  formatosComunicacion: string[];   // Cómo te expresas mejor (texto, vídeo, voz...)
+}
+
+export interface ArquetipoSeleccion {
+  nombre: string;
+  porcentaje: number;
 }
 
 export interface ArbolCopa {
-  tonoDeVoz: string;          // Cómo suenas (cercano, directo, provocador...)
-  narrativa: string;          // La historia que cuenta tu marca
-  arquetipoMarca: string;     // Arquetipo dominante (El Sabio, El Rebelde, etc.)
-  percepcion: string;         // Cómo quieres que te perciban
-  palabrasClave: string[];    // Palabras que definen tu estilo comunicativo
+  atributos: string[];        // Atributos que quieres representar
+  arquetipos: ArquetipoSeleccion[]; // Arquetipos con porcentaje
+  tonoDeVoz: string;          // Cercano, técnico, emocional, reflexivo, divertido...
+  narrativa: string;          // Qué historia cuentas o historias
+  energia: string;            // Qué emoción llevas al mundo (misterio, vitalidad, calma...)
+  presencia: string;          // Cómo apareces en escena (de calle, uniforme, en casa...)
+  percepcion: string;         // ¿Cómo quiero que me perciban?
 }
 
 export interface ArbolFrutos {
@@ -187,31 +197,33 @@ export interface ArbolFrutos {
 }
 
 export interface ArbolEntorno {
-  audienciaPrincipal: string; // Descripción de tu audiencia ideal
-  dondeEstan: string[];       // Dónde se mueve tu audiencia (canales)
-  competencia: string;        // Quién más habla de lo tuyo
-  aliadosPotenciales: string; // Con quién podrías colaborar
-  posicionamiento: string;    // Qué te hace diferente en ese entorno
+  audienciaPrincipal: string;
+  dondeEstan: string[];
+  competencia: string;
+  aliadosPotenciales: string;
+  posicionamiento: string;
 }
 
 export interface ArbolTiempo {
-  ritmoPublicacion: string;   // Frecuencia y canales (ej: "3x semana en IG, 1 newsletter")
-  proximoHito: string;        // Siguiente meta a 90 días
-  metaAnual: string;          // Meta a 12 meses
-  buenaVida: string;          // Tu definición de éxito/buena vida
+  ritmoPublicacion: string;
+  proximoHito: string;
+  metaAnual: string;
+  buenaVida: string;
 }
 
-export interface ProductoItem {
-  nombreProducto: string;
-  paraQuien: string;
-  queConsigue: string;
+export interface CofreItem {
+  nombreProducto: string;     // ¿Qué vendes?
+  oferta: string;             // ¿Qué lo hace deseable? (promesa, transformación, dolor que alivia)
+  packagingNarrativo: string; // ¿Cómo lo cuentas? (relato de venta, historia, emoción)
+  cliente: string;            // ¿Quién lo necesita y cómo lo quiere?
+  canales: string;            // ¿Cómo se accede? (web, llamada, DM, comunidad...)
+  sistemaEntrega: string;     // ¿Cómo lo entregas? (estructura, ritmo, acompañamiento)
   precio: string;
-  canalVenta: string;
-  estadoActual: string;       // "idea" | "en_desarrollo" | "validado" | "vendiendo"
+  estadoActual: string;
 }
 
-export interface ArbolProducto {
-  productos: ProductoItem[];
+export interface ArbolCofre {
+  productos: CofreItem[];
 }
 
 export interface ArbolData {
@@ -223,17 +235,17 @@ export interface ArbolData {
   frutos: ArbolFrutos;
   entorno: ArbolEntorno;
   tiempo: ArbolTiempo;
-  producto: ArbolProducto;
+  cofre: ArbolCofre;
 }
 
 export const DEFAULT_ARBOL: ArbolData = {
-  semilla: { quienEres: "", valoresCore: [], proposito: "", superpoder: "" },
-  raices: { historia: "", momentosClave: [], aprendizajes: "", deQueHuyes: "" },
-  tronco: { propuestaValor: "", etiquetaProfesional: "", problemaQueResuelves: "", aQuienAyudas: "", comoLoHaces: "" },
-  ramas: { pilares: [{ nombre: "", descripcion: "", subtemas: [] }] },
-  copa: { tonoDeVoz: "", narrativa: "", arquetipoMarca: "", percepcion: "", palabrasClave: [] },
+  semilla: { proposito: "", vision: "", intencion: "", objetivos: "" },
+  raices: { creencias: "", valores: [], identidad: "", historia: "", conocimientoHabilidades: "", fortalezas: [], experiencia: "", intuicion: "" },
+  tronco: { temaPrincipal: "", propuestaValor: "", zonaGenialidad: "" },
+  ramas: { pasiones: [], intereses: [], hobbies: [], habilidadesSecundarias: [], contextosProfesionales: [], formatosComunicacion: [] },
+  copa: { atributos: [], arquetipos: [], tonoDeVoz: "", narrativa: "", energia: "", presencia: "", percepcion: "" },
   frutos: { queDeseasRecibir: "", metaSeguidores: "", mensajesQueQuieres: "", impactoDeseado: "", testimonioIdeal: "" },
   entorno: { audienciaPrincipal: "", dondeEstan: [], competencia: "", aliadosPotenciales: "", posicionamiento: "" },
   tiempo: { ritmoPublicacion: "", proximoHito: "", metaAnual: "", buenaVida: "" },
-  producto: { productos: [{ nombreProducto: "", paraQuien: "", queConsigue: "", precio: "", canalVenta: "", estadoActual: "idea" }] },
+  cofre: { productos: [{ nombreProducto: "", oferta: "", packagingNarrativo: "", cliente: "", canales: "", sistemaEntrega: "", precio: "", estadoActual: "idea" }] },
 };

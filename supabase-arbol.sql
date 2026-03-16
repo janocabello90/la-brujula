@@ -1,7 +1,10 @@
 -- ===== EL ÁRBOL DE LA MARCA PERSONAL =====
 -- Run this in your Supabase SQL Editor
 
--- Table
+-- If the table already exists, add the cofre column:
+-- ALTER TABLE public.arbol_data ADD COLUMN IF NOT EXISTS cofre jsonb default '{}'::jsonb;
+
+-- Fresh table creation (skip if table already exists):
 create table if not exists public.arbol_data (
   id uuid default gen_random_uuid() primary key,
   user_id uuid references public.profiles(id) on delete cascade not null unique,
@@ -13,7 +16,7 @@ create table if not exists public.arbol_data (
   frutos jsonb default '{}'::jsonb,
   entorno jsonb default '{}'::jsonb,
   tiempo jsonb default '{}'::jsonb,
-  producto jsonb default '{}'::jsonb,
+  cofre jsonb default '{}'::jsonb,
   onboarding_step int default 0,
   completed boolean default false,
   created_at timestamptz default now(),
@@ -36,7 +39,7 @@ create policy "Users can update own arbol" on public.arbol_data
 create policy "Users can delete own arbol" on public.arbol_data
   for delete using (auth.uid() = user_id);
 
--- Admin policies (same emails as other tables)
+-- Admin policies
 create policy "Admin can view all arbol" on public.arbol_data
   for select using (
     auth.jwt() ->> 'email' in ('janocabellom@gmail.com', 'jano.cmg@gmail.com')
