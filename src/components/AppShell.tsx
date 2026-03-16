@@ -26,9 +26,14 @@ export default function AppShell({ children, fullWidth = false }: AppShellProps)
   const [isAdmin, setIsAdmin] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [brujulaOpen, setBrujulaOpen] = useState(false);
 
   useEffect(() => {
     setMobileOpen(false);
+    // Auto-expand brújula when navigating to one of its pages
+    if (["/minority-report", "/ideas", "/maestro", "/piezas", "/planner", "/onboarding"].some((p) => pathname.startsWith(p))) {
+      setBrujulaOpen(true);
+    }
   }, [pathname]);
 
   useEffect(() => {
@@ -42,9 +47,10 @@ export default function AppShell({ children, fullWidth = false }: AppShellProps)
     checkAdmin();
   }, []);
 
-  const isBrujulaPage = ["/minority-report", "/ideas", "/maestro", "/piezas", "/planner", "/onboarding"].some(
+  const isBrujulaRoute = ["/minority-report", "/ideas", "/maestro", "/piezas", "/planner", "/onboarding"].some(
     (p) => pathname.startsWith(p)
   );
+  const isBrujulaExpanded = isBrujulaRoute || brujulaOpen;
 
   const sidebarContent = (
     <>
@@ -70,22 +76,29 @@ export default function AppShell({ children, fullWidth = false }: AppShellProps)
         </p>
       )}
 
-      {/* La Brújula — Active */}
+      {/* La Brújula — Expandable */}
       <div className="mb-1">
-        <Link
-          href="/dashboard"
-          className={`flex items-center gap-2.5 px-2.5 py-2 rounded-xl transition-all ${
-            isBrujulaPage
+        <button
+          onClick={() => setBrujulaOpen(!brujulaOpen)}
+          className={`flex items-center gap-2.5 px-2.5 py-2 rounded-xl transition-all w-full text-left ${
+            isBrujulaRoute
               ? "bg-naranja/10 text-naranja font-semibold"
               : "text-negro/70 hover:bg-negro/[0.04]"
           }`}
         >
           <span className="text-lg flex-shrink-0">🧭</span>
-          {!sidebarCollapsed && <span className="text-sm">La Brújula</span>}
-        </Link>
+          {!sidebarCollapsed && (
+            <>
+              <span className="text-sm flex-1">La Brújula</span>
+              <svg className={`w-3.5 h-3.5 transition-transform ${isBrujulaExpanded ? "rotate-90" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </>
+          )}
+        </button>
 
-        {/* Sub-sections when Brújula is active */}
-        {isBrujulaPage && !sidebarCollapsed && (
+        {/* Sub-sections when Brújula is expanded */}
+        {isBrujulaExpanded && !sidebarCollapsed && (
           <div className="ml-4 mt-1 space-y-0.5 border-l-2 border-naranja/20 pl-3">
             {BRUJULA_SECTIONS.map((s) => {
               const isActive = pathname === s.href;
@@ -108,7 +121,7 @@ export default function AppShell({ children, fullWidth = false }: AppShellProps)
         )}
 
         {/* Collapsed: sub-icons */}
-        {isBrujulaPage && sidebarCollapsed && (
+        {isBrujulaExpanded && sidebarCollapsed && (
           <div className="mt-1 space-y-0.5 flex flex-col items-center">
             {BRUJULA_SECTIONS.map((s) => {
               const isActive = pathname === s.href;
