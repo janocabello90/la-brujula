@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import AppShell from "@/components/AppShell";
 
 const sections = [
@@ -144,65 +143,24 @@ export default function DashboardClient() {
           </Link>
         </div>
 
-        {/* Skool Call Out */}
-        <div className="mt-12 bg-negro rounded-2xl overflow-hidden">
-          <div className="flex flex-col lg:flex-row">
-            {/* Image */}
-            <div className="lg:w-2/5 relative min-h-[240px] sm:min-h-[300px] lg:min-h-0">
-              <picture>
-                <source srcSet="/gorila-skool.webp" type="image/webp" />
-                <Image
-                  src="/gorila-skool.png"
-                  alt="Gorila con café y comunidad Skool"
-                  fill
-                  className="object-cover object-top lg:object-center"
-                  sizes="(max-width: 1024px) 100vw, 40vw"
-                />
-              </picture>
-            </div>
-
-            {/* Content */}
-            <div className="lg:w-3/5 p-6 sm:p-8 lg:p-10 flex flex-col justify-center">
-              <span className="text-naranja text-xs font-semibold uppercase tracking-wider mb-2">
-                Comunidad
-              </span>
-              <h2 className="font-heading text-2xl sm:text-3xl text-white mb-3">
-                Escuela de Buena Vida
-              </h2>
-              <p className="text-white/70 text-sm leading-relaxed mb-5">
-                Una comunidad para construir una buena vida a través de tu marca personal y aprender el <strong className="text-white">noble arte de la autopromoción</strong>.
-              </p>
-
-              <div className="space-y-2.5 text-sm text-white/80 mb-6">
-                <p>🔥 Formaciones completas: Pirámides + Árbol de la Marca Personal</p>
-                <p>☕ Café mensual en directo para desbloquear dudas reales</p>
-                <p>🧠 Mentorías grupales para revisar tu trabajo</p>
-                <p>🛠 Biblioteca viva de herramientas, prompts y plantillas</p>
-                <p>📍 Filosofía aplicada para pensar mejor y decidir mejor</p>
-                <p>🤝 Comunidad de adultos construyendo estructura</p>
-              </div>
-
-              <div className="text-white/50 text-sm leading-relaxed mb-6 border-l-2 border-naranja/40 pl-4">
-                <p>Aquí no vienes a perseguir seguidores.</p>
-                <p>Vienes a construir opciones.</p>
-                <p className="mt-2">
-                  Si quieres trabajar tu marca personal con criterio y coherencia, este es tu sitio. Te vamos haciendo café (siempre del bueno).
-                </p>
-                <p className="mt-2">Bienvenido al nido. 🦍☕️</p>
-              </div>
-
+        {/* Disclaimer / Community nudge */}
+        <div className="mt-10 flex items-start gap-4 bg-negro/[0.03] border border-borde/40 rounded-xl p-4 sm:p-5">
+          <span className="text-2xl flex-shrink-0">🦍</span>
+          <div className="text-sm text-negro/70 leading-relaxed">
+            <p>
+              Si algo del proceso te chirría, mi recomendación es que revises tu{" "}
+              <strong className="text-negro">Pirámide de la Marca Personal</strong> o me preguntes directamente en la comunidad.
+            </p>
+            <p className="mt-2">
               <a
                 href="https://www.skool.com/una-buena-vida-comunidad-2471"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-naranja hover:bg-naranja-hover text-white font-semibold px-6 py-3 rounded-xl transition-colors self-start"
+                className="text-naranja font-semibold hover:underline"
               >
-                Entrar en la comunidad
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
+                Escuela de Buena Vida →
               </a>
-            </div>
+            </p>
           </div>
         </div>
 
