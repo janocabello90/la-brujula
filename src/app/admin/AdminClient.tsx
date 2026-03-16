@@ -146,6 +146,7 @@ export default function AdminClient({ stats }: Props) {
                   <th className="text-center px-3 py-3 text-xs font-semibold text-muted uppercase tracking-wide">Publicadas</th>
                   <th className="text-center px-3 py-3 text-xs font-semibold text-muted uppercase tracking-wide">Coste</th>
                   <th className="text-left px-3 py-3 text-xs font-semibold text-muted uppercase tracking-wide">Última actividad</th>
+                  <th className="text-center px-3 py-3 text-xs font-semibold text-muted uppercase tracking-wide">Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -179,6 +180,32 @@ function BigStat({ label, value, sub, accent }: { label: string; value: number |
 }
 
 function UserRow({ user: u }: { user: AdminUser }) {
+  const [resending, setResending] = useState(false);
+  const [resendStatus, setResendStatus] = useState<"idle" | "sent" | "error">("idle");
+
+  const handleResend = async () => {
+    setResending(true);
+    setResendStatus("idle");
+    try {
+      const res = await fetch("/api/admin/resend-access", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: u.email }),
+      });
+      if (res.ok) {
+        setResendStatus("sent");
+        setTimeout(() => setResendStatus("idle"), 3000);
+      } else {
+        setResendStatus("error");
+        setTimeout(() => setResendStatus("idle"), 3000);
+      }
+    } catch {
+      setResendStatus("error");
+      setTimeout(() => setResendStatus("idle"), 3000);
+    }
+    setResending(false);
+  };
+
   // Setup completeness
   const setupSteps = [u.onboardingCompleted, u.hasApiKey, u.pillarCount >= 3, u.buyerCount > 0, u.hasInsight];
   const setupDone = setupSteps.filter(Boolean).length;
@@ -227,6 +254,22 @@ function UserRow({ user: u }: { user: AdminUser }) {
       <td className="px-3 py-3 text-center text-xs text-muted">{u.suggestionsCount > 0 ? costEstimate : "—"}</td>
       {/* Last activity */}
       <td className="px-3 py-3 text-xs text-muted">{timeAgo}</td>
+      {/* Actions */}
+      <td className="px-3 py-3 text-center">
+        <button
+          onClick={handleResend}
+          disabled={resending || resendStatus === "sent"}
+          className={`text-[11px] px-2.5 py-1 rounded-lg border transition-colors ${
+            resendStatus === "sent"
+              ? "border-green-300 bg-green-50 text-green-600"
+              : resendStatus === "error"
+              ? "border-red-300 bg-red-50 text-red-600"
+              : "border-borde text-muted hover:border-naranja hover:text-naranja"
+          } disabled:opacity-50`}
+        >
+          {resending ? "..." : resendStatus === "sent" ? "Enviado" : resendStatus === "error" ? "Error" : "Reenviar acceso"}
+        </button>
+      </td>
     </tr>
   );
 }
