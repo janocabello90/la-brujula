@@ -787,14 +787,19 @@ function ArbolCanvas({ data, setData, userName, onSave, saving, onEditSection }:
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="mb-8 flex items-start justify-between">
+      <div className="mb-8 flex items-start justify-between gap-3">
         <div>
           <h1 className="font-heading text-2xl sm:text-3xl text-negro mb-1">🌳 El Árbol de {userName || "tu Marca"}</h1>
           <p className="text-muted text-sm">Tu marca personal en una sola vista. Haz clic en cualquier sección para editarla.</p>
         </div>
-        <button onClick={onSave} disabled={saving} className="text-xs px-4 py-2 bg-naranja text-white rounded-xl hover:bg-naranja-hover transition-colors disabled:opacity-50 font-medium flex-shrink-0">
-          {saving ? "Guardando..." : "Guardar cambios"}
-        </button>
+        <div className="flex gap-2 flex-shrink-0">
+          <a href="/arbol/resultado" className="text-xs px-4 py-2 bg-negro text-white rounded-xl hover:bg-negro/80 transition-colors font-medium">
+            Ver resultado
+          </a>
+          <button onClick={onSave} disabled={saving} className="text-xs px-4 py-2 bg-naranja text-white rounded-xl hover:bg-naranja-hover transition-colors disabled:opacity-50 font-medium">
+            {saving ? "Guardando..." : "Guardar"}
+          </button>
+        </div>
       </div>
 
       <div className="space-y-3">
