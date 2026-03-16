@@ -17,11 +17,23 @@ export default async function OnboardingPage() {
     .eq("user_id", user.id)
     .single();
 
-  const { data: profile } = await supabase
+  let { data: profile } = await supabase
     .from("profiles")
     .select("api_key")
     .eq("id", user.id)
     .single();
+
+  // Auto-create profile if missing (email+password signup doesn't go through callback)
+  if (!profile) {
+    const displayName = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split("@")[0] || "";
+    await supabase.from("profiles").insert({
+      id: user.id,
+      email: user.email,
+      display_name: displayName,
+      onboarding_completed: false,
+    });
+    profile = { api_key: null };
+  }
 
   const initialData = brujulaData
     ? {

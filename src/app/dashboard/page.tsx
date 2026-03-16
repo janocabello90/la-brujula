@@ -42,15 +42,29 @@ export default async function DashboardPage() {
   if (!user) redirect("/login");
 
   // Check onboarding
-  const { data: profile } = await supabase
+  const { data: existingProfile } = await supabase
     .from("profiles")
     .select("onboarding_completed, api_key, display_name")
     .eq("id", user.id)
     .single();
 
-  if (!profile?.onboarding_completed) {
+  // Auto-create profile if missing (email+password signup doesn't go through callback)
+  if (!existingProfile) {
+    const displayName = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split("@")[0] || "";
+    await supabase.from("profiles").insert({
+      id: user.id,
+      email: user.email,
+      display_name: displayName,
+      onboarding_completed: false,
+    });
     redirect("/onboarding");
   }
+
+  if (!existingProfile.onboarding_completed) {
+    redirect("/onboarding");
+  }
+
+  const profile = existingProfile;
 
   // Fetch all data in parallel
   const [
