@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import AppShell from "@/components/AppShell";
 
@@ -24,7 +23,6 @@ interface MirrorBlock {
 }
 
 export default function EspejoClient({ userId, userName, arbol, brujula }: Props) {
-  const [exporting, setExporting] = useState(false);
 
   // ===== BUILD MIRROR BLOCKS =====
   const blocks: MirrorBlock[] = [
@@ -269,49 +267,17 @@ export default function EspejoClient({ userId, userName, arbol, brujula }: Props
   const emptyBlocks = blocks.filter((b) => b.value === null || (Array.isArray(b.value) && b.value.length === 0));
   const completion = Math.round((filledBlocks.length / blocks.length) * 100);
 
-  const exportEspejo = async () => {
-    setExporting(true);
-    try {
-      const res = await fetch("/api/espejo/export", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId }),
-      });
-      if (!res.ok) throw new Error("Error al exportar");
-      const html = await res.text();
-      const win = window.open("", "_blank");
-      if (win) {
-        win.document.write(html);
-        win.document.close();
-        setTimeout(() => win.print(), 500);
-      }
-    } catch {
-      alert("Error al generar el documento");
-    } finally {
-      setExporting(false);
-    }
-  };
-
   return (
     <AppShell>
       <div className="max-w-3xl mx-auto">
         {/* Header */}
-        <div className="mb-6 flex items-start justify-between gap-4">
-          <div>
-            <h1 className="font-heading text-2xl sm:text-3xl text-negro mb-1">
-              El Espejo
-            </h1>
-            <p className="text-muted text-sm">
-              Quién eres, qué haces y para quién. Todo en una vista.
-            </p>
-          </div>
-          <button
-            onClick={exportEspejo}
-            disabled={exporting}
-            className="text-xs px-4 py-2 bg-negro text-white rounded-xl hover:bg-negro/80 transition-colors font-medium flex-shrink-0 disabled:opacity-50"
-          >
-            {exporting ? "Generando..." : "Exportar PDF"}
-          </button>
+        <div className="mb-6">
+          <h1 className="font-heading text-2xl sm:text-3xl text-negro mb-1">
+            El Espejo
+          </h1>
+          <p className="text-muted text-sm">
+            Quién eres, qué haces y para quién. Todo en una vista.
+          </p>
         </div>
 
         {/* Progress */}
