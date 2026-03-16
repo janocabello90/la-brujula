@@ -9,7 +9,6 @@ import { createClient } from "@/lib/supabase/client";
 const ADMIN_EMAILS = ["janocabellom@gmail.com", "jano.cmg@gmail.com"];
 
 const BRUJULA_SECTIONS = [
-  { href: "/dashboard", label: "Panel", icon: "📊" },
   { href: "/minority-report", label: "Mi Mapa", icon: "🗺️" },
   { href: "/ideas", label: "Ideas", icon: "💡" },
   { href: "/maestro", label: "Maestro", icon: "🎯" },
@@ -43,12 +42,27 @@ export default function AppShell({ children, fullWidth = false }: AppShellProps)
     checkAdmin();
   }, []);
 
-  const isBrujulaPage = ["/dashboard", "/minority-report", "/ideas", "/maestro", "/piezas", "/planner", "/onboarding"].some(
+  const isBrujulaPage = ["/minority-report", "/ideas", "/maestro", "/piezas", "/planner", "/onboarding"].some(
     (p) => pathname.startsWith(p)
   );
 
   const sidebarContent = (
     <>
+      {/* Panel — Top level */}
+      <div className="mb-3">
+        <Link
+          href="/dashboard"
+          className={`flex items-center gap-2.5 px-2.5 py-2 rounded-xl transition-all ${
+            pathname === "/dashboard"
+              ? "bg-negro text-white font-medium"
+              : "text-negro/70 hover:bg-negro/[0.04]"
+          }`}
+        >
+          <span className="text-lg flex-shrink-0">📊</span>
+          {!sidebarCollapsed && <span className="text-sm">Panel</span>}
+        </Link>
+      </div>
+
       {/* Tools label */}
       {!sidebarCollapsed && (
         <p className="text-[10px] font-semibold text-muted/60 uppercase tracking-widest px-2 mb-2">
