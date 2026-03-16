@@ -3,100 +3,99 @@
 import Link from "next/link";
 import AppShell from "@/components/AppShell";
 
+const sections = [
+  {
+    href: "/ideas",
+    icon: "💡",
+    title: "Ideas",
+    desc: "Apunta lo que se te ocurra. La IA lo conecta con tu estrategia.",
+    cta: "Apuntar idea",
+    accent: "naranja",
+  },
+  {
+    href: "/maestro",
+    icon: "🎯",
+    title: "El Maestro",
+    desc: "Tu director creativo con IA. Titulares, ganchos y pistas para tu siguiente pieza.",
+    cta: "Activar",
+    accent: "naranja",
+  },
+  {
+    href: "/piezas",
+    icon: "📝",
+    title: "Mis Piezas",
+    desc: "Tu banco de piezas guardadas. Edita, planifica o recupera ideas del Maestro.",
+    cta: "Ver piezas",
+    accent: "naranja",
+  },
+  {
+    href: "/planner",
+    icon: "📅",
+    title: "Planificador",
+    desc: "Organiza tu contenido por semana o mes. Kanban, calendario y lista.",
+    cta: "Planificar",
+    accent: "naranja",
+  },
+  {
+    href: "/minority-report",
+    icon: "🗺️",
+    title: "Minority Report",
+    desc: "Tu mapa estratégico completo. Pilares, audiencia, insight y árbol de contenidos.",
+    cta: "Ver mapa",
+    accent: "naranja",
+  },
+];
+
 export default function DashboardClient() {
   return (
     <AppShell>
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-10">
+      <div className="max-w-3xl mx-auto">
+        {/* Header */}
+        <div className="mb-8 sm:mb-10">
           <h1 className="font-heading text-3xl sm:text-4xl text-negro mb-1">Tu Brújula</h1>
           <p className="text-muted text-sm">Elige tu modo de trabajo</p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
-          {/* Ideas */}
-          <Link
-            href="/ideas"
-            className="group relative bg-white rounded-2xl border border-borde/60 p-6 hover:border-naranja/40 hover:shadow-card-hover transition-all block"
-          >
-            <div className="w-11 h-11 rounded-xl bg-naranja/10 flex items-center justify-center text-xl mb-4 group-hover:bg-naranja/15 transition-colors">💡</div>
-            <h2 className="font-heading text-xl text-negro mb-1.5 group-hover:text-naranja transition-colors">
-              Ideas
-            </h2>
-            <p className="text-muted text-sm leading-relaxed mb-4">
-              Tu cajón de ideas. Apunta lo que se te ocurra y la IA lo conecta con tu estrategia.
-            </p>
-            <span className="text-sm text-naranja font-semibold">
-              Apuntar →
-            </span>
-          </Link>
+        {/* Workflow blocks — stack on mobile, horizontal rows on desktop */}
+        <div className="flex flex-col gap-3">
+          {sections.map((s) => (
+            <Link
+              key={s.href}
+              href={s.href}
+              className="group flex items-center gap-4 sm:gap-5 bg-white rounded-2xl border border-borde/60 p-4 sm:p-5 hover:border-naranja/40 hover:shadow-card-hover transition-all"
+            >
+              {/* Icon */}
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-naranja/10 flex items-center justify-center text-2xl sm:text-3xl flex-shrink-0 group-hover:bg-naranja/15 transition-colors">
+                {s.icon}
+              </div>
 
-          {/* Maestro */}
-          <Link
-            href="/maestro"
-            className="group relative bg-white rounded-2xl border border-borde/60 p-6 hover:border-naranja/40 hover:shadow-card-hover transition-all block"
-          >
-            <div className="w-11 h-11 rounded-xl bg-naranja/10 flex items-center justify-center text-xl mb-4 group-hover:bg-naranja/15 transition-colors">🎯</div>
-            <h2 className="font-heading text-xl text-negro mb-1.5 group-hover:text-naranja transition-colors">
-              El Maestro
-            </h2>
-            <p className="text-muted text-sm leading-relaxed mb-4">
-              Tu director creativo con IA. Te da titulares, ganchos y pistas creativas para tu siguiente pieza.
-            </p>
-            <span className="text-sm text-naranja font-semibold">
-              Activar →
-            </span>
-          </Link>
+              {/* Text */}
+              <div className="flex-1 min-w-0">
+                <h2 className="font-heading text-lg sm:text-xl text-negro group-hover:text-naranja transition-colors">
+                  {s.title}
+                </h2>
+                <p className="text-muted text-sm leading-snug mt-0.5 hidden sm:block">
+                  {s.desc}
+                </p>
+              </div>
 
-          {/* Piezas */}
-          <Link
-            href="/piezas"
-            className="group relative bg-white rounded-2xl border border-borde/60 p-6 hover:border-naranja/40 hover:shadow-card-hover transition-all block"
-          >
-            <div className="w-11 h-11 rounded-xl bg-naranja/10 flex items-center justify-center text-xl mb-4 group-hover:bg-naranja/15 transition-colors">📝</div>
-            <h2 className="font-heading text-xl text-negro mb-1.5 group-hover:text-naranja transition-colors">
-              Mis Piezas
-            </h2>
-            <p className="text-muted text-sm leading-relaxed mb-4">
-              Tu banco de piezas guardadas. Edita, planifica o recupera ideas del Maestro.
-            </p>
-            <span className="text-sm text-naranja font-semibold">
-              Ver piezas →
-            </span>
-          </Link>
-
-          {/* Planificador */}
-          <Link
-            href="/planner"
-            className="group relative bg-white rounded-2xl border border-borde/60 p-6 hover:border-naranja/40 hover:shadow-card-hover transition-all block"
-          >
-            <div className="w-11 h-11 rounded-xl bg-naranja/10 flex items-center justify-center text-xl mb-4 group-hover:bg-naranja/15 transition-colors">📅</div>
-            <h2 className="font-heading text-xl text-negro mb-1.5 group-hover:text-naranja transition-colors">
-              Planificador
-            </h2>
-            <p className="text-muted text-sm leading-relaxed mb-4">
-              Organiza tu contenido por semana o mes. Kanban, calendario y lista. Sincroniza con Google Calendar.
-            </p>
-            <span className="text-sm text-naranja font-semibold">
-              Planificar →
-            </span>
-          </Link>
-
-          {/* Minority Report */}
-          <Link
-            href="/minority-report"
-            className="group relative bg-white rounded-2xl border border-borde/60 p-6 hover:border-naranja/40 hover:shadow-card-hover transition-all block"
-          >
-            <div className="w-11 h-11 rounded-xl bg-naranja/10 flex items-center justify-center text-xl mb-4 group-hover:bg-naranja/15 transition-colors">🗺️</div>
-            <h2 className="font-heading text-xl text-negro mb-1.5 group-hover:text-naranja transition-colors">
-              Minority Report
-            </h2>
-            <p className="text-muted text-sm leading-relaxed mb-4">
-              Tu mapa estratégico completo. Pilares, audiencia, insight y árbol de contenidos en una vista.
-            </p>
-            <span className="text-sm text-naranja font-semibold">
-              Ver mapa →
-            </span>
-          </Link>
+              {/* CTA arrow */}
+              <div className="flex items-center gap-1.5 flex-shrink-0">
+                <span className="text-sm font-semibold text-naranja hidden sm:inline">
+                  {s.cta}
+                </span>
+                <svg
+                  className="w-5 h-5 text-naranja/60 group-hover:text-naranja group-hover:translate-x-0.5 transition-all"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </Link>
+          ))}
         </div>
 
         {/* Quick actions */}
@@ -105,13 +104,13 @@ export default function DashboardClient() {
             href="/onboarding"
             className="text-sm text-muted hover:text-naranja transition-colors"
           >
-            ✏️ Editar mis datos
+            Editar mis datos
           </Link>
           <Link
             href="/settings"
             className="text-sm text-muted hover:text-naranja transition-colors"
           >
-            ⚙️ Configuración
+            Configuración
           </Link>
         </div>
       </div>
