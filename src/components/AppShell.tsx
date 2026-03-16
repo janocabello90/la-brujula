@@ -55,7 +55,7 @@ export default function AppShell({ children, fullWidth = false }: AppShellProps)
   const sidebarContent = (
     <>
       {/* Panel — Top level */}
-      <div className="mb-3">
+      <div className="mb-1">
         <Link
           href="/dashboard"
           className={`flex items-center gap-2.5 px-2.5 py-2 rounded-xl transition-all ${
@@ -66,6 +66,21 @@ export default function AppShell({ children, fullWidth = false }: AppShellProps)
         >
           <span className="text-lg flex-shrink-0">📊</span>
           {!sidebarCollapsed && <span className="text-sm">Panel</span>}
+        </Link>
+      </div>
+
+      {/* El Espejo — Top level */}
+      <div className="mb-3">
+        <Link
+          href="/espejo"
+          className={`flex items-center gap-2.5 px-2.5 py-2 rounded-xl transition-all ${
+            pathname === "/espejo"
+              ? "bg-negro text-white font-medium"
+              : "text-negro/70 hover:bg-negro/[0.04]"
+          }`}
+        >
+          <span className="text-lg flex-shrink-0">🪞</span>
+          {!sidebarCollapsed && <span className="text-sm">El Espejo</span>}
         </Link>
       </div>
 
