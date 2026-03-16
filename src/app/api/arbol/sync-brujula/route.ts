@@ -87,20 +87,22 @@ export async function POST(request: Request) {
       synced.push("Formatos preferidos sincronizados desde Las Ramas");
     }
 
-    if (Object.keys(arbolMeta).length > 0) {
-      updates.arbol_meta = arbolMeta;
-    }
-
     updates.updated_at = new Date().toISOString();
+
+    // Separate arbol_meta from core updates (column may not exist yet)
+    const coreUpdates = { ...updates };
+    if (Object.keys(arbolMeta).length > 0) {
+      // Try arbol_meta separately so it doesn't break the whole sync
+    }
 
     if (synced.length === 0) {
       return NextResponse.json({ synced: [], message: "No hay datos nuevos para sincronizar." });
     }
 
-    // Update brújula data
+    // Update brújula data (core fields: briefing, channels)
     const { error } = await supabase
       .from("brujula_data")
-      .update(updates)
+      .update(coreUpdates)
       .eq("user_id", userId);
 
     if (error) {
@@ -109,6 +111,25 @@ export async function POST(request: Request) {
         { error: "Error al sincronizar con La Brújula." },
         { status: 500 }
       );
+    }
+
+    // Try to update arbol_meta column (may not exist yet — that's OK)
+    if (Object.keys(arbolMeta).length > 0) {
+      const { error: metaError } = await supabase
+        .from("brujula_data")
+        .update({ arbol_meta: arbolMeta })
+        .eq("user_id", userId);
+
+      if (metaError) {
+        console.warn("arbol_meta column may not exist yet:", metaError.message);
+        // Remove arbol_meta-related items from synced list but don't fail
+        const metaLabels = ["Tono de voz", "Narrativa", "Energía", "Arquetipos", "Formatos preferidos"];
+        const filtered = synced.filter((s) => !metaLabels.some((l) => s.includes(l)));
+        return NextResponse.json({
+          synced: [...filtered, "⚠️ Para sincronizar tono, arquetipos y narrativa, ejecuta: ALTER TABLE brujula_data ADD COLUMN arbol_meta jsonb DEFAULT '{}'"],
+          message: `${filtered.length} elementos sincronizados (arbol_meta pendiente)`,
+        });
+      }
     }
 
     return NextResponse.json({ synced, message: `${synced.length} elementos sincronizados` });
