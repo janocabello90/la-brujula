@@ -43,6 +43,7 @@ export async function POST(request: Request) {
     const state = {
       briefing: brujulaData.briefing || {},
       buyer: brujulaData.buyer || {},
+      buyers: brujulaData.buyers || (brujulaData.buyer?.nombre ? [brujulaData.buyer] : []),
       empathy: brujulaData.empathy || {},
       insight: brujulaData.insight || {},
       tree: brujulaData.tree || { pilares: [] },
@@ -71,12 +72,12 @@ BRIEFING:
 - Etiqueta profesional: ${state.briefing.etiquetaProfesional || "No definida"}
 - ¿Por qué tú?: ${state.briefing.porQueTu || "No definido"}
 
-BUYER PERSONA:
-- Nombre: ${state.buyer.nombre || "?"} | Edad: ${state.buyer.edad || "?"} | Profesión: ${state.buyer.profesion || "?"}
-- Qué quiere: ${state.buyer.queQuiere || "No definido"}
-- Qué le frena: ${state.buyer.queLeFrena || "No definido"}
-- Qué consume: ${state.buyer.queConsumo || "No definido"}
-- Lenguaje: ${state.buyer.lenguaje || "No definido"}
+BUYER PERSONAS (perfiles representativos de su audiencia diversa):
+${state.buyers.length > 0
+  ? state.buyers.map((b: any, i: number) => `Persona ${i + 1}: ${b.nombre || "?"} | ${b.edad || "?"} | ${b.profesion || "?"}
+  Quiere: ${b.queQuiere || "?"} | Le frena: ${b.queLeFrena || "?"} | Consume: ${b.queConsumo || "?"} | Habla: ${b.lenguaje || "?"}`).join("\n")
+  : `- ${state.buyer.nombre || "?"} | ${state.buyer.edad || "?"} | ${state.buyer.profesion || "?"}
+  Quiere: ${state.buyer.queQuiere || "?"} | Le frena: ${state.buyer.queLeFrena || "?"}`}
 
 MAPA DE EMPATÍA:
 - Dolores: ${state.empathy.dolores || "No definido"}

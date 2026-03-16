@@ -55,6 +55,7 @@ export async function POST(request: Request) {
     const state = {
       briefing: brujulaData.briefing || {},
       buyer: brujulaData.buyer || {},
+      buyers: brujulaData.buyers || (brujulaData.buyer?.nombre ? [brujulaData.buyer] : []),
       empathy: brujulaData.empathy || {},
       insight: brujulaData.insight || {},
       tree: brujulaData.tree || { pilares: [] },
@@ -81,12 +82,17 @@ Lo que su audiencia diría: "${state.insight.fraseAudiencia || "No definida"}"
 
 === A QUIÉN LE HABLA ===
 
-IMPORTANTE: El buyer persona es UN EJEMPLO representativo, NO el único perfil. Este creador habla a profesionales diversos (emprendedores, consultores, freelancers, profesionales de distintos sectores). Usa el buyer persona como referencia de tono, dolores y deseos — pero NO limites las sugerencias a su profesión o sector concreto. El contenido debe ser universal dentro del tema raíz del creador.
+IMPORTANTE: Los buyer personas son EJEMPLOS representativos de su audiencia diversa. Este creador habla a profesionales de distintos sectores. Usa estos perfiles como referencia de tono, dolores y deseos — pero NO limites las sugerencias a una sola profesión o sector. El contenido debe ser universal dentro del tema raíz del creador.
 
-Ejemplo de buyer persona: ${state.buyer.nombre || "?"}, ${state.buyer.edad || "?"}, ${state.buyer.profesion || "?"}
+${state.buyers.length > 0
+  ? state.buyers.map((b: any, i: number) => `PERSONA ${i + 1}: ${b.nombre || "?"}, ${b.edad || "?"}, ${b.profesion || "?"}
+  Lo que quiere: ${b.queQuiere || "No definido"}
+  Lo que le frena: ${b.queLeFrena || "No definido"}
+  Cómo habla: ${b.lenguaje || "No definido"}`).join("\n\n")
+  : `Ejemplo de buyer persona: ${state.buyer.nombre || "?"}, ${state.buyer.edad || "?"}, ${state.buyer.profesion || "?"}
 Lo que quiere: ${state.buyer.queQuiere || "No definido"}
 Lo que le frena: ${state.buyer.queLeFrena || "No definido"}
-Cómo habla: ${state.buyer.lenguaje || "No definido"}
+Cómo habla: ${state.buyer.lenguaje || "No definido"}`}
 
 EMOCIONES Y TENSIONES DE SU AUDIENCIA:
 - Ve: ${state.empathy.queVe || "?"}

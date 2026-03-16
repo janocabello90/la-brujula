@@ -1,6 +1,6 @@
 export const STEPS = [
   { id: 'briefing', label: 'Paso 1 de 6', title: 'Briefing Personal', desc: 'Quién eres, de qué hablas y por qué tú. Los cimientos de tu Pirámide.' },
-  { id: 'buyer', label: 'Paso 2 de 6', title: 'Buyer Persona', desc: 'A quién le hablas. No un perfil genérico: una persona real con miedos y deseos concretos.' },
+  { id: 'buyer', label: 'Paso 2 de 6', title: 'Buyer Persona', desc: 'A quién le hablas. Puedes definir hasta 5 perfiles — personas reales con miedos y deseos concretos.' },
   { id: 'empathy', label: 'Paso 3 de 6', title: 'Mapa de Empatía', desc: 'Métete en su cabeza. Qué ve, qué oye, qué siente por dentro y no dice.' },
   { id: 'insight', label: 'Paso 4 de 6', title: 'El Insight', desc: 'La verdad oculta que conecta lo que tú ofreces con lo que ellos realmente necesitan.' },
   { id: 'tree', label: 'Paso 5 de 6', title: 'Árbol de Contenidos', desc: 'Tus pilares, subtemas y ángulos. El mapa de todo lo que puedes contar.' },
@@ -41,6 +41,7 @@ export const FORMAT_MAP: Record<string, string[]> = {
 export const DEFAULT_STATE = {
   briefing: { temaRaiz: '', propuestaValor: '', etiquetaProfesional: '', porQueTu: '' },
   buyer: { nombre: '', edad: '', profesion: '', queQuiere: '', queLeFrena: '', queConsumo: '', dondeEsta: '', lenguaje: '' },
+  buyers: [{ nombre: '', edad: '', profesion: '', queQuiere: '', queLeFrena: '', queConsumo: '', dondeEsta: '', lenguaje: '' }] as { nombre: string; edad: string; profesion: string; queQuiere: string; queLeFrena: string; queConsumo: string; dondeEsta: string; lenguaje: string }[],
   empathy: { queVe: '', queOye: '', queDiceHace: '', quePiensaSiente: '', dolores: '', deseos: '' },
   insight: { insight: '', fraseAudiencia: '' },
   tree: { pilares: [{ nombre: '', subtemas: [] as string[], angulos: [] as string[], titulares: [] as string[] }] },

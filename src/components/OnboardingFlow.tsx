@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { STEPS, ANGLES, CHANNELS, OBJECTIVES } from "@/lib/constants";
-import type { BrujulaState, Pilar } from "@/lib/types";
+import type { BrujulaState, BuyerData, Pilar } from "@/lib/types";
 import { DEFAULT_STATE } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
 
@@ -19,7 +19,12 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
 
   // Form state
   const [briefing, setBriefing] = useState(initialData?.briefing || DEFAULT_STATE.briefing);
-  const [buyer, setBuyer] = useState(initialData?.buyer || DEFAULT_STATE.buyer);
+  // Support multiple buyers — migrate legacy single buyer to array
+  const [buyers, setBuyers] = useState<BuyerData[]>(() => {
+    if (initialData?.buyers && initialData.buyers.length > 0) return initialData.buyers;
+    if (initialData?.buyer && initialData.buyer.nombre) return [initialData.buyer];
+    return [{ nombre: '', edad: '', profesion: '', queQuiere: '', queLeFrena: '', queConsumo: '', dondeEsta: '', lenguaje: '' }];
+  });
   const [empathy, setEmpathy] = useState(initialData?.empathy || DEFAULT_STATE.empathy);
   const [insight, setInsight] = useState(initialData?.insight || DEFAULT_STATE.insight);
   const [tree, setTree] = useState(initialData?.tree || DEFAULT_STATE.tree);
@@ -32,11 +37,12 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
     setSaving(true);
     const supabase = createClient();
 
-    // Save current step data
+    // Save current step data — save first buyer as legacy `buyer` + full array as `buyers`
     const payload = {
       user_id: userId,
       briefing,
-      buyer,
+      buyer: buyers[0] || DEFAULT_STATE.buyer,
+      buyers,
       empathy,
       insight,
       tree,
@@ -57,7 +63,7 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
       router.push("/dashboard");
     }
     setSaving(false);
-  }, [step, briefing, buyer, empathy, insight, tree, channels, apiKey, userId, router]);
+  }, [step, briefing, buyers, empathy, insight, tree, channels, apiKey, userId, router]);
 
   // --- PILLAR MANAGEMENT ---
   const addPilar = () => {
@@ -174,16 +180,78 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
 
       case "buyer":
         return (
-          <>
-            <TextInput label="Nombre (ficticio)" value={buyer.nombre} onChange={(v) => setBuyer({ ...buyer, nombre: v })} placeholder="Ej: Laura" />
-            <TextInput label="Edad" value={buyer.edad} onChange={(v) => setBuyer({ ...buyer, edad: v })} placeholder="Ej: 32 años" />
-            <TextInput label="Profesión" value={buyer.profesion} onChange={(v) => setBuyer({ ...buyer, profesion: v })} placeholder="Ej: Freelance de diseño" />
-            <TextInput label="¿Qué quiere lograr?" value={buyer.queQuiere} onChange={(v) => setBuyer({ ...buyer, queQuiere: v })} textarea placeholder="Su objetivo principal" />
-            <TextInput label="¿Qué le frena?" value={buyer.queLeFrena} onChange={(v) => setBuyer({ ...buyer, queLeFrena: v })} textarea placeholder="Sus miedos y bloqueos" />
-            <TextInput label="¿Qué contenido consume?" value={buyer.queConsumo} onChange={(v) => setBuyer({ ...buyer, queConsumo: v })} placeholder="Podcasts, newsletters, cuentas..." />
-            <TextInput label="¿Dónde está?" value={buyer.dondeEsta} onChange={(v) => setBuyer({ ...buyer, dondeEsta: v })} placeholder="Instagram, LinkedIn, YouTube..." />
-            <TextInput label="¿Cómo habla?" value={buyer.lenguaje} onChange={(v) => setBuyer({ ...buyer, lenguaje: v })} placeholder="Informal, técnico, aspiracional..." />
-          </>
+          <div>
+            {buyers.map((b, i) => {
+              const updateBuyer = (field: keyof BuyerData, value: string) => {
+                setBuyers((prev) => {
+                  const copy = [...prev];
+                  copy[i] = { ...copy[i], [field]: value };
+                  return copy;
+                });
+              };
+              const isComplete = b.nombre && b.profesion && b.queQuiere;
+              const isLast = i === buyers.length - 1;
+
+              return (
+                <div key={i} className="mb-6">
+                  {/* Buyer header */}
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-sm font-semibold text-naranja">
+                      Persona {i + 1}{b.nombre ? ` — ${b.nombre}` : ""}
+                    </span>
+                    {buyers.length > 1 && (
+                      <button
+                        onClick={() => setBuyers((prev) => prev.filter((_, idx) => idx !== i))}
+                        className="text-danger text-xs hover:underline"
+                      >
+                        Eliminar
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="bg-card border border-borde rounded-card p-5">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
+                      <TextInput label="Nombre (ficticio)" value={b.nombre} onChange={(v) => updateBuyer("nombre", v)} placeholder={i === 0 ? "Ej: Laura" : i === 1 ? "Ej: Carlos" : "Ej: Ana"} />
+                      <TextInput label="Edad" value={b.edad} onChange={(v) => updateBuyer("edad", v)} placeholder="Ej: 32 años" />
+                      <TextInput label="Profesión" value={b.profesion} onChange={(v) => updateBuyer("profesion", v)} placeholder={i === 0 ? "Ej: Fisioterapeuta" : i === 1 ? "Ej: Consultor freelance" : "Ej: Profesora de yoga"} />
+                    </div>
+                    <TextInput label="¿Qué quiere lograr?" value={b.queQuiere} onChange={(v) => updateBuyer("queQuiere", v)} textarea placeholder="Su objetivo principal" />
+                    <TextInput label="¿Qué le frena?" value={b.queLeFrena} onChange={(v) => updateBuyer("queLeFrena", v)} textarea placeholder="Sus miedos y bloqueos" />
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <TextInput label="¿Qué consume?" value={b.queConsumo} onChange={(v) => updateBuyer("queConsumo", v)} placeholder="Podcasts, newsletters..." />
+                      <TextInput label="¿Dónde está?" value={b.dondeEsta} onChange={(v) => updateBuyer("dondeEsta", v)} placeholder="Instagram, LinkedIn..." />
+                      <TextInput label="¿Cómo habla?" value={b.lenguaje} onChange={(v) => updateBuyer("lenguaje", v)} placeholder="Informal, técnico..." />
+                    </div>
+                  </div>
+
+                  {/* Add more prompt — only after last completed buyer */}
+                  {isLast && isComplete && buyers.length < 5 && (
+                    <div className="mt-4 p-4 bg-naranja/5 border border-naranja/20 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                      <div>
+                        <p className="text-sm font-medium text-negro">
+                          ¿Quieres añadir otro buyer persona?
+                        </p>
+                        <p className="text-xs text-muted mt-0.5">
+                          Puedes definir hasta 5 perfiles diferentes. Así la IA entiende que tu audiencia es diversa.
+                        </p>
+                      </div>
+                      <button
+                        onClick={() =>
+                          setBuyers((prev) => [
+                            ...prev,
+                            { nombre: "", edad: "", profesion: "", queQuiere: "", queLeFrena: "", queConsumo: "", dondeEsta: "", lenguaje: "" },
+                          ])
+                        }
+                        className="px-4 py-2 bg-naranja text-white text-sm font-medium rounded-lg hover:bg-naranja-hover transition-colors flex-shrink-0"
+                      >
+                        + Añadir persona
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         );
 
       case "empathy":

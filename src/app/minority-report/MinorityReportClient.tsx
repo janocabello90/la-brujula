@@ -163,17 +163,22 @@ export default function MinorityReportClient({ userId, data, history, hasApiKey 
       addSpacer();
 
       // ============================
-      // BUYER PERSONA
+      // BUYER PERSONAS
       // ============================
-      addSectionHeader("👤  BUYER PERSONA");
-      addField("Nombre", data?.buyer?.nombre);
-      addField("Edad", data?.buyer?.edad);
-      addField("Profesión", data?.buyer?.profesion);
-      addField("Qué quiere", data?.buyer?.queQuiere);
-      addField("Qué le frena", data?.buyer?.queLeFrena);
-      addField("Qué consume", data?.buyer?.queConsumo);
-      addField("Dónde está", data?.buyer?.dondeEsta);
-      addField("Lenguaje", data?.buyer?.lenguaje);
+      const buyersList = data?.buyers && data.buyers.length > 0 ? data.buyers : data?.buyer?.nombre ? [data.buyer] : [];
+      addSectionHeader("👤  BUYER PERSONAS");
+      buyersList.forEach((b: any, i: number) => {
+        if (i > 0) addSpacer();
+        if (buyersList.length > 1) addField(`— Persona ${i + 1}`, b.nombre || "");
+        else addField("Nombre", b.nombre);
+        addField("Edad", b.edad);
+        addField("Profesión", b.profesion);
+        addField("Qué quiere", b.queQuiere);
+        addField("Qué le frena", b.queLeFrena);
+        addField("Qué consume", b.queConsumo);
+        addField("Dónde está", b.dondeEsta);
+        addField("Lenguaje", b.lenguaje);
+      });
       addSpacer();
 
       // ============================
@@ -445,18 +450,25 @@ export default function MinorityReportClient({ userId, data, history, hasApiKey 
           <Field label="¿Por qué tú?" value={data?.briefing?.porQueTu} />
         </Section>
 
-        {/* Buyer */}
-        <Section title="👤 Buyer Persona">
-          <div className="grid grid-cols-2 gap-x-6">
-            <Field label="Nombre" value={data?.buyer?.nombre} />
-            <Field label="Edad" value={data?.buyer?.edad} />
-            <Field label="Profesión" value={data?.buyer?.profesion} />
-            <Field label="Dónde está" value={data?.buyer?.dondeEsta} />
-          </div>
-          <Field label="Qué quiere" value={data?.buyer?.queQuiere} />
-          <Field label="Qué le frena" value={data?.buyer?.queLeFrena} />
-          <Field label="Qué consume" value={data?.buyer?.queConsumo} />
-          <Field label="Lenguaje" value={data?.buyer?.lenguaje} />
+        {/* Buyers */}
+        <Section title={`👤 Buyer Persona${(data?.buyers || []).length > 1 ? "s" : ""}`}>
+          {(data?.buyers && data.buyers.length > 0 ? data.buyers : data?.buyer?.nombre ? [data.buyer] : []).map((b: any, i: number) => (
+            <div key={i} className={`${i > 0 ? "mt-4 pt-4 border-t border-borde/40" : ""}`}>
+              {(data?.buyers || []).length > 1 && (
+                <span className="text-xs font-semibold text-naranja mb-2 block">Persona {i + 1}</span>
+              )}
+              <div className="grid grid-cols-2 gap-x-6">
+                <Field label="Nombre" value={b.nombre} />
+                <Field label="Edad" value={b.edad} />
+                <Field label="Profesión" value={b.profesion} />
+                <Field label="Dónde está" value={b.dondeEsta} />
+              </div>
+              <Field label="Qué quiere" value={b.queQuiere} />
+              <Field label="Qué le frena" value={b.queLeFrena} />
+              <Field label="Qué consume" value={b.queConsumo} />
+              <Field label="Lenguaje" value={b.lenguaje} />
+            </div>
+          ))}
         </Section>
 
         {/* Empathy */}

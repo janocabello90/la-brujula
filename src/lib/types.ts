@@ -59,7 +59,8 @@ export interface HistoryEntry {
 
 export interface BrujulaState {
   briefing: BriefingData;
-  buyer: BuyerData;
+  buyer: BuyerData;          // Legacy single buyer (kept for backwards compat)
+  buyers?: BuyerData[];      // Multiple buyer personas (up to 5)
   empathy: EmpathyData;
   insight: InsightData;
   tree: TreeData;

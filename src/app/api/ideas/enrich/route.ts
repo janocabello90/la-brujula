@@ -44,6 +44,7 @@ export async function POST(request: Request) {
       briefing: brujulaData.briefing || {},
       tree: brujulaData.tree || { pilares: [] },
       buyer: brujulaData.buyer || {},
+      buyers: brujulaData.buyers || (brujulaData.buyer?.nombre ? [brujulaData.buyer] : []),
       insight: brujulaData.insight || {},
     };
 
@@ -63,7 +64,10 @@ ${state.tree.pilares
   )
   .join("\n")}
 
-AUDIENCIA: ${state.buyer.nombre || "No definida"} — ${state.buyer.queQuiere || ""} / Le frena: ${state.buyer.queLeFrena || ""}
+AUDIENCIA:
+${state.buyers.length > 0
+  ? state.buyers.map((b: any) => `- ${b.nombre || "?"} (${b.profesion || "?"}) — Quiere: ${b.queQuiere || "?"} / Le frena: ${b.queLeFrena || "?"}`).join("\n")
+  : `- ${state.buyer.nombre || "No definida"} — ${state.buyer.queQuiere || ""} / Le frena: ${state.buyer.queLeFrena || ""}`}
 
 === IDEA EN BRUTO ===
 "${ideaText}"
