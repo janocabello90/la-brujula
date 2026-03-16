@@ -69,8 +69,8 @@ export default function LoginPage() {
       {/* Nav */}
       <nav className="flex items-center px-6 sm:px-10 py-5 max-w-6xl mx-auto w-full">
         <Link href="/" className="flex items-center gap-2.5">
-          <span className="text-2xl">🧭</span>
-          <span className="font-heading text-xl text-negro">La Brújula</span>
+          <span className="text-2xl">🎓</span>
+          <span className="font-heading text-xl text-negro">Escuela de Buena Vida</span>
         </Link>
       </nav>
 
@@ -82,7 +82,7 @@ export default function LoginPage() {
               <>
                 <div className="text-center mb-8">
                   <h1 className="font-heading text-3xl text-negro mb-2">
-                    {isSignUp ? "Crea tu cuenta" : "Entra a tu Brújula"}
+                    {isSignUp ? "Crea tu cuenta" : "Entra a la Escuela"}
                   </h1>
                   <p className="text-muted text-sm">
                     {isSignUp

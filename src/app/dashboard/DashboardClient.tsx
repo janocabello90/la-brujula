@@ -29,13 +29,6 @@ interface Props {
   tasks: SmartTask[];
 }
 
-const sections = [
-  { href: "/ideas", icon: "💡", title: "Ideas", cta: "Apuntar idea" },
-  { href: "/maestro", icon: "🎯", title: "El Maestro", cta: "Activar" },
-  { href: "/piezas", icon: "📝", title: "Mis Piezas", cta: "Ver piezas" },
-  { href: "/planner", icon: "📅", title: "Planificador", cta: "Planificar" },
-  { href: "/minority-report", icon: "🗺️", title: "Minority Report", cta: "Ver mapa" },
-];
 
 export default function DashboardClient({ stats, tasks }: Props) {
   // Pick a quote based on today's date so it's consistent within a day
@@ -89,52 +82,14 @@ export default function DashboardClient({ stats, tasks }: Props) {
           </div>
         )}
 
-        {/* Quick nav blocks */}
-        <h2 className="text-xs font-semibold text-muted uppercase tracking-wide mb-3 px-1">
-          Herramientas
-        </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 mb-6">
-          {sections.map((s) => (
-            <Link
-              key={s.href}
-              href={s.href}
-              className="group flex flex-col items-center gap-1.5 bg-white rounded-xl border border-borde/60 py-4 px-3 hover:border-naranja/40 hover:shadow-card-hover transition-all text-center"
-            >
-              <span className="text-2xl group-hover:scale-110 transition-transform">{s.icon}</span>
-              <span className="text-sm font-medium text-negro group-hover:text-naranja transition-colors">{s.title}</span>
-            </Link>
-          ))}
-        </div>
-
         {/* Quick actions */}
-        <div className="flex justify-center gap-6">
+        <div className="flex justify-center gap-6 mt-2">
           <Link href="/onboarding" className="text-sm text-muted hover:text-naranja transition-colors">
-            Editar mis datos
+            Editar mi briefing
           </Link>
           <Link href="/settings" className="text-sm text-muted hover:text-naranja transition-colors">
             Configuración
           </Link>
-        </div>
-
-        {/* Disclaimer */}
-        <div className="mt-10 flex items-start gap-4 bg-negro/[0.03] border border-borde/40 rounded-xl p-4 sm:p-5">
-          <span className="text-2xl flex-shrink-0">🦍</span>
-          <div className="text-sm text-negro/70 leading-relaxed">
-            <p>
-              Si algo del proceso te chirría, mi recomendación es que revises tu{" "}
-              <strong className="text-negro">Pirámide de la Marca Personal</strong> o me preguntes directamente en la comunidad.
-            </p>
-            <p className="mt-2">
-              <a
-                href="https://www.skool.com/una-buena-vida-comunidad-2471"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-naranja font-semibold hover:underline"
-              >
-                Escuela de Buena Vida →
-              </a>
-            </p>
-          </div>
         </div>
       </div>
     </AppShell>

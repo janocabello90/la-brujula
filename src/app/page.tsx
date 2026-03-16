@@ -6,8 +6,8 @@ export default function Home() {
       {/* ─── Nav ─────────────────────────────────────────── */}
       <nav className="relative z-10 flex items-center justify-between px-6 sm:px-10 py-5 max-w-6xl mx-auto">
         <div className="flex items-center gap-2.5">
-          <span className="text-2xl">🧭</span>
-          <span className="font-heading text-xl font-semibold text-negro tracking-tight">La Brújula</span>
+          <span className="text-2xl">🎓</span>
+          <span className="font-heading text-xl font-semibold text-negro tracking-tight">Escuela de Buena Vida</span>
         </div>
         <div className="flex items-center gap-6">
           <a
@@ -40,21 +40,21 @@ export default function Home() {
               Por Jano Cabello
             </p>
             <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl text-negro leading-[1.1] mb-6">
-              La Brújula<br />
-              <span className="text-naranja">de Contenido</span>
+              Escuela de<br />
+              <span className="text-naranja">Buena Vida</span>
             </h1>
             <p className="text-base sm:text-lg text-muted leading-relaxed mb-4 max-w-lg">
-              No te dice qué escribir. Te dice hacia dónde apuntar.
+              Las herramientas de tu marca personal. Todas en un mismo sitio.
             </p>
             <p className="text-sm text-muted/80 leading-relaxed mb-8 max-w-lg">
-              Construye tu mapa estratégico de contenido, descubre qué pieza crear en cada momento y planifica tu semana con inteligencia artificial. Todo basado en tu marca personal real — no en fórmulas genéricas.
+              Tres herramientas conectadas entre sí para construir, estructurar y ejecutar tu marca personal con estrategia. La Pirámide, El Árbol y La Brújula — cada una alimenta a las demás.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link
                 href="/login"
                 className="inline-flex items-center gap-2 bg-naranja text-white font-semibold px-7 py-3.5 rounded-xl hover:bg-naranja-hover transition-colors text-sm"
               >
-                Crear mi Brújula
+                Entrar a la Escuela
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
@@ -114,56 +114,64 @@ export default function Home() {
       {/* ─── Cómo funciona ───────────────────────────────── */}
       <section id="como-funciona" className="max-w-6xl mx-auto px-6 sm:px-10 py-16 sm:py-24">
         <div className="text-center mb-12 sm:mb-16">
-          <p className="text-xs font-bold text-naranja uppercase tracking-widest mb-3">El proceso</p>
+          <p className="text-xs font-bold text-naranja uppercase tracking-widest mb-3">Las herramientas</p>
           <h2 className="font-heading text-3xl sm:text-4xl text-negro">
-            De la estrategia a la acción en 4 pasos
+            Tres herramientas. Un mismo cerebro.
           </h2>
+          <p className="text-muted text-sm mt-3 max-w-xl mx-auto">
+            Lo que trabajas en una, alimenta a las demás. Tu marca personal es un sistema, no piezas sueltas.
+          </p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid sm:grid-cols-3 gap-5">
           {[
             {
-              num: "01",
+              icon: "🔺",
+              title: "La Pirámide",
+              desc: "Construye tu identidad de marca desde la base: valores, propósito, visión, propuesta de valor y posicionamiento. Los cimientos de todo lo demás.",
+              accent: "bg-naranja/[0.06]",
+              tag: "Próximamente",
+            },
+            {
+              icon: "🌳",
+              title: "El Árbol",
+              desc: "Diseña tu sistema de contenidos: pilares, subtemas, formatos y canales. La estructura que hace que tu mensaje sea consistente y escalable.",
+              accent: "bg-naranja/[0.04]",
+              tag: "Próximamente",
+            },
+            {
               icon: "🧭",
-              title: "Configura tu Brújula",
-              desc: "6 pasos estratégicos: desde tu propuesta de valor hasta tu árbol de contenidos. Se hace una vez.",
-              accent: "bg-naranja/[0.06]",
+              title: "La Brújula",
+              desc: "De la estrategia a la acción. Genera ideas con IA, crea piezas de contenido alineadas con tu marca y planifica tu semana. Tu copiloto creativo.",
+              accent: "bg-naranja/[0.08]",
+              tag: "Disponible",
             },
-            {
-              num: "02",
-              icon: "🗺️",
-              title: "Tu Minority Report",
-              desc: "Ve todo tu conocimiento estratégico en una sola vista. Pilares, subtemas, ángulos, audiencia.",
-              accent: "bg-naranja/[0.04]",
-            },
-            {
-              num: "03",
-              icon: "🎯",
-              title: "Activa el Maestro",
-              desc: "Dile cómo estás hoy y qué quieres lograr. La IA te da titulares, ganchos y pistas creativas.",
-              accent: "bg-naranja/[0.06]",
-            },
-            {
-              num: "04",
-              icon: "📅",
-              title: "Planifica y publica",
-              desc: "Arrastra las piezas a tu calendario semanal. Sincroniza con Google Calendar y a crear.",
-              accent: "bg-naranja/[0.04]",
-            },
-          ].map((step) => (
+          ].map((tool) => (
             <div
-              key={step.num}
-              className={`${step.accent} rounded-2xl p-6 sm:p-7 border border-borde/40 hover:border-naranja/30 transition-colors group`}
+              key={tool.title}
+              className={`${tool.accent} rounded-2xl p-6 sm:p-8 border border-borde/40 hover:border-naranja/30 transition-colors group relative`}
             >
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-3xl">{step.icon}</span>
-                <span className="text-naranja/40 font-heading text-3xl font-bold group-hover:text-naranja/60 transition-colors">{step.num}</span>
-              </div>
-              <h3 className="font-heading text-xl text-negro mb-2">{step.title}</h3>
-              <p className="text-sm text-muted leading-relaxed">{step.desc}</p>
+              <span className={`absolute top-4 right-4 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full ${
+                tool.tag === "Disponible" ? "bg-naranja/20 text-naranja" : "bg-negro/[0.06] text-muted"
+              }`}>
+                {tool.tag}
+              </span>
+              <span className="text-4xl block mb-4">{tool.icon}</span>
+              <h3 className="font-heading text-2xl text-negro mb-3">{tool.title}</h3>
+              <p className="text-sm text-muted leading-relaxed">{tool.desc}</p>
             </div>
           ))}
         </div>
+
+        {/* Connection visual */}
+        <div className="flex items-center justify-center gap-2 mt-8">
+          <span className="text-2xl">🔺</span>
+          <div className="w-8 h-0.5 bg-naranja/30" />
+          <span className="text-2xl">🌳</span>
+          <div className="w-8 h-0.5 bg-naranja/30" />
+          <span className="text-2xl">🧭</span>
+        </div>
+        <p className="text-center text-xs text-muted/60 mt-2">Datos sincronizados entre herramientas</p>
       </section>
 
       {/* ─── Herramientas (detalle) ──────────────────────── */}
@@ -343,17 +351,17 @@ export default function Home() {
       <section className="bg-negro">
         <div className="max-w-3xl mx-auto px-6 sm:px-10 py-16 sm:py-24 text-center">
           <h2 className="font-heading text-3xl sm:text-4xl text-white mb-4 leading-snug">
-            Deja de improvisar.<br />
-            <span className="text-naranja">Empieza a apuntar.</span>
+            Tu marca personal<br />
+            <span className="text-naranja">merece un sistema.</span>
           </h2>
           <p className="text-white/50 text-sm mb-8 max-w-md mx-auto">
-            Configura tu Brújula en 15 minutos. Úsala cada vez que te sientes a crear.
+            Empieza con La Brújula. Pronto tendrás La Pirámide y El Árbol para completar el recorrido.
           </p>
           <Link
             href="/login"
             className="inline-flex items-center gap-2 bg-naranja text-white font-semibold px-8 py-4 rounded-xl hover:bg-naranja-hover transition-colors text-base"
           >
-            Crear mi Brújula gratis
+            Entrar gratis
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
@@ -365,8 +373,8 @@ export default function Home() {
       <footer className="bg-negro border-t border-white/[0.06] py-8">
         <div className="max-w-6xl mx-auto px-6 sm:px-10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <span className="text-lg">🧭</span>
-            <span className="font-heading text-sm text-white/60">La Brújula de Contenido</span>
+            <span className="text-lg">🎓</span>
+            <span className="font-heading text-sm text-white/60">Escuela de Buena Vida</span>
           </div>
           <p className="text-white/30 text-xs">
             Un proyecto de{" "}
