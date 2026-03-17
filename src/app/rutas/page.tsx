@@ -33,19 +33,28 @@ export default async function RutasPage() {
     journey = newJourney;
   }
 
-  // Fetch árbol completion for display
-  const { data: arbolData } = await supabase
-    .from("arbol_data")
-    .select("*")
-    .eq("user_id", user.id)
-    .single();
-
-  // Fetch brújula data
-  const { data: brujulaData } = await supabase
-    .from("brujula_data")
-    .select("*")
-    .eq("user_id", user.id)
-    .single();
+  // Fetch all data needed for strategy generation
+  const [
+    { data: piramideData },
+    { data: arbolData },
+    { data: brujulaData },
+  ] = await Promise.all([
+    supabase
+      .from("piramide_data")
+      .select("*")
+      .eq("user_id", user.id)
+      .single(),
+    supabase
+      .from("arbol_data")
+      .select("*")
+      .eq("user_id", user.id)
+      .single(),
+    supabase
+      .from("brujula_data")
+      .select("*")
+      .eq("user_id", user.id)
+      .single(),
+  ]);
 
   // Calculate árbol sections completed
   const arbolSections = ["semilla", "raices", "tronco", "ramas", "copa", "frutos", "entorno", "tiempo", "cofre"];
@@ -78,6 +87,9 @@ export default async function RutasPage() {
         hasBuyer={hasBuyer}
         hasInsight={hasInsight}
         hasTree={hasTree}
+        piramideData={piramideData}
+        arbolData={arbolData}
+        brujulaData={brujulaData}
       />
     </AppShell>
   );

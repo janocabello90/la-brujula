@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { PHASES, RUTA_CONFIG, type UserJourney, type PhaseConfig } from "@/lib/types";
+import { PHASES, RUTA_CONFIG, type UserJourney, type PhaseConfig, type GeneratedStrategy } from "@/lib/types";
 
 interface RutasClientProps {
   journey: UserJourney;
@@ -12,6 +12,9 @@ interface RutasClientProps {
   hasBuyer: boolean;
   hasInsight: boolean;
   hasTree: boolean;
+  piramideData?: any;
+  arbolData?: any;
+  brujulaData?: any;
 }
 
 export default function RutasClient({
@@ -27,6 +30,13 @@ export default function RutasClient({
   const [expandedPhase, setExpandedPhase] = useState<number | null>(journey.current_phase);
   const [loadingModules, setLoadingModules] = useState<Set<string>>(new Set());
   const [rediagnoseLoading, setRediagnoseLoading] = useState(false);
+
+  // Strategy generation state
+  const [expandedModuleId, setExpandedModuleId] = useState<string | null>(null);
+  const [generatingStrategyId, setGeneratingStrategyId] = useState<string | null>(null);
+  const [strategies, setStrategies] = useState<Record<string, GeneratedStrategy>>({});
+  const [strategyError, setStrategyError] = useState<string | null>(null);
+
   const currentPhase = journey.current_phase;
 
   // Calculate progress for phase 1
@@ -34,18 +44,19 @@ export default function RutasClient({
   const phase1Progress = phase1Items.filter(Boolean).length;
   const phase1Total = phase1Items.length;
 
-  // Handle module completion toggle
-  const handleModuleToggle = async (moduleId: string) => {
-    const moduleItem = journey.ruta_modulos?.find((m) => m.id === moduleId);
-    if (!moduleItem) return;
-
-    const isCompleting = !moduleItem.completado;
-    const endpoint = isCompleting ? "/api/rutas/complete-module" : "/api/rutas/uncomplete-module";
+  // Handle generating strategy for a module
+  const handleGenerateStrategy = async (moduleId: string) => {
+    if (strategies[moduleId]) {
+      // Already generated, just toggle expand
+      setExpandedModuleId(expandedModuleId === moduleId ? null : moduleId);
+      return;
+    }
 
     try {
-      setLoadingModules((prev) => new Set(prev).add(moduleId));
+      setGeneratingStrategyId(moduleId);
+      setStrategyError(null);
 
-      const res = await fetch(endpoint, {
+      const res = await fetch("/api/rutas/generate-strategy", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -56,7 +67,40 @@ export default function RutasClient({
 
       if (!res.ok) {
         const error = await res.json();
-        console.error("Error:", error);
+        setStrategyError(error.error || "Error al generar la estrategia");
+        return;
+      }
+
+      const data = await res.json();
+      setStrategies((prev) => ({ ...prev, [moduleId]: data.strategy }));
+      setExpandedModuleId(moduleId);
+    } catch (err: any) {
+      console.error("Strategy generation error:", err);
+      setStrategyError("Error al conectar con el servidor");
+    } finally {
+      setGeneratingStrategyId(null);
+    }
+  };
+
+  // Handle module completion
+  const handleCompleteModule = async (moduleId: string) => {
+    const moduleItem = journey.ruta_modulos?.find((m) => m.id === moduleId);
+    if (!moduleItem) return;
+
+    try {
+      setLoadingModules((prev) => new Set(prev).add(moduleId));
+
+      const res = await fetch("/api/rutas/complete-module", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: journey.user_id,
+          moduleId,
+        }),
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
         alert(`Error: ${error.error || "No se pudo actualizar el módulo"}`);
         return;
       }
@@ -97,6 +141,7 @@ export default function RutasClient({
 
       const data = await res.json();
       setJourney(data.journey);
+      setStrategies({});
       alert(`Nuevo diagnóstico completado. Perfil: ${data.journey.perfil_diagnostico}`);
     } catch (error) {
       console.error("Rediagnose error:", error);
@@ -222,10 +267,15 @@ export default function RutasClient({
             arbolTotal={arbolTotal}
             phase1Progress={phase1Progress}
             phase1Total={phase1Total}
-            onModuleToggle={handleModuleToggle}
+            onCompleteModule={handleCompleteModule}
             loadingModules={loadingModules}
+            onGenerateStrategy={handleGenerateStrategy}
+            expandedModuleId={expandedModuleId}
+            generatingStrategyId={generatingStrategyId}
+            strategies={strategies}
             onRediagnose={handleRediagnose}
             rediagnoseLoading={rediagnoseLoading}
+            strategyError={strategyError}
           />
         ))}
       </div>
@@ -254,10 +304,15 @@ interface PhaseCardProps {
   arbolTotal: number;
   phase1Progress: number;
   phase1Total: number;
-  onModuleToggle: (moduleId: string) => Promise<void>;
+  onCompleteModule: (moduleId: string) => Promise<void>;
   loadingModules: Set<string>;
+  onGenerateStrategy: (moduleId: string) => Promise<void>;
+  expandedModuleId: string | null;
+  generatingStrategyId: string | null;
+  strategies: Record<string, GeneratedStrategy>;
   onRediagnose: () => Promise<void>;
   rediagnoseLoading: boolean;
+  strategyError: string | null;
 }
 
 function PhaseCard({
@@ -270,10 +325,15 @@ function PhaseCard({
   arbolTotal,
   phase1Progress,
   phase1Total,
-  onModuleToggle,
+  onCompleteModule,
   loadingModules,
+  onGenerateStrategy,
+  expandedModuleId,
+  generatingStrategyId,
+  strategies,
   onRediagnose,
   rediagnoseLoading,
+  strategyError,
 }: PhaseCardProps) {
   const isCompleted = currentPhase > phase.number;
   const isCurrent = currentPhase === phase.number;
@@ -289,11 +349,11 @@ function PhaseCard({
       case 3:
         const modulosComplete = journey.ruta_modulos?.filter((m) => m.completado).length || 0;
         const modulosTotal = journey.ruta_modulos?.length || 0;
-        return { current: modulosComplete, total: modulosTotal || 1, label: "módulos de la ruta" };
+        return { current: modulosComplete, total: modulosTotal || 1, label: "módulos completados" };
       case 4:
-        return { current: journey.piezas_count, total: 10, label: "piezas publicadas" };
+        return { current: 0, total: 1, label: "fase próximamente" };
       case 5:
-        return { current: journey.coherencia_historica?.length || 0, total: 3, label: "revisiones mensuales" };
+        return { current: 0, total: 1, label: "fase próximamente" };
       default:
         return { current: 0, total: 1, label: "" };
     }
@@ -310,11 +370,11 @@ function PhaseCard({
       case 2:
         return { href: "/arbol", label: "Ir a El Árbol" };
       case 3:
-        return { href: "/rutas", label: "Ver tu ruta" };
+        return { href: "#", label: "Ver tu ruta" };
       case 4:
-        return { href: "/maestro", label: "Ir al Maestro" };
+        return { href: "#", label: "Próximamente" };
       case 5:
-        return { href: "/dashboard", label: "Ver La Brújula" };
+        return { href: "#", label: "Próximamente" };
       default:
         return { href: "/dashboard", label: "Ir al panel" };
     }
@@ -477,188 +537,57 @@ function PhaseCard({
             </div>
           )}
 
-          {/* Phase started date */}
-          {journey.phase_started_at?.[String(phase.number)] && (
-            <p className="text-[10px] text-muted/40">
-              Iniciada:{" "}
-              {new Date(journey.phase_started_at[String(phase.number)]!).toLocaleDateString("es-ES", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
-            </p>
-          )}
-
-          {/* Diagnostic profile (phase 2-3) */}
-          {phase.number === 2 && journey.perfil_diagnostico && (
-            <div className="bg-crema border border-borde/40 rounded-xl p-4 space-y-3">
-              <div>
-                <p className="text-[10px] font-semibold text-naranja uppercase tracking-widest mb-2">
-                  Tu diagnóstico
-                </p>
-                <p className="text-sm text-negro font-medium">
-                  Perfil {journey.perfil_diagnostico}
-                  {journey.diagnostico_coherencia?.score != null && (
-                    <span className="text-muted ml-2">
-                      — Score: {journey.diagnostico_coherencia.score}/100
-                    </span>
-                  )}
-                </p>
-              </div>
-
-              {/* Fortalezas */}
-              {journey.diagnostico_coherencia?.fortalezas && journey.diagnostico_coherencia.fortalezas.length > 0 && (
-                <div>
-                  <p className="text-[10px] font-semibold text-green-700 uppercase tracking-widest mb-1.5">
-                    Fortalezas
-                  </p>
-                  <div className="space-y-1">
-                    {journey.diagnostico_coherencia.fortalezas.map((f, i) => (
-                      <p key={i} className="text-xs text-negro/70">
-                        ✓ {f}
-                      </p>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Grietas */}
-              {journey.diagnostico_coherencia?.grietas && journey.diagnostico_coherencia.grietas.length > 0 && (
-                <div>
-                  <p className="text-[10px] font-semibold text-orange-700 uppercase tracking-widest mb-1.5">
-                    Áreas a trabajar
-                  </p>
-                  <div className="space-y-1">
-                    {journey.diagnostico_coherencia.grietas.map((g, i) => (
-                      <p key={i} className="text-xs text-negro/70">
-                        ⚠ {g}
-                      </p>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Re-diagnose button */}
-              <button
-                onClick={onRediagnose}
-                disabled={rediagnoseLoading}
-                className="w-full mt-2 px-3 py-2 text-xs font-medium bg-naranja text-white rounded-lg hover:bg-naranja/90 disabled:opacity-50 transition-colors"
-              >
-                {rediagnoseLoading ? "Re-diagnosticando..." : "Re-diagnosticar"}
-              </button>
-            </div>
-          )}
-
-          {/* Route info (phase 3) */}
+          {/* Phase 3 - Ruta Modulos with Strategy Generation */}
           {phase.number === 3 && journey.ruta_asignada && (
+            <RutaModulesSection
+              journey={journey}
+              onGenerateStrategy={onGenerateStrategy}
+              expandedModuleId={expandedModuleId}
+              generatingStrategyId={generatingStrategyId}
+              strategies={strategies}
+              onCompleteModule={onCompleteModule}
+              loadingModules={loadingModules}
+              strategyError={strategyError}
+              onRediagnose={onRediagnose}
+              rediagnoseLoading={rediagnoseLoading}
+            />
+          )}
+
+          {/* Phase 4 & 5 - Coming Soon */}
+          {(phase.number === 4 || phase.number === 5) && (
             <div
-              className="rounded-xl p-4 space-y-3"
+              className="rounded-xl p-6 text-center space-y-4"
               style={{
-                background: RUTA_CONFIG[journey.ruta_asignada].color + "08",
-                border: `1px solid ${RUTA_CONFIG[journey.ruta_asignada].color}20`,
+                background: "#f5f5f5",
+                border: "2px dashed #bbb",
               }}
             >
+              <div className="text-4xl">🔒</div>
               <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-lg">{RUTA_CONFIG[journey.ruta_asignada].icon}</span>
-                  <span
-                    className="font-heading text-base font-semibold"
-                    style={{ color: RUTA_CONFIG[journey.ruta_asignada].color }}
-                  >
-                    {RUTA_CONFIG[journey.ruta_asignada].name}
-                  </span>
-                </div>
-                <p className="text-xs text-muted">
-                  {RUTA_CONFIG[journey.ruta_asignada].tagline}
+                <p className="font-heading text-lg text-negro mb-2">Próximamente</p>
+                <p className="text-sm text-muted">
+                  {phase.number === 4
+                    ? "Ejecución — Pon tu estrategia en marcha con El Maestro y El Planificador"
+                    : "Evolución — Mide tu progreso y ajusta tu marca con El Espejo"}
                 </p>
               </div>
-
-              {/* Progress bar */}
-              {journey.ruta_modulos && journey.ruta_modulos.length > 0 && (
-                <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <p className="text-[10px] font-semibold text-muted/60 uppercase tracking-widest">
-                      Progreso
-                    </p>
-                    <span className="text-xs text-muted font-medium">
-                      {journey.ruta_modulos.filter((m) => m.completado).length}/{journey.ruta_modulos.length}
-                    </span>
-                  </div>
-                  <div className="w-full h-2 bg-borde/20 rounded-full overflow-hidden">
-                    <div
-                      className="h-full rounded-full transition-all duration-500"
-                      style={{
-                        width: `${Math.round((journey.ruta_modulos.filter((m) => m.completado).length / journey.ruta_modulos.length) * 100)}%`,
-                        backgroundColor: RUTA_CONFIG[journey.ruta_asignada].color,
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* Route modules */}
-              {journey.ruta_modulos && journey.ruta_modulos.length > 0 && (
-                <div className="space-y-2 mt-3">
-                  {journey.ruta_modulos.map((mod, i) => {
-                    const isNextModule = !mod.completado && !journey.ruta_modulos.slice(0, i).some((m) => !m.completado);
-                    const isLoading = loadingModules.has(mod.id);
-                    return (
-                      <button
-                        key={mod.id}
-                        onClick={() => onModuleToggle(mod.id)}
-                        disabled={isLoading}
-                        className={`w-full flex items-start gap-3 rounded-lg p-2.5 border transition-all ${
-                          mod.completado
-                            ? "bg-green-50/50 border-green-200/40 hover:bg-green-100/50"
-                            : isNextModule
-                            ? "bg-naranja/5 border-naranja/30 hover:bg-naranja/10 ring-1 ring-naranja/20"
-                            : "bg-white/50 border-borde/20 hover:bg-white/70"
-                        } disabled:opacity-50`}
-                      >
-                        <span className={`w-5 h-5 flex items-center justify-center rounded-full text-[10px] font-bold flex-shrink-0 mt-0.5 transition-all ${
-                          mod.completado
-                            ? "bg-green-500 text-white"
-                            : isNextModule
-                            ? "bg-naranja text-white"
-                            : "bg-borde/30 text-muted"
-                        }`}>
-                          {isLoading ? "..." : mod.completado ? "✓" : i + 1}
-                        </span>
-                        <div className="min-w-0 text-left flex-1">
-                          <p className={`text-sm font-medium ${mod.completado ? "text-green-800 line-through" : isNextModule ? "text-naranja font-semibold" : "text-negro"}`}>
-                            {mod.nombre}
-                          </p>
-                          <p className="text-[11px] text-muted mt-0.5 leading-relaxed">
-                            {mod.descripcion}
-                          </p>
-                          {mod.completado && mod.fecha_completado && (
-                            <p className="text-[10px] text-green-700 mt-1">
-                              Completada {new Date(mod.fecha_completado).toLocaleDateString("es-ES", { day: "numeric", month: "short" })}
-                            </p>
-                          )}
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-
-              {/* Completion celebration */}
-              {journey.ruta_modulos && journey.ruta_modulos.every((m) => m.completado) && (
-                <div className="bg-green-50 border border-green-200/50 rounded-lg p-3 text-center">
-                  <p className="text-sm font-semibold text-green-800">
-                    🎉 ¡Ruta completada!
-                  </p>
-                  <p className="text-xs text-green-700 mt-1">
-                    Has avanzado a la Fase 4: Ejecuta
-                  </p>
-                </div>
-              )}
+              <p className="text-xs text-muted/60 italic">
+                Desbloquea completando la Fase {phase.number - 1}
+              </p>
             </div>
           )}
 
-          {/* CTA for current phase */}
-          {isCurrent && (
+          {/* Diagnostic info (phase 2-3) */}
+          {phase.number === 2 && journey.perfil_diagnostico && (
+            <DiagnosticSection
+              journey={journey}
+              onRediagnose={onRediagnose}
+              rediagnoseLoading={rediagnoseLoading}
+            />
+          )}
+
+          {/* CTA */}
+          {isCurrent && phase.number !== 4 && phase.number !== 5 && (
             <Link
               href={action.href}
               className="inline-flex items-center gap-2 bg-negro text-white text-sm font-medium px-4 py-2.5 rounded-xl hover:bg-negro/90 transition-colors"
@@ -671,6 +600,337 @@ function PhaseCard({
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+// ─── Ruta Modules Section ───
+
+interface RutaModulesSectionProps {
+  journey: UserJourney;
+  onGenerateStrategy: (moduleId: string) => Promise<void>;
+  expandedModuleId: string | null;
+  generatingStrategyId: string | null;
+  strategies: Record<string, GeneratedStrategy>;
+  onCompleteModule: (moduleId: string) => Promise<void>;
+  loadingModules: Set<string>;
+  strategyError: string | null;
+  onRediagnose: () => Promise<void>;
+  rediagnoseLoading: boolean;
+}
+
+function RutaModulesSection({
+  journey,
+  onGenerateStrategy,
+  expandedModuleId,
+  generatingStrategyId,
+  strategies,
+  onCompleteModule,
+  loadingModules,
+  strategyError,
+  onRediagnose,
+  rediagnoseLoading,
+}: RutaModulesSectionProps) {
+  if (!journey.ruta_asignada || !journey.ruta_modulos?.length) return null;
+
+  const ruta = RUTA_CONFIG[journey.ruta_asignada];
+
+  return (
+    <div
+      className="rounded-xl p-4 space-y-4"
+      style={{
+        background: ruta.color + "08",
+        border: `1px solid ${ruta.color}20`,
+      }}
+    >
+      {/* Header */}
+      <div>
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-lg">{ruta.icon}</span>
+          <span
+            className="font-heading text-base font-semibold"
+            style={{ color: ruta.color }}
+          >
+            {ruta.name}
+          </span>
+        </div>
+        <p className="text-xs text-muted">
+          {ruta.tagline}
+        </p>
+      </div>
+
+      {/* Progress bar */}
+      {journey.ruta_modulos && journey.ruta_modulos.length > 0 && (
+        <div>
+          <div className="flex items-center justify-between mb-1.5">
+            <p className="text-[10px] font-semibold text-muted/60 uppercase tracking-widest">
+              Progreso
+            </p>
+            <span className="text-xs text-muted font-medium">
+              {journey.ruta_modulos.filter((m) => m.completado).length}/{journey.ruta_modulos.length}
+            </span>
+          </div>
+          <div className="w-full h-2 bg-borde/20 rounded-full overflow-hidden">
+            <div
+              className="h-full rounded-full transition-all duration-500"
+              style={{
+                width: `${Math.round((journey.ruta_modulos.filter((m) => m.completado).length / journey.ruta_modulos.length) * 100)}%`,
+                backgroundColor: ruta.color,
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Error message */}
+      {strategyError && (
+        <div className="bg-red-50 border border-red-200/50 rounded-lg p-3">
+          <p className="text-xs text-red-700">{strategyError}</p>
+        </div>
+      )}
+
+      {/* Modules list */}
+      {journey.ruta_modulos && journey.ruta_modulos.length > 0 && (
+        <div className="space-y-2">
+          {journey.ruta_modulos.map((mod, i) => {
+            const isNextModule =
+              !mod.completado &&
+              !journey.ruta_modulos!.slice(0, i).some((m) => !m.completado);
+            const isLoading = loadingModules.has(mod.id);
+            const isGenerating = generatingStrategyId === mod.id;
+            const isExpanded = expandedModuleId === mod.id;
+            const strategy = strategies[mod.id];
+
+            return (
+              <div key={mod.id} className="space-y-2">
+                {/* Module card */}
+                <button
+                  onClick={() => onGenerateStrategy(mod.id)}
+                  disabled={isLoading || mod.completado}
+                  className={`w-full flex items-start gap-3 rounded-lg p-3 border transition-all ${
+                    mod.completado
+                      ? "bg-green-50/50 border-green-200/40 cursor-default"
+                      : isNextModule
+                      ? "bg-naranja/5 border-naranja/30 hover:bg-naranja/10 ring-1 ring-naranja/20"
+                      : "bg-white/50 border-borde/20 hover:bg-white/70"
+                  } disabled:opacity-50`}
+                >
+                  <span className={`w-5 h-5 flex items-center justify-center rounded-full text-[10px] font-bold flex-shrink-0 mt-0.5 transition-all ${
+                    mod.completado
+                      ? "bg-green-500 text-white"
+                      : isNextModule
+                      ? "bg-naranja text-white"
+                      : "bg-borde/30 text-muted"
+                  }`}>
+                    {isGenerating ? "⟳" : mod.completado ? "✓" : i + 1}
+                  </span>
+                  <div className="min-w-0 text-left flex-1">
+                    <p className={`text-sm font-medium ${
+                      mod.completado
+                        ? "text-green-800 line-through"
+                        : isNextModule
+                        ? "text-naranja font-semibold"
+                        : "text-negro"
+                    }`}>
+                      {mod.nombre}
+                    </p>
+                    <p className="text-[11px] text-muted mt-0.5 leading-relaxed">
+                      {mod.descripcion}
+                    </p>
+                    {mod.completado && mod.fecha_completado && (
+                      <p className="text-[10px] text-green-700 mt-1">
+                        Completada {new Date(mod.fecha_completado).toLocaleDateString("es-ES", {
+                          day: "numeric",
+                          month: "short",
+                        })}
+                      </p>
+                    )}
+                  </div>
+                </button>
+
+                {/* Strategy display */}
+                {isExpanded && strategy && !mod.completado && (
+                  <div className="bg-white border border-borde/50 rounded-lg p-4 space-y-4">
+                    {/* Insight */}
+                    <div className="space-y-1">
+                      <p className="text-[10px] font-semibold text-naranja uppercase tracking-widest">
+                        Insight Estratégico
+                      </p>
+                      <p className="text-sm text-negro/80 leading-relaxed">
+                        {strategy.insight}
+                      </p>
+                    </div>
+
+                    {/* Tasks */}
+                    <div className="space-y-3">
+                      <p className="text-[10px] font-semibold text-negro/60 uppercase tracking-widest">
+                        Tus 3 Tareas
+                      </p>
+                      {strategy.tareas.map((tarea, idx) => (
+                        <div
+                          key={idx}
+                          className="bg-crema/50 border border-borde/30 rounded-lg p-3 space-y-2"
+                        >
+                          <div className="flex items-start gap-2">
+                            <span className="text-xl flex-shrink-0">
+                              {idx === 0 ? "1️⃣" : idx === 1 ? "2️⃣" : "3️⃣"}
+                            </span>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-semibold text-sm text-negro">
+                                {tarea.titulo}
+                              </p>
+                              <p className="text-xs text-negro/70 mt-1">
+                                {tarea.descripcion}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex flex-wrap gap-2 pt-2">
+                            <Link
+                              href={tarea.link}
+                              className="inline-flex items-center gap-1 px-3 py-1.5 bg-negro text-white text-xs font-medium rounded-lg hover:bg-negro/90 transition-colors"
+                            >
+                              {tarea.herramienta}
+                              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                              </svg>
+                            </Link>
+                          </div>
+                          <p className="text-[10px] text-muted italic pt-1">
+                            {tarea.accion}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Reflexion */}
+                    <div className="bg-naranja/5 border border-naranja/20 rounded-lg p-3 space-y-1">
+                      <p className="text-[10px] font-semibold text-naranja uppercase tracking-widest">
+                        Para Reflexionar
+                      </p>
+                      <p className="text-sm text-negro/70 italic">
+                        {strategy.reflexion}
+                      </p>
+                    </div>
+
+                    {/* Action buttons */}
+                    <div className="flex gap-2 pt-2">
+                      <button
+                        onClick={() => onCompleteModule(mod.id)}
+                        disabled={isLoading}
+                        className="flex-1 px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
+                      >
+                        {isLoading ? "Actualizando..." : "Marcar Completado"}
+                      </button>
+                      <button
+                        onClick={() => onGenerateStrategy(mod.id)}
+                        className="flex-1 px-4 py-2 bg-borde/20 text-negro text-sm font-medium rounded-lg hover:bg-borde/30 transition-colors"
+                      >
+                        Regenerar
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Completion celebration */}
+      {journey.ruta_modulos && journey.ruta_modulos.every((m) => m.completado) && (
+        <div className="bg-green-50 border border-green-200/50 rounded-lg p-3 text-center">
+          <p className="text-sm font-semibold text-green-800">
+            🎉 ¡Ruta completada!
+          </p>
+          <p className="text-xs text-green-700 mt-1">
+            Has avanzado a la Fase 4: Ejecuta
+          </p>
+        </div>
+      )}
+
+      {/* Re-diagnose button */}
+      <button
+        onClick={onRediagnose}
+        disabled={rediagnoseLoading}
+        className="w-full px-3 py-2 text-xs font-medium bg-naranja/10 text-naranja rounded-lg hover:bg-naranja/20 disabled:opacity-50 transition-colors border border-naranja/20"
+      >
+        {rediagnoseLoading ? "Re-diagnosticando..." : "Re-diagnosticar"}
+      </button>
+    </div>
+  );
+}
+
+// ─── Diagnostic Section ───
+
+interface DiagnosticSectionProps {
+  journey: UserJourney;
+  onRediagnose: () => Promise<void>;
+  rediagnoseLoading: boolean;
+}
+
+function DiagnosticSection({
+  journey,
+  onRediagnose,
+  rediagnoseLoading,
+}: DiagnosticSectionProps) {
+  return (
+    <div className="bg-crema border border-borde/40 rounded-xl p-4 space-y-3">
+      <div>
+        <p className="text-[10px] font-semibold text-naranja uppercase tracking-widest mb-2">
+          Tu diagnóstico
+        </p>
+        <p className="text-sm text-negro font-medium">
+          Perfil {journey.perfil_diagnostico}
+          {journey.diagnostico_coherencia?.score != null && (
+            <span className="text-muted ml-2">
+              — Score: {journey.diagnostico_coherencia.score}/100
+            </span>
+          )}
+        </p>
+      </div>
+
+      {/* Fortalezas */}
+      {journey.diagnostico_coherencia?.fortalezas &&
+        journey.diagnostico_coherencia.fortalezas.length > 0 && (
+          <div>
+            <p className="text-[10px] font-semibold text-green-700 uppercase tracking-widest mb-1.5">
+              Fortalezas
+            </p>
+            <div className="space-y-1">
+              {journey.diagnostico_coherencia.fortalezas.map((f, i) => (
+                <p key={i} className="text-xs text-negro/70">
+                  ✓ {f}
+                </p>
+              ))}
+            </div>
+          </div>
+        )}
+
+      {/* Grietas */}
+      {journey.diagnostico_coherencia?.grietas &&
+        journey.diagnostico_coherencia.grietas.length > 0 && (
+          <div>
+            <p className="text-[10px] font-semibold text-orange-700 uppercase tracking-widest mb-1.5">
+              Áreas a trabajar
+            </p>
+            <div className="space-y-1">
+              {journey.diagnostico_coherencia.grietas.map((g, i) => (
+                <p key={i} className="text-xs text-negro/70">
+                  ⚠ {g}
+                </p>
+              ))}
+            </div>
+          </div>
+        )}
+
+      {/* Re-diagnose button */}
+      <button
+        onClick={onRediagnose}
+        disabled={rediagnoseLoading}
+        className="w-full mt-2 px-3 py-2 text-xs font-medium bg-naranja text-white rounded-lg hover:bg-naranja/90 disabled:opacity-50 transition-colors"
+      >
+        {rediagnoseLoading ? "Re-diagnosticando..." : "Re-diagnosticar"}
+      </button>
     </div>
   );
 }

@@ -14,38 +14,245 @@ interface SectionScore {
   layer: "foundation" | "core" | "expression" | "reach";
 }
 
-// Route module definitions
+// Route module definitions with new strategy-focused structure
 const RUTA_MODULOS = {
   cimientos: [
-    { id: "cim-1", nombre: "Redefine tu Semilla", descripcion: "Revisita tu propósito, visión e intención con las preguntas del Árbol. Sin semilla clara, nada crece.", completado: false, fecha_completado: null },
-    { id: "cim-2", nombre: "Excava tus Raíces", descripcion: "Trabaja tu historia, creencias, valores e identidad. Lo que no se ve sostiene todo.", completado: false, fecha_completado: null },
-    { id: "cim-3", nombre: "Fortalece el Tronco", descripcion: "Define tu tema principal, propuesta de valor y zona de genialidad. Aquí no vale el 'yo hablo de todo'.", completado: false, fecha_completado: null },
-    { id: "cim-4", nombre: "Revisa la Pirámide", descripcion: "Vuelve a Bajo Tierra y Nivel 1. Tus objetivos y valores deben estar claros antes de construir.", completado: false, fecha_completado: null },
-    { id: "cim-5", nombre: "Primer Contenido Auténtico", descripcion: "Crea tu primera pieza de contenido desde los cimientos. Usa El Maestro con tu nuevo briefing.", completado: false, fecha_completado: null },
+    {
+      id: "cim-1",
+      nombre: "Tu Semilla Auténtica",
+      descripcion: "Revisita tu propósito, visión e intención. Sin semilla clara, nada crece.",
+      completado: false,
+      fecha_completado: null,
+      objetivo: "Descubrir y plantificar tu propósito auténtico",
+      herramientas: ["piramide", "arbol"],
+      promptContext: "Enfócate en el propósito original del usuario, su visión de vida a largo plazo, y su intención en el mundo. Ayúdale a enraizar sus decisiones en algo más profundo que el mercado."
+    },
+    {
+      id: "cim-2",
+      nombre: "Raíces que Sostienen",
+      descripcion: "Trabaja tu historia, creencias, valores e identidad. Lo invisible sostiene todo.",
+      completado: false,
+      fecha_completado: null,
+      objetivo: "Consolidar la base identitaria y valores personales",
+      herramientas: ["arbol", "piramide"],
+      promptContext: "Ayúdale a explorar su historia personal, sus creencias profundas, sus valores no negociables. Estos son los cimientos sobre los que se construye todo lo demás."
+    },
+    {
+      id: "cim-3",
+      nombre: "Define tu Tronco",
+      descripcion: "Define tu tema principal, propuesta de valor y zona de genialidad.",
+      completado: false,
+      fecha_completado: null,
+      objetivo: "Cristalizar el tema principal y propuesta de valor única",
+      herramientas: ["arbol", "brujula"],
+      promptContext: "Guíale a identificar su tema principal de expertise, su propuesta de valor clara, y su zona de genialidad natural. Evita dispersión."
+    },
+    {
+      id: "cim-4",
+      nombre: "Tu Primer Mapa",
+      descripcion: "Crear buyer persona y pillares de contenido en La Brújula.",
+      completado: false,
+      fecha_completado: null,
+      objetivo: "Establecer la estrategia inicial de contenido y audiencia",
+      herramientas: ["brujula", "maestro"],
+      promptContext: "Ayúdale a definir su buyer persona ideal, sus pilares de contenido principales, y dónde se ubica su audiencia. Esto es el mapa que lo guiará."
+    },
+    {
+      id: "cim-5",
+      nombre: "Primera Acción Real",
+      descripcion: "Genera tu primer contenido y planifica su publicación.",
+      completado: false,
+      fecha_completado: null,
+      objetivo: "Crear primer contenido y establecer consistencia",
+      herramientas: ["maestro", "planner"],
+      promptContext: "Es hora de actuar. Generar la primera pieza de contenido real, planificarla, publicarla. El movimiento crea momentum."
+    },
   ],
   visibilidad: [
-    { id: "vis-1", nombre: "Define tu Copa", descripcion: "Trabaja tus arquetipos, tono de voz, narrativa y energía. Esto es lo que el mundo ve de ti.", completado: false, fecha_completado: null },
-    { id: "vis-2", nombre: "Estrategia de Contenido", descripcion: "Usa La Brújula para definir pilares, subtemas y ángulos. Tu mensaje necesita estructura.", completado: false, fecha_completado: null },
-    { id: "vis-3", nombre: "Mapea tu Entorno", descripcion: "Define dónde está tu audiencia, quién es tu competencia y qué te diferencia.", completado: false, fecha_completado: null },
-    { id: "vis-4", nombre: "Plan de Publicación", descripcion: "Usa El Planificador para crear tu primera semana de contenido. Constancia > viralidad.", completado: false, fecha_completado: null },
-    { id: "vis-5", nombre: "Primeras 10 Piezas", descripcion: "Genera y publica 10 piezas con El Maestro. Mide qué resuena y ajusta.", completado: false, fecha_completado: null },
-    { id: "vis-6", nombre: "Feedback Loop", descripcion: "Revisa métricas y ajusta tu estrategia. El algoritmo premia la coherencia.", completado: false, fecha_completado: null },
+    {
+      id: "vis-1",
+      nombre: "Construye tu Copa",
+      descripcion: "Define tus arquetipos, tono de voz, narrativa. Así te ve el mundo.",
+      completado: false,
+      fecha_completado: null,
+      objetivo: "Cristalizar la presencia visible y diferenciada",
+      herramientas: ["arbol", "brujula"],
+      promptContext: "Ayúdale a definir cómo quiere ser percibido: sus arquetipos de marca, tono de voz único, narrativa distintiva. La Copa es lo que el mundo ve."
+    },
+    {
+      id: "vis-2",
+      nombre: "Estrategia de Contenido",
+      descripcion: "Define pilares, subtemas y ángulos en La Brújula.",
+      completado: false,
+      fecha_completado: null,
+      objetivo: "Estructurar un sistema de contenido coherente y repetible",
+      herramientas: ["brujula", "maestro"],
+      promptContext: "Estructura su estrategia de contenido: 3-4 pilares principales, subtemas bajo cada uno, ángulos de abordaje. Esto da consistencia."
+    },
+    {
+      id: "vis-3",
+      nombre: "Tu Audiencia Real",
+      descripcion: "Mapea dónde está tu audiencia, quiénes son, qué necesitan.",
+      completado: false,
+      fecha_completado: null,
+      objetivo: "Conocer profundamente al mercado y competencia",
+      herramientas: ["arbol", "brujula"],
+      promptContext: "Investiga dónde está tu audiencia ideal, qué canales frecuentan, qué necesitan, quién más le habla. Esto es investigación de mercado real."
+    },
+    {
+      id: "vis-4",
+      nombre: "Sistema de Publicación",
+      descripcion: "Crea tu primera semana de contenido planificado.",
+      completado: false,
+      fecha_completado: null,
+      objetivo: "Establecer un ritmo de publicación consistente",
+      herramientas: ["planner", "maestro"],
+      promptContext: "Ayúdale a crear un sistema de publicación: frecuencia, canales, contenido planificado. La consistencia es la base de la visibilidad."
+    },
+    {
+      id: "vis-5",
+      nombre: "Primeras 10 Piezas",
+      descripcion: "Genera y publica 10 piezas de contenido. Mide qué resuena.",
+      completado: false,
+      fecha_completado: null,
+      objetivo: "Construir velocidad de ejecución y aprender del mercado",
+      herramientas: ["maestro", "piezas"],
+      promptContext: "Velocidad es lo importante aquí. Generar 10 piezas rápidamente, publicarlas, observar qué resuena. El mercado enseña."
+    },
+    {
+      id: "vis-6",
+      nombre: "Mide y Ajusta",
+      descripcion: "Revisa métricas y refina tu estrategia.",
+      completado: false,
+      fecha_completado: null,
+      objetivo: "Crear un feedback loop de aprendizaje",
+      herramientas: ["brujula", "maestro"],
+      promptContext: "Analiza qué funcionó, qué no, dónde hay resonancia. Ajusta sin perder coherencia. El algoritmo premia consistencia, no viralidad."
+    },
   ],
   reconstruccion: [
-    { id: "rec-1", nombre: "Auditoría de Coherencia", descripcion: "Compara lo que dices que eres (raíces/tronco) con lo que muestras (copa/ramas). Encuentra las grietas.", completado: false, fecha_completado: null },
-    { id: "rec-2", nombre: "Reconecta con tu Semilla", descripcion: "Tu propósito original puede haberse diluido. Vuelve a la pregunta: ¿por qué empezaste?", completado: false, fecha_completado: null },
-    { id: "rec-3", nombre: "Redefine el Tronco", descripcion: "Ajusta tu tema principal y propuesta de valor. Que lo visible refleje lo invisible.", completado: false, fecha_completado: null },
-    { id: "rec-4", nombre: "Poda las Ramas", descripcion: "Elimina lo que no te representa. Menos temas, más profundidad. Calidad > cantidad.", completado: false, fecha_completado: null },
-    { id: "rec-5", nombre: "Nueva Narrativa", descripcion: "Reescribe tu historia de marca. Tu evolución es parte de tu autenticidad.", completado: false, fecha_completado: null },
-    { id: "rec-6", nombre: "Transición Visible", descripcion: "Publica contenido que muestre tu transformación. Tu audiencia respeta la honestidad.", completado: false, fecha_completado: null },
+    {
+      id: "rec-1",
+      nombre: "Auditoría de Coherencia",
+      descripcion: "Compara lo que dices ser (raíces/tronco) con lo que muestras (copa/ramas).",
+      completado: false,
+      fecha_completado: null,
+      objetivo: "Identificar las brechas de coherencia",
+      herramientas: ["arbol", "piramide"],
+      promptContext: "Ayúdale a ver las grietas: dónde lo visible contradice lo invisible, dónde prometió algo y no lo cumple, dónde hay contradicción."
+    },
+    {
+      id: "rec-2",
+      nombre: "Reconecta con tu Semilla",
+      descripcion: "Tu propósito original puede haberse diluido. Vuelve a ¿por qué empezaste?",
+      completado: false,
+      fecha_completado: null,
+      objetivo: "Recuperar la intención original auténtica",
+      herramientas: ["piramide", "arbol"],
+      promptContext: "Hazle recordar por qué empezó. Qué lo motivaba antes. Qué pasó. Dónde se desvió. Cómo reconectarse con eso."
+    },
+    {
+      id: "rec-3",
+      nombre: "Redefine el Tronco",
+      descripcion: "Ajusta tu tema principal y propuesta de valor para alinear.",
+      completado: false,
+      fecha_completado: null,
+      objetivo: "Cristalizar una propuesta de valor auténtica y alineada",
+      herramientas: ["arbol", "brujula"],
+      promptContext: "Recalibra: ¿cuál es realmente su tema? ¿Su propuesta de valor auténtica? ¿Qué puede entregar de forma genuina? Que lo visible refleje lo invisible."
+    },
+    {
+      id: "rec-4",
+      nombre: "Poda las Ramas",
+      descripcion: "Elimina lo que no te representa. Menos temas, más profundidad.",
+      completado: false,
+      fecha_completado: null,
+      objetivo: "Simplificar y enfocar la oferta",
+      herramientas: ["arbol", "brujula"],
+      promptContext: "Es hora de ser selectivo. Qué cosas debe dejar de hacer, decir, o prometer porque no son auténticas. Menos es más."
+    },
+    {
+      id: "rec-5",
+      nombre: "Nueva Narrativa",
+      descripcion: "Reescribe tu historia de marca. Tu evolución es auténtica.",
+      completado: false,
+      fecha_completado: null,
+      objetivo: "Crear una narrativa honesta sobre la transformación",
+      herramientas: ["arbol", "maestro"],
+      promptContext: "Cómo cuenta su historia de transformación. Ser honesto sobre los errores pasados. Mostrar evolución. La audiencia respeta la honestidad."
+    },
+    {
+      id: "rec-6",
+      nombre: "Transición Visible",
+      descripcion: "Publica contenido que muestre tu transformación.",
+      completado: false,
+      fecha_completado: null,
+      objetivo: "Comunicar la transformación de forma visible",
+      herramientas: ["maestro", "planner"],
+      promptContext: "Genera contenido sobre el cambio. Explica por qué está siendo diferente. Invita a su audiencia en el viaje. Transparencia genera lealtad."
+    },
   ],
   difusion: [
-    { id: "dif-1", nombre: "Multiplica Canales", descripcion: "Tu mensaje es sólido. Ahora llévalo a más plataformas. Adapta formato, mantén esencia.", completado: false, fecha_completado: null },
-    { id: "dif-2", nombre: "Colaboraciones Estratégicas", descripcion: "Identifica aliados potenciales de tu Entorno. Colaborar > competir.", completado: false, fecha_completado: null },
-    { id: "dif-3", nombre: "Embudo de Conversión", descripcion: "Conecta contenido con productos. Usa El Cofre para empaquetar tu conocimiento.", completado: false, fecha_completado: null },
-    { id: "dif-4", nombre: "Sistema de Contenido", descripcion: "Crea un sistema sostenible con El Planificador. Automatiza lo repetitivo, humaniza lo importante.", completado: false, fecha_completado: null },
-    { id: "dif-5", nombre: "Escala con Coherencia", descripcion: "Más alcance sin perder autenticidad. Revisa tu Score de Coherencia regularmente.", completado: false, fecha_completado: null },
-    { id: "dif-6", nombre: "Mide y Evoluciona", descripcion: "Usa las métricas del Nivel 4 de la Pirámide. Crece con intención, no por inercia.", completado: false, fecha_completado: null },
+    {
+      id: "dif-1",
+      nombre: "Multiplica Canales",
+      descripcion: "Tu mensaje es sólido. Ahora llévalo a más plataformas.",
+      completado: false,
+      fecha_completado: null,
+      objetivo: "Expandir el alcance a nuevos canales",
+      herramientas: ["brujula", "maestro"],
+      promptContext: "Su contenido es bueno. Ahora necesita estar en más lugares. Ayúdale a adaptar su contenido para LinkedIn, TikTok, YouTube, email. Esencia igual, formato diferente."
+    },
+    {
+      id: "dif-2",
+      nombre: "Colaboraciones Estratégicas",
+      descripcion: "Identifica aliados potenciales de tu entorno.",
+      completado: false,
+      fecha_completado: null,
+      objetivo: "Amplificar a través de asociaciones",
+      herramientas: ["arbol", "brujula"],
+      promptContext: "Quién más habla a su audiencia sin ser competencia. Quién puede ser aliado. Cómo estructurar una colaboración que le amplifique."
+    },
+    {
+      id: "dif-3",
+      nombre: "Embudo de Confianza",
+      descripcion: "Conecta contenido con productos usando El Cofre.",
+      completado: false,
+      fecha_completado: null,
+      objetivo: "Crear un embudo de monetización coherente",
+      herramientas: ["arbol", "brujula"],
+      promptContext: "Cómo conectar su contenido gratuito con sus productos/servicios. Qué embudos puede crear. Cómo hacerlo sin perder autenticidad."
+    },
+    {
+      id: "dif-4",
+      nombre: "Sistema de Contenido",
+      descripcion: "Crea un sistema sostenible con El Planificador.",
+      completado: false,
+      fecha_completado: null,
+      objetivo: "Hacer la ejecución escalable y sostenible",
+      herramientas: ["planner", "maestro"],
+      promptContext: "A este nivel necesita automatizar sin humanidad falsa. Cómo crear un sistema que pueda mantener consistencia sin quemarse."
+    },
+    {
+      id: "dif-5",
+      nombre: "Escala con Coherencia",
+      descripcion: "Más alcance sin perder autenticidad.",
+      completado: false,
+      fecha_completado: null,
+      objetivo: "Crecer exponencialmente sin perder alineación",
+      herramientas: ["brujula", "espejo"],
+      promptContext: "El gran reto: cómo crecer 10x sin perder lo que te hace único. Cómo mantener coherencia mientras se expande. Qué guardar. Qué soltar."
+    },
+    {
+      id: "dif-6",
+      nombre: "Resultados y Evolución",
+      descripcion: "Mide tu impacto. Re-diagnostica y evoluciona.",
+      completado: false,
+      fecha_completado: null,
+      objetivo: "Crear un ciclo de aprendizaje continuo",
+      herramientas: ["piramide", "brujula"],
+      promptContext: "Has llegado lejos. Ahora revisa: qué cambió, cómo evolucionaste, qué aprendiste. Quizás necesites re-diagnosticar. Esto no termina, evoluciona."
+    },
   ],
 };
 

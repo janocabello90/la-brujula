@@ -1094,6 +1094,24 @@ export interface RutaModulo {
   descripcion: string;
   completado: boolean;
   fecha_completado: string | null;
+  // New fields for strategy generation
+  objetivo?: string;
+  herramientas?: string[];
+  promptContext?: string;
+}
+
+export interface StrategyTask {
+  titulo: string;
+  descripcion: string;
+  herramienta: string;
+  link: string;
+  accion: string;
+}
+
+export interface GeneratedStrategy {
+  insight: string;
+  tareas: StrategyTask[];
+  reflexion: string;
 }
 
 export interface CoherenciaEntry {
