@@ -25,20 +25,20 @@ export default function Home() {
       <section className="relative max-w-6xl mx-auto px-6 sm:px-10 pt-10 sm:pt-20 pb-16 sm:pb-24">
         <div className="absolute top-0 right-0 w-72 h-72 sm:w-96 sm:h-96 bg-naranja/[0.06] rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
 
-        <div className="relative max-w-3xl">
+        <div className="relative max-w-3xl mx-auto text-center">
           <p className="inline-block text-xs font-bold text-naranja uppercase tracking-widest bg-naranja/[0.08] px-3 py-1.5 rounded-full mb-6">
             Acceso exclusivo para miembros
           </p>
           <h1 className="font-heading text-4xl sm:text-5xl lg:text-[3.5rem] text-negro leading-[1.1] mb-6">
             La mayoría construye su marca personal al revés.
           </h1>
-          <p className="text-base sm:text-lg text-negro/70 leading-relaxed mb-4 max-w-2xl">
+          <p className="text-base sm:text-lg text-negro/70 leading-relaxed mb-4 max-w-2xl mx-auto">
             Empiezan por la estrategia, por el contenido, por lo que &ldquo;funciona en redes&rdquo;. Y luego se preguntan por qué no conectan, por qué no venden, por qué no sienten que eso que publican tenga algo que ver con lo que son.
           </p>
-          <p className="text-base sm:text-lg text-negro/70 leading-relaxed mb-8 max-w-2xl">
+          <p className="text-base sm:text-lg text-negro/70 leading-relaxed mb-8 max-w-2xl mx-auto">
             El Sistema de Buena Vida existe para construirla desde abajo. Desde quien eres de verdad. Con método, herramientas y una comunidad de personas que piensan como tú.
           </p>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-3 justify-center">
             <a
               href={SKOOL_URL}
               target="_blank"
@@ -118,41 +118,26 @@ export default function Home() {
               </p>
             </div>
           </div>
-          <div className="md:col-span-2">
-            <div className="bg-negro rounded-2xl p-7 sm:p-8">
-              <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-5">Los 5 niveles</p>
-              <div className="space-y-2">
-                {[
-                  { label: "Resultados", sub: "La consecuencia, no el objetivo", w: "w-[45%]" },
-                  { label: "Estrategia", sub: "Canales, contenido, embudos", w: "w-[60%]" },
-                  { label: "Mercado", sub: "A quién ayudas, qué ofreces", w: "w-[75%]" },
-                  { label: "Valores y propósito", sub: "Lo que defiendes y no cruzas", w: "w-[88%]" },
-                  { label: "Historia y creencias", sub: "Lo invisible que sostiene todo", w: "w-full" },
-                ].map((item) => (
-                  <div key={item.label} className={`${item.w} mx-auto`}>
-                    <div className="bg-white/[0.08] border border-white/[0.1] rounded-lg px-3 py-2.5 text-center hover:bg-naranja/20 hover:border-naranja/30 transition-colors">
-                      <p className="text-white/90 text-[12px] font-medium">{item.label}</p>
-                      <p className="text-white/40 text-[10px] mt-0.5">{item.sub}</p>
-                    </div>
-                  </div>
-                ))}
+          {/* iPad mockup con captura de La Pirámide */}
+          <div className="md:col-span-2 flex items-center justify-center">
+            <div className="relative w-full max-w-[320px]">
+              {/* iPad frame */}
+              <div className="bg-[#1a1a1a] rounded-[24px] p-3 shadow-2xl">
+                {/* Camera notch */}
+                <div className="absolute top-[10px] left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#2a2a2a] border border-[#333]" />
+                {/* Screen */}
+                <div className="rounded-[16px] overflow-hidden bg-white">
+                  <img
+                    src="/cap-piramide.png"
+                    alt="La Pirámide de la Marca Personal — herramienta interactiva"
+                    className="w-full block"
+                  />
+                </div>
               </div>
-              <p className="text-white/30 text-[10px] text-center mt-5 italic">Se construye de abajo arriba. Siempre.</p>
+              {/* Subtle reflection */}
+              <div className="absolute inset-0 rounded-[24px] bg-gradient-to-br from-white/[0.08] to-transparent pointer-events-none" />
             </div>
           </div>
-        </div>
-
-        {/* Captura de La Pirámide */}
-        <div className="max-w-4xl mx-auto mt-12 px-6 sm:px-10">
-          <div className="rounded-2xl overflow-hidden border border-borde/40 shadow-card">
-            {/* TODO: Reemplazar con captura real. Guardar como /public/cap-piramide.png */}
-            <img
-              src="/cap-piramide.png"
-              alt="La Pirámide de la Marca Personal — ejercicios interactivos con objetivos y KPIs"
-              className="w-full"
-            />
-          </div>
-          <p className="text-center text-xs text-muted/60 mt-3">La Pirámide: ejercicios interactivos, objetivos y KPIs reales</p>
         </div>
       </section>
 
@@ -235,6 +220,37 @@ export default function Home() {
           <span className="text-2xl">🧭</span>
         </div>
         <p className="text-center text-xs text-muted/60">Datos sincronizados entre herramientas</p>
+
+        {/* Carrusel de capturas */}
+        <div className="mt-14 -mx-6 sm:-mx-10">
+          <div
+            className="flex gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth px-6 sm:px-10 pb-4"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none", WebkitOverflowScrolling: "touch" }}
+          >
+            {[
+              { src: "/cap1.png", alt: "La Pirámide — construye tu identidad desde la base" },
+              { src: "/cap2.png", alt: "El Árbol — define tu marca visible en 9 secciones" },
+              { src: "/cap3.png", alt: "La Brújula — genera contenido alineado con tu marca" },
+              { src: "/cap4.png", alt: "Las Rutas — tu hoja de ruta personalizada con IA" },
+            ].map((cap) => (
+              <div
+                key={cap.src}
+                className="flex-shrink-0 w-[80%] sm:w-[45%] lg:w-[40%] snap-center"
+              >
+                <div className="bg-[#1a1a1a] rounded-[20px] p-2.5 shadow-xl">
+                  <div className="rounded-[12px] overflow-hidden bg-white">
+                    <img src={cap.src} alt={cap.alt} className="w-full block" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="flex justify-center gap-2 mt-4">
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className={`w-2 h-2 rounded-full ${i === 0 ? "bg-naranja" : "bg-negro/15"}`} />
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* ─── Y además... ───────────────────────────────── */}
