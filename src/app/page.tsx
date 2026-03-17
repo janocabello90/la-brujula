@@ -338,23 +338,27 @@ export default function Home() {
           </h2>
         </div>
 
-        {/* TODO: Reemplazar con testimonios reales de janocabello.com */}
-        <div className="grid sm:grid-cols-3 gap-6">
+        <div className="grid sm:grid-cols-2 gap-6">
           {[
             {
-              text: "Aquí irá el primer testimonio real de un miembro de la comunidad.",
-              name: "Nombre del miembro",
-              role: "Profesión / Proyecto",
+              text: "Jano motiva y aporta estructura, lenguaje y reflexión para transformar tu expertise en un modelo con market fit y propósito.",
+              name: "Miky Armengol",
+              role: "Estratega digital",
             },
             {
-              text: "Aquí irá el segundo testimonio real de un miembro de la comunidad.",
-              name: "Nombre del miembro",
-              role: "Profesión / Proyecto",
+              text: "Necesitas tiempo, reflexión y estar realmente dispuesta a decirte la verdad. Es una inversión con una recompensa profundamente transformadora.",
+              name: "Ana Millán Maraña",
+              role: "Comunicación corporativa y YouTube",
             },
             {
-              text: "Aquí irá el tercer testimonio real de un miembro de la comunidad.",
-              name: "Nombre del miembro",
-              role: "Profesión / Proyecto",
+              text: "Jano me ha enseñado que la marca personal es mucho más que publicaciones en redes. Es conocerse a uno mismo y trazar un plan para dejar una buena huella en todo aquel que se cruce contigo.",
+              name: "David Valero",
+              role: "CEO y cofundador de Senda Impulsa",
+            },
+            {
+              text: "Trabajar con Jano te obliga a ordenar lo que ya sabes de ti mismo. Su metodología convierte el caos interior en una narrativa que el mercado entiende y valora.",
+              name: "Andrés Malo",
+              role: "Emprendedor y estratega creativo",
             },
           ].map((t, i) => (
             <div key={i} className="bg-white rounded-2xl p-6 sm:p-7 border border-borde/40">
