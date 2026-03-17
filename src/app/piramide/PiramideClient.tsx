@@ -7,6 +7,8 @@ import {
   type PiramideData,
   type PiramideStep,
   type PiramideStepConfig,
+  type PiramideExercise,
+  type PiramideField,
 } from "@/lib/types";
 
 interface Props {
@@ -40,8 +42,19 @@ export default function PiramideClient({ initialData, userId }: Props) {
   const hasContent = (step: PiramideStep): boolean => {
     const stepData = getStepData(step);
     return Object.values(stepData).some(
-      (v) => typeof v === "string" && v.trim().length > 20
+      (v) => typeof v === "string" && v.trim().length > 10
     );
+  };
+
+  // Count filled fields in a step
+  const countFilledFields = (step: PiramideStep): { filled: number; total: number } => {
+    const config = PIRAMIDE_STEPS.find((s) => s.id === step)!;
+    const stepData = getStepData(step);
+    const total = config.fields.length;
+    const filled = config.fields.filter(
+      (f) => stepData[f.key]?.trim().length > 5
+    ).length;
+    return { filled, total };
   };
 
   // Auto-save with debounce
@@ -130,12 +143,9 @@ export default function PiramideClient({ initialData, userId }: Props) {
     contentRef.current?.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // Count completed fields in current step
+  // Current step stats
   const stepData = getStepData(activeStep);
-  const filledFields = activeConfig.fields.filter(
-    (f) => stepData[f.key]?.trim().length > 20
-  ).length;
-  const totalFields = activeConfig.fields.length;
+  const { filled: filledFields, total: totalFields } = countFilledFields(activeStep);
 
   // Prepare sections
   const preparacionSteps = PIRAMIDE_STEPS.filter((s) => s.level === "preparacion");
@@ -175,6 +185,7 @@ export default function PiramideClient({ initialData, userId }: Props) {
                 isActive={activeStep === step.id}
                 isCompleted={data.steps_completed?.includes(step.id)}
                 hasContent={hasContent(step.id)}
+                stats={countFilledFields(step.id)}
                 onClick={() => goToStep(step.id)}
               />
             ))}
@@ -218,6 +229,7 @@ export default function PiramideClient({ initialData, userId }: Props) {
                 isActive={activeStep === step.id}
                 isCompleted={data.steps_completed?.includes(step.id)}
                 hasContent={hasContent(step.id)}
+                stats={countFilledFields(step.id)}
                 onClick={() => goToStep(step.id)}
               />
             ))}
@@ -258,31 +270,16 @@ export default function PiramideClient({ initialData, userId }: Props) {
             </p>
           </div>
 
-          {/* Fields */}
-          <div className="space-y-8">
-            {activeConfig.fields.map((field) => (
-              <div key={field.key}>
-                <label className="block text-sm font-semibold text-negro mb-1.5">
-                  {field.label}
-                </label>
-                {field.hint && (
-                  <p className="text-xs text-muted/60 italic mb-2">
-                    {field.hint}
-                  </p>
-                )}
-                <textarea
-                  value={stepData[field.key] || ""}
-                  onChange={(e) => handleFieldChange(field.key, e.target.value)}
-                  placeholder={field.placeholder}
-                  rows={6}
-                  className="w-full rounded-xl border border-borde/60 bg-white px-4 py-3 text-sm text-negro placeholder:text-muted/30 focus:outline-none focus:ring-2 focus:ring-naranja/20 focus:border-naranja/40 resize-y transition-all leading-relaxed"
-                />
-                {stepData[field.key]?.trim().length > 0 && (
-                  <p className="text-[10px] text-muted/40 mt-1 text-right">
-                    {stepData[field.key].trim().length} caracteres
-                  </p>
-                )}
-              </div>
+          {/* Exercises */}
+          <div className="space-y-10">
+            {activeConfig.exercises.map((exercise, exIdx) => (
+              <ExerciseBlock
+                key={exIdx}
+                exercise={exercise}
+                stepData={stepData}
+                onFieldChange={handleFieldChange}
+                exerciseNumber={activeConfig.exercises.length > 1 ? exIdx + 1 : undefined}
+              />
             ))}
           </div>
 
@@ -297,18 +294,8 @@ export default function PiramideClient({ initialData, userId }: Props) {
               )}
               {saved && !saving && (
                 <>
-                  <svg
-                    className="w-3.5 h-3.5 text-green-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M5 13l4 4L19 7"
-                    />
+                  <svg className="w-3.5 h-3.5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                   Guardado
                 </>
@@ -327,18 +314,8 @@ export default function PiramideClient({ initialData, userId }: Props) {
                   onClick={() => goToStep(PIRAMIDE_STEPS[activeIndex - 1].id)}
                   className="text-xs text-muted hover:text-negro transition-colors flex items-center gap-1"
                 >
-                  <svg
-                    className="w-3 h-3"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M15 19l-7-7 7-7"
-                    />
+                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
                   </svg>
                   Anterior
                 </button>
@@ -358,38 +335,16 @@ export default function PiramideClient({ initialData, userId }: Props) {
               >
                 {isCompleted ? (
                   <>
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M5 13l4 4L19 7"
-                      />
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
-                    {activeIndex < PIRAMIDE_STEPS.length - 1
-                      ? "Completado — Siguiente"
-                      : "Pirámide completada"}
+                    {activeIndex < PIRAMIDE_STEPS.length - 1 ? "Completado — Siguiente" : "Pirámide completada"}
                   </>
                 ) : activeIndex < PIRAMIDE_STEPS.length - 1 ? (
                   <>
                     Completar y continuar
-                    <svg
-                      className="w-3.5 h-3.5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M13 7l5 5m0 0l-5 5m5-5H6"
-                      />
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                     </svg>
                   </>
                 ) : (
@@ -407,6 +362,181 @@ export default function PiramideClient({ initialData, userId }: Props) {
   );
 }
 
+// ─── Exercise Block ───
+
+function ExerciseBlock({
+  exercise,
+  stepData,
+  onFieldChange,
+  exerciseNumber,
+}: {
+  exercise: PiramideExercise;
+  stepData: Record<string, string>;
+  onFieldChange: (key: string, value: string) => void;
+  exerciseNumber?: number;
+}) {
+  const isTable = exercise.layout === "table";
+
+  return (
+    <div className="border border-borde/30 rounded-2xl overflow-hidden">
+      {/* Exercise header */}
+      <div className="bg-crema/40 px-5 py-4 border-b border-borde/20">
+        <h3 className="font-heading text-base text-negro">
+          {exercise.title}
+        </h3>
+        {exercise.description && (
+          <p className="text-xs text-negro/60 leading-relaxed mt-1.5">
+            {exercise.description}
+          </p>
+        )}
+        {exercise.theoryLink && (
+          <a
+            href={exercise.theoryLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-[10px] text-naranja hover:text-naranja/80 mt-2 font-medium"
+          >
+            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            Ver teoría en la comunidad
+          </a>
+        )}
+      </div>
+
+      {/* Fields */}
+      <div className="p-5">
+        {isTable ? (
+          <TableFields
+            exercise={exercise}
+            stepData={stepData}
+            onFieldChange={onFieldChange}
+          />
+        ) : (
+          <div className="space-y-6">
+            {exercise.fields.map((field) => (
+              <FieldInput
+                key={field.key}
+                field={field}
+                value={stepData[field.key] || ""}
+                onChange={(v) => onFieldChange(field.key, v)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Table Fields (for objectives, metrics, etc.) ───
+
+function TableFields({
+  exercise,
+  stepData,
+  onFieldChange,
+}: {
+  exercise: PiramideExercise;
+  stepData: Record<string, string>;
+  onFieldChange: (key: string, value: string) => void;
+}) {
+  const headers = exercise.tableHeaders || [];
+  const cols = headers.length;
+  const rows: PiramideField[][] = [];
+
+  // Group fields into rows of `cols` items
+  for (let i = 0; i < exercise.fields.length; i += cols) {
+    rows.push(exercise.fields.slice(i, i + cols));
+  }
+
+  return (
+    <div className="overflow-x-auto -mx-1">
+      <table className="w-full text-sm">
+        <thead>
+          <tr>
+            {headers.map((h, i) => (
+              <th
+                key={i}
+                className="text-left text-[10px] font-semibold text-muted/60 uppercase tracking-wider pb-2 px-1"
+              >
+                {h}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, rowIdx) => (
+            <tr key={rowIdx} className={rowIdx > 0 ? "border-t border-borde/15" : ""}>
+              {row.map((field, colIdx) => (
+                <td key={field.key} className="py-1.5 px-1 align-top">
+                  <input
+                    type="text"
+                    value={stepData[field.key] || ""}
+                    onChange={(e) => onFieldChange(field.key, e.target.value)}
+                    placeholder={field.placeholder || field.label}
+                    className={`w-full rounded-lg border border-borde/40 bg-white px-3 py-2 text-sm text-negro placeholder:text-muted/25 focus:outline-none focus:ring-2 focus:ring-naranja/20 focus:border-naranja/40 transition-all ${
+                      colIdx === 0 ? "font-medium" : ""
+                    }`}
+                  />
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// ─── Single Field Input ───
+
+function FieldInput({
+  field,
+  value,
+  onChange,
+}: {
+  field: PiramideField;
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const fieldType = field.type || "textarea";
+
+  return (
+    <div>
+      <label className="block text-sm font-semibold text-negro mb-1.5">
+        {field.label}
+      </label>
+      {field.hint && (
+        <p className="text-xs text-muted/60 italic mb-2">
+          {field.hint}
+        </p>
+      )}
+      {fieldType === "short" ? (
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={field.placeholder}
+          className="w-full rounded-xl border border-borde/60 bg-white px-4 py-2.5 text-sm text-negro placeholder:text-muted/30 focus:outline-none focus:ring-2 focus:ring-naranja/20 focus:border-naranja/40 transition-all"
+        />
+      ) : (
+        <textarea
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={field.placeholder}
+          rows={5}
+          className="w-full rounded-xl border border-borde/60 bg-white px-4 py-3 text-sm text-negro placeholder:text-muted/30 focus:outline-none focus:ring-2 focus:ring-naranja/20 focus:border-naranja/40 resize-y transition-all leading-relaxed"
+        />
+      )}
+      {value?.trim().length > 0 && (
+        <p className="text-[10px] text-muted/40 mt-1 text-right">
+          {value.trim().length} caracteres
+        </p>
+      )}
+    </div>
+  );
+}
+
 // ─── Nav item for sidebar ───
 
 function StepNavItem({
@@ -414,12 +544,14 @@ function StepNavItem({
   isActive,
   isCompleted,
   hasContent,
+  stats,
   onClick,
 }: {
   step: PiramideStepConfig;
   isActive: boolean;
   isCompleted?: boolean;
   hasContent: boolean;
+  stats: { filled: number; total: number };
   onClick: () => void;
 }) {
   return (
@@ -438,22 +570,14 @@ function StepNavItem({
       <span className="text-sm flex-shrink-0">{step.icon}</span>
       <span className="flex-1 truncate">{step.label}</span>
       {isCompleted && (
-        <svg
-          className="w-3.5 h-3.5 text-green-500 flex-shrink-0"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2.5}
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M5 13l4 4L19 7"
-          />
+        <svg className="w-3.5 h-3.5 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
         </svg>
       )}
       {!isCompleted && hasContent && (
-        <div className="w-1.5 h-1.5 rounded-full bg-naranja/40 flex-shrink-0" />
+        <span className="text-[9px] text-muted/40 flex-shrink-0">
+          {stats.filled}/{stats.total}
+        </span>
       )}
     </button>
   );
