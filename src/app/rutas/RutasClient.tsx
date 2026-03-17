@@ -1,0 +1,462 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { PHASES, RUTA_CONFIG, type UserJourney, type PhaseConfig } from "@/lib/types";
+
+interface RutasClientProps {
+  journey: UserJourney;
+  arbolCompleted: number;
+  arbolTotal: number;
+  hasBriefing: boolean;
+  hasBuyer: boolean;
+  hasInsight: boolean;
+  hasTree: boolean;
+}
+
+export default function RutasClient({
+  journey,
+  arbolCompleted,
+  arbolTotal,
+  hasBriefing,
+  hasBuyer,
+  hasInsight,
+  hasTree,
+}: RutasClientProps) {
+  const [expandedPhase, setExpandedPhase] = useState<number | null>(journey.current_phase);
+  const currentPhase = journey.current_phase;
+
+  // Calculate progress for phase 1
+  const phase1Items = [hasBriefing, hasBuyer, hasInsight, hasTree];
+  const phase1Progress = phase1Items.filter(Boolean).length;
+  const phase1Total = phase1Items.length;
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="font-heading text-2xl sm:text-3xl text-negro tracking-tight">
+          Las Rutas
+        </h1>
+        <p className="text-muted text-sm mt-1 max-w-xl">
+          Tu camino personalizado de marca personal. De lo que no se ve a lo que el mundo percibe. De pensar a hacer.
+        </p>
+      </div>
+
+      {/* Current phase indicator */}
+      <div className="bg-white border border-borde rounded-2xl p-5">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-xl bg-naranja/10 flex items-center justify-center text-lg">
+            {PHASES[currentPhase - 1]?.icon}
+          </div>
+          <div>
+            <p className="text-[10px] font-semibold text-naranja uppercase tracking-widest">
+              Fase actual
+            </p>
+            <h2 className="font-heading text-lg text-negro">
+              Fase {currentPhase}: {PHASES[currentPhase - 1]?.name}
+            </h2>
+          </div>
+        </div>
+        <p className="text-sm text-muted italic">
+          &ldquo;{PHASES[currentPhase - 1]?.tagline}&rdquo;
+        </p>
+
+        {/* Ruta assigned badge */}
+        {journey.ruta_asignada && (
+          <div
+            className="mt-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium"
+            style={{
+              background: RUTA_CONFIG[journey.ruta_asignada].color + "15",
+              color: RUTA_CONFIG[journey.ruta_asignada].color,
+              border: `1px solid ${RUTA_CONFIG[journey.ruta_asignada].color}30`,
+            }}
+          >
+            <span>{RUTA_CONFIG[journey.ruta_asignada].icon}</span>
+            {RUTA_CONFIG[journey.ruta_asignada].name}
+            <span className="text-xs opacity-70">— {RUTA_CONFIG[journey.ruta_asignada].tagline}</span>
+          </div>
+        )}
+      </div>
+
+      {/* Phase progress bar */}
+      <div className="bg-white border border-borde rounded-2xl p-5">
+        <div className="flex items-center justify-between gap-2">
+          {PHASES.map((phase, i) => {
+            const isCompleted = currentPhase > phase.number;
+            const isCurrent = currentPhase === phase.number;
+            const isLocked = currentPhase < phase.number;
+            return (
+              <div key={phase.number} className="flex items-center flex-1">
+                {/* Node */}
+                <div className="flex flex-col items-center gap-1 min-w-[60px]">
+                  <div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
+                      isCompleted
+                        ? "bg-naranja text-white"
+                        : isCurrent
+                        ? "bg-naranja/10 text-naranja border-2 border-naranja"
+                        : "bg-borde/30 text-muted/40 border-2 border-borde/50"
+                    }`}
+                  >
+                    {isCompleted ? (
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    ) : (
+                      phase.number
+                    )}
+                  </div>
+                  <span
+                    className={`text-[10px] font-medium text-center leading-tight ${
+                      isCompleted || isCurrent ? "text-negro" : "text-muted/40"
+                    }`}
+                  >
+                    {phase.name}
+                  </span>
+                </div>
+                {/* Connector line */}
+                {i < PHASES.length - 1 && (
+                  <div
+                    className={`flex-1 h-0.5 mx-1 rounded ${
+                      currentPhase > phase.number + 1
+                        ? "bg-naranja"
+                        : currentPhase > phase.number
+                        ? "bg-naranja/30"
+                        : "bg-borde/30"
+                    }`}
+                  />
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Phase cards */}
+      <div className="space-y-3">
+        {PHASES.map((phase) => (
+          <PhaseCard
+            key={phase.number}
+            phase={phase}
+            currentPhase={currentPhase}
+            expanded={expandedPhase === phase.number}
+            onToggle={() => setExpandedPhase(expandedPhase === phase.number ? null : phase.number)}
+            journey={journey}
+            arbolCompleted={arbolCompleted}
+            arbolTotal={arbolTotal}
+            phase1Progress={phase1Progress}
+            phase1Total={phase1Total}
+          />
+        ))}
+      </div>
+
+      {/* Philosophy note */}
+      <div className="bg-naranja/[0.04] border border-naranja/10 rounded-2xl p-5">
+        <p className="text-sm text-negro/80 leading-relaxed italic">
+          &ldquo;La mayoría empieza por la estrategia y luego se pregunta por qué no funciona.
+          La Pirámide se construye de abajo arriba. Las Rutas son el camino completo:
+          primero quién eres, luego cómo te ve el mundo, después tu camino, y solo entonces ejecutas.&rdquo;
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ─── Phase Card Component ───
+
+interface PhaseCardProps {
+  phase: PhaseConfig;
+  currentPhase: number;
+  expanded: boolean;
+  onToggle: () => void;
+  journey: UserJourney;
+  arbolCompleted: number;
+  arbolTotal: number;
+  phase1Progress: number;
+  phase1Total: number;
+}
+
+function PhaseCard({
+  phase,
+  currentPhase,
+  expanded,
+  onToggle,
+  journey,
+  arbolCompleted,
+  arbolTotal,
+  phase1Progress,
+  phase1Total,
+}: PhaseCardProps) {
+  const isCompleted = currentPhase > phase.number;
+  const isCurrent = currentPhase === phase.number;
+  const isLocked = currentPhase < phase.number;
+
+  // Phase-specific progress
+  const getPhaseProgress = () => {
+    switch (phase.number) {
+      case 1:
+        return { current: phase1Progress, total: phase1Total, label: "fundamentos completados" };
+      case 2:
+        return { current: arbolCompleted, total: arbolTotal, label: "secciones del Árbol" };
+      case 3:
+        const modulosComplete = journey.ruta_modulos?.filter((m) => m.completado).length || 0;
+        const modulosTotal = journey.ruta_modulos?.length || 0;
+        return { current: modulosComplete, total: modulosTotal || 1, label: "módulos de la ruta" };
+      case 4:
+        return { current: journey.piezas_count, total: 10, label: "piezas publicadas" };
+      case 5:
+        return { current: journey.coherencia_historica?.length || 0, total: 3, label: "revisiones mensuales" };
+      default:
+        return { current: 0, total: 1, label: "" };
+    }
+  };
+
+  const progress = getPhaseProgress();
+  const progressPct = Math.min(100, Math.round((progress.current / progress.total) * 100));
+
+  // CTA for current phase
+  const getPhaseAction = () => {
+    switch (phase.number) {
+      case 1:
+        return { href: "/espejo", label: "Ir a La Pirámide / Espejo" };
+      case 2:
+        return { href: "/arbol", label: "Ir a El Árbol" };
+      case 3:
+        return { href: "/rutas", label: "Ver tu ruta" };
+      case 4:
+        return { href: "/maestro", label: "Ir al Maestro" };
+      case 5:
+        return { href: "/dashboard", label: "Ver La Brújula" };
+      default:
+        return { href: "/dashboard", label: "Ir al panel" };
+    }
+  };
+
+  const action = getPhaseAction();
+
+  return (
+    <div
+      className={`bg-white border rounded-2xl overflow-hidden transition-all ${
+        isLocked
+          ? "border-borde/40 opacity-60"
+          : isCurrent
+          ? "border-naranja/30 shadow-sm"
+          : "border-borde"
+      }`}
+    >
+      {/* Header — always visible */}
+      <button
+        onClick={onToggle}
+        className="w-full flex items-center gap-3 p-4 sm:p-5 text-left"
+      >
+        {/* Phase number circle */}
+        <div
+          className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 ${
+            isCompleted
+              ? "bg-naranja text-white"
+              : isCurrent
+              ? "bg-naranja/10 text-naranja border-2 border-naranja"
+              : "bg-borde/20 text-muted/40 border-2 border-borde/40"
+          }`}
+        >
+          {isCompleted ? (
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          ) : (
+            phase.number
+          )}
+        </div>
+
+        {/* Text */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="text-base">{phase.icon}</span>
+            <h3
+              className={`font-heading text-base sm:text-lg ${
+                isLocked ? "text-muted/50" : "text-negro"
+              }`}
+            >
+              Fase {phase.number}: {phase.name}
+            </h3>
+            {isCompleted && (
+              <span className="text-[10px] bg-naranja/10 text-naranja px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">
+                Completada
+              </span>
+            )}
+            {isCurrent && (
+              <span className="text-[10px] bg-naranja text-white px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">
+                Ahora
+              </span>
+            )}
+            {isLocked && (
+              <span className="text-[10px] bg-borde/20 text-muted/50 px-2 py-0.5 rounded-full font-semibold">
+                🔒
+              </span>
+            )}
+          </div>
+          <p className={`text-xs mt-0.5 ${isLocked ? "text-muted/30" : "text-muted"}`}>
+            {phase.tagline}
+          </p>
+        </div>
+
+        {/* Progress mini */}
+        {(isCompleted || isCurrent) && (
+          <div className="hidden sm:flex items-center gap-2 flex-shrink-0">
+            <div className="w-20 h-1.5 bg-borde/20 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-naranja rounded-full transition-all"
+                style={{ width: `${isCompleted ? 100 : progressPct}%` }}
+              />
+            </div>
+            <span className="text-[10px] text-muted font-medium w-8 text-right">
+              {isCompleted ? "100" : progressPct}%
+            </span>
+          </div>
+        )}
+
+        {/* Expand arrow */}
+        <svg
+          className={`w-4 h-4 text-muted/40 transition-transform flex-shrink-0 ${
+            expanded ? "rotate-180" : ""
+          }`}
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      {/* Expanded content */}
+      {expanded && (
+        <div className="px-4 sm:px-5 pb-5 space-y-4 border-t border-borde/30">
+          <div className="pt-4">
+            <p className={`text-sm leading-relaxed ${isLocked ? "text-muted/40" : "text-negro/70"}`}>
+              {phase.description}
+            </p>
+          </div>
+
+          {/* Tools in this phase */}
+          <div>
+            <p className="text-[10px] font-semibold text-muted/60 uppercase tracking-widest mb-2">
+              Herramientas
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {phase.tools.map((tool) => (
+                <span
+                  key={tool}
+                  className={`text-xs px-2.5 py-1 rounded-lg ${
+                    isLocked
+                      ? "bg-borde/10 text-muted/30"
+                      : "bg-crema text-negro/70 border border-borde/40"
+                  }`}
+                >
+                  {tool}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Progress bar (for current/completed) */}
+          {(isCompleted || isCurrent) && progress.total > 0 && (
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <p className="text-[10px] font-semibold text-muted/60 uppercase tracking-widest">
+                  Progreso
+                </p>
+                <span className="text-xs text-muted">
+                  {progress.current}/{progress.total} {progress.label}
+                </span>
+              </div>
+              <div className="w-full h-2 bg-borde/20 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-naranja rounded-full transition-all duration-500"
+                  style={{ width: `${isCompleted ? 100 : progressPct}%` }}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Unlock condition (for locked phases) */}
+          {isLocked && (
+            <div className="bg-crema/50 border border-borde/30 rounded-xl p-3">
+              <p className="text-xs text-muted/60">
+                <span className="font-semibold">Para desbloquear:</span>{" "}
+                {phase.unlockCondition}
+              </p>
+            </div>
+          )}
+
+          {/* Phase started date */}
+          {journey.phase_started_at?.[String(phase.number)] && (
+            <p className="text-[10px] text-muted/40">
+              Iniciada:{" "}
+              {new Date(journey.phase_started_at[String(phase.number)]!).toLocaleDateString("es-ES", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}
+            </p>
+          )}
+
+          {/* Diagnostic profile (phase 2-3) */}
+          {phase.number === 2 && journey.perfil_diagnostico && (
+            <div className="bg-crema border border-borde/40 rounded-xl p-4">
+              <p className="text-[10px] font-semibold text-naranja uppercase tracking-widest mb-1">
+                Tu diagnóstico
+              </p>
+              <p className="text-sm text-negro font-medium">
+                Perfil {journey.perfil_diagnostico}
+                {journey.diagnostico_coherencia?.score != null && (
+                  <span className="text-muted ml-2">
+                    — Score de coherencia: {journey.diagnostico_coherencia.score}/100
+                  </span>
+                )}
+              </p>
+            </div>
+          )}
+
+          {/* Route info (phase 3) */}
+          {phase.number === 3 && journey.ruta_asignada && (
+            <div
+              className="rounded-xl p-4"
+              style={{
+                background: RUTA_CONFIG[journey.ruta_asignada].color + "08",
+                border: `1px solid ${RUTA_CONFIG[journey.ruta_asignada].color}20`,
+              }}
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-lg">{RUTA_CONFIG[journey.ruta_asignada].icon}</span>
+                <span
+                  className="font-heading text-base font-semibold"
+                  style={{ color: RUTA_CONFIG[journey.ruta_asignada].color }}
+                >
+                  {RUTA_CONFIG[journey.ruta_asignada].name}
+                </span>
+              </div>
+              <p className="text-xs text-muted">
+                {RUTA_CONFIG[journey.ruta_asignada].tagline}
+              </p>
+            </div>
+          )}
+
+          {/* CTA for current phase */}
+          {isCurrent && (
+            <Link
+              href={action.href}
+              className="inline-flex items-center gap-2 bg-negro text-white text-sm font-medium px-4 py-2.5 rounded-xl hover:bg-negro/90 transition-colors"
+            >
+              {action.label}
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </Link>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}

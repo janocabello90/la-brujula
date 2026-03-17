@@ -127,7 +127,27 @@ export default function AppShell({ children, fullWidth = false }: AppShellProps)
         </Link>
       </div>
 
-      {/* 3. La Brújula — Expandable */}
+      {/* 3. Las Rutas — New */}
+      <div className="mb-1">
+        <Link
+          href="/rutas"
+          className={`flex items-center gap-2.5 px-2.5 py-2 rounded-xl transition-all ${
+            pathname === "/rutas"
+              ? "bg-naranja/10 text-naranja font-semibold"
+              : "text-negro/70 hover:bg-negro/[0.04]"
+          }`}
+        >
+          <span className="text-lg flex-shrink-0">🗺️</span>
+          {!sidebarCollapsed && (
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-sm">Las Rutas</span>
+              <span className={`text-[10px] italic ${pathname === "/rutas" ? "text-naranja/70" : "text-naranja"}`}>tu camino</span>
+            </div>
+          )}
+        </Link>
+      </div>
+
+      {/* 4. La Brújula — Expandable */}
       <div className="mb-1">
         <button
           onClick={() => setBrujulaOpen(!brujulaOpen)}

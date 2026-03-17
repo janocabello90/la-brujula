@@ -46,6 +46,10 @@ export interface DashboardStats {
   hasArbol: boolean;
   // Today
   todayItems: TodayItem[];
+  // Journey (Las Rutas)
+  journeyPhase: number;
+  journeyRuta: string | null;
+  journeyPerfil: string | null;
 }
 
 export interface SmartTask {
@@ -148,6 +152,27 @@ export default async function DashboardPage() {
     supabase.from("planner_items").select("*", { count: "exact", head: true }).eq("user_id", user.id).eq("status", "draft"),
   ]);
 
+  // Fetch user journey for Las Rutas integration
+  let { data: userJourney } = await supabase
+    .from("user_journey")
+    .select("current_phase, ruta_asignada, perfil_diagnostico, piramide_completada, ruta_iniciada")
+    .eq("user_id", user.id)
+    .single();
+
+  // Auto-create journey if it doesn't exist (for existing users who predate Las Rutas)
+  if (!userJourney) {
+    const { data: newJourney } = await supabase
+      .from("user_journey")
+      .insert({
+        user_id: user.id,
+        current_phase: 1,
+        phase_started_at: { "1": new Date().toISOString() },
+      })
+      .select("current_phase, ruta_asignada, perfil_diagnostico, piramide_completada, ruta_iniciada")
+      .single();
+    userJourney = newJourney;
+  }
+
   const tree = brujulaData?.tree || { pilares: [] };
   const buyers = brujulaData?.buyers || (brujulaData?.buyer?.nombre ? [brujulaData.buyer] : []);
 
@@ -209,6 +234,9 @@ export default async function DashboardPage() {
     arbolTotal: 9,
     hasArbol: !!arbolData,
     todayItems,
+    journeyPhase: userJourney?.current_phase || 1,
+    journeyRuta: userJourney?.ruta_asignada || null,
+    journeyPerfil: userJourney?.perfil_diagnostico || null,
   };
 
   // Generate smart tasks

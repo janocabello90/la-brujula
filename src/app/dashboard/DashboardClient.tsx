@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import Link from "next/link";
 import AppShell from "@/components/AppShell";
 import type { DashboardStats, SmartTask, ArbolSection } from "./page";
+import { PHASES, RUTA_CONFIG, type RutaType } from "@/lib/types";
 
 // Frases rotativas — estilo Jano
 const QUOTES = [
@@ -75,6 +76,53 @@ export default function DashboardClient({ stats, tasks }: Props) {
           </h1>
           <p className="text-muted text-sm italic mt-1">&ldquo;{quote}&rdquo;</p>
         </div>
+
+        {/* ===== LAS RUTAS — Journey Banner ===== */}
+        <Link
+          href="/rutas"
+          className="block mb-6 rounded-2xl border border-naranja/20 bg-gradient-to-r from-naranja/[0.04] to-transparent hover:border-naranja/40 transition-all group"
+        >
+          <div className="flex items-center gap-4 p-4 sm:p-5">
+            {/* Phase progress dots */}
+            <div className="flex items-center gap-1.5 flex-shrink-0">
+              {PHASES.map((phase) => (
+                <div
+                  key={phase.number}
+                  className={`w-2.5 h-2.5 rounded-full transition-all ${
+                    stats.journeyPhase > phase.number
+                      ? "bg-naranja"
+                      : stats.journeyPhase === phase.number
+                      ? "bg-naranja/50 ring-2 ring-naranja/20"
+                      : "bg-borde/30"
+                  }`}
+                />
+              ))}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm text-negro font-medium">
+                <span className="text-naranja">{PHASES[stats.journeyPhase - 1]?.icon}</span>{" "}
+                Fase {stats.journeyPhase}: {PHASES[stats.journeyPhase - 1]?.name}
+                {stats.journeyRuta && (
+                  <span
+                    className="ml-2 text-xs px-2 py-0.5 rounded-full"
+                    style={{
+                      background: RUTA_CONFIG[stats.journeyRuta as RutaType]?.color + "15",
+                      color: RUTA_CONFIG[stats.journeyRuta as RutaType]?.color,
+                    }}
+                  >
+                    {RUTA_CONFIG[stats.journeyRuta as RutaType]?.name}
+                  </span>
+                )}
+              </p>
+              <p className="text-xs text-muted mt-0.5">
+                {PHASES[stats.journeyPhase - 1]?.tagline}
+              </p>
+            </div>
+            <svg className="w-4 h-4 text-muted/30 group-hover:text-naranja transition-colors flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </Link>
 
         {/* ===== PROGRESS SECTION ===== */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
