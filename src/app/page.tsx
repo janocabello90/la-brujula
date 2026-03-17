@@ -62,21 +62,14 @@ export default function Home() {
 
       {/* ─── Vídeo de Jano ─────────────────────────────── */}
       <section className="max-w-4xl mx-auto px-6 sm:px-10 pb-16 sm:pb-24">
-        <div className="relative rounded-2xl overflow-hidden bg-negro aspect-video flex items-center justify-center border border-white/10">
-          {/* TODO: Reemplazar con el vídeo real de Jano */}
-          {/* Opciones:
-              - YouTube embed: <iframe src="https://www.youtube.com/embed/VIDEO_ID" ... />
-              - Vídeo directo: <video src="/video-jano.mp4" controls poster="/video-poster.jpg" />
-          */}
-          <div className="text-center px-6">
-            <div className="w-20 h-20 rounded-full bg-naranja/20 flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-naranja ml-1" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            </div>
-            <p className="text-white/60 text-sm font-medium">Vídeo próximamente</p>
-            <p className="text-white/30 text-xs mt-1">Jano te cuenta por qué existe El Sistema</p>
-          </div>
+        <div className="relative rounded-2xl overflow-hidden bg-negro aspect-video border border-white/10">
+          <iframe
+            src="https://www.youtube.com/embed/HTqT6Kf7ufI?rel=0&modestbranding=1"
+            title="Jano Cabello — Por qué existe El Sistema de Buena Vida"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="absolute inset-0 w-full h-full"
+          />
         </div>
       </section>
 
@@ -147,6 +140,19 @@ export default function Home() {
               <p className="text-white/30 text-[10px] text-center mt-5 italic">Se construye de abajo arriba. Siempre.</p>
             </div>
           </div>
+        </div>
+
+        {/* Captura de La Pirámide */}
+        <div className="max-w-4xl mx-auto mt-12 px-6 sm:px-10">
+          <div className="rounded-2xl overflow-hidden border border-borde/40 shadow-card">
+            {/* TODO: Reemplazar con captura real. Guardar como /public/cap-piramide.png */}
+            <img
+              src="/cap-piramide.png"
+              alt="La Pirámide de la Marca Personal — ejercicios interactivos con objetivos y KPIs"
+              className="w-full"
+            />
+          </div>
+          <p className="text-center text-xs text-muted/60 mt-3">La Pirámide: ejercicios interactivos, objetivos y KPIs reales</p>
         </div>
       </section>
 
@@ -420,17 +426,21 @@ export default function Home() {
                 <span className="text-sm text-muted">Podcast</span>
               </div>
             </div>
-            <div className="md:col-span-2 flex justify-center">
-              {/* TODO: Foto de Jano aquí */}
+            <div className="md:col-span-2 flex flex-col items-center gap-4">
               <picture>
                 <source srcSet="/gorila-brujula.webp" type="image/webp" />
                 <img
                   src="/gorila-brujula.png"
-                  alt="Jano Cabello"
-                  className="w-full max-w-sm rounded-2xl"
+                  alt="Nano Banana — la mascota del Sistema de Buena Vida"
+                  className="w-full max-w-xs rounded-2xl"
                   style={{ filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.1))" }}
                 />
               </picture>
+              <div className="bg-crema border border-borde/40 rounded-xl p-4 max-w-xs text-center">
+                <p className="text-xs text-muted leading-relaxed">
+                  Este gorila se llama <span className="font-semibold text-negro">Nano Banana</span>. Es la mascota del Sistema. Representa lo que creemos: que detrás de cada marca personal hay un animal pensante con una taza de café, intentando hacer las cosas bien. Sin filtros. Sin postureo.
+                </p>
+              </div>
             </div>
           </div>
         </div>
