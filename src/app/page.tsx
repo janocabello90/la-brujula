@@ -442,21 +442,13 @@ export default function Home() {
                 <span className="text-sm text-muted">Podcast</span>
               </div>
             </div>
-            <div className="md:col-span-2 flex flex-col items-center gap-4">
-              <picture>
-                <source srcSet="/gorila-brujula.webp" type="image/webp" />
-                <img
-                  src="/gorila-brujula.png"
-                  alt="Nano Banana — la mascota del Sistema de Buena Vida"
-                  className="w-full max-w-xs rounded-2xl"
-                  style={{ filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.1))" }}
-                />
-              </picture>
-              <div className="bg-crema border border-borde/40 rounded-xl p-4 max-w-xs text-center">
-                <p className="text-xs text-muted leading-relaxed">
-                  Este gorila se llama <span className="font-semibold text-negro">Nano Banana</span>. Es la mascota del Sistema. Representa lo que creemos: que detrás de cada marca personal hay un animal pensante con una taza de café, intentando hacer las cosas bien. Sin filtros. Sin postureo.
-                </p>
-              </div>
+            <div className="md:col-span-2 flex items-center justify-center">
+              <img
+                src="/gorilayyo3.png"
+                alt="Jano Cabello"
+                className="w-full max-w-sm rounded-2xl"
+                style={{ filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.1))" }}
+              />
             </div>
           </div>
         </div>
