@@ -91,20 +91,24 @@ export default function AppShell({ children, fullWidth = false }: AppShellProps)
         </p>
       )}
 
-      {/* 1. La Pirámide — Próximamente */}
-      <div className="mb-1 opacity-40 cursor-default">
-        <div className="flex items-center gap-2.5 px-2.5 py-2 rounded-xl">
+      {/* 1. La Pirámide — Active */}
+      <div className="mb-1">
+        <Link
+          href="/piramide"
+          className={`flex items-center gap-2.5 px-2.5 py-2 rounded-xl transition-all ${
+            pathname === "/piramide"
+              ? "bg-naranja/10 text-naranja font-semibold"
+              : "text-negro/70 hover:bg-negro/[0.04]"
+          }`}
+        >
           <span className="text-lg flex-shrink-0">🔺</span>
           {!sidebarCollapsed && (
-            <div className="flex-1 min-w-0">
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-sm text-negro/70">La Pirámide</span>
-                <span className="text-[10px] text-naranja italic">estructura</span>
-              </div>
-              <span className="text-[10px] text-muted block">Próximamente</span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-sm">La Pirámide</span>
+              <span className={`text-[10px] italic ${pathname === "/piramide" ? "text-naranja/70" : "text-naranja"}`}>estructura</span>
             </div>
           )}
-        </div>
+        </Link>
       </div>
 
       {/* 2. El Árbol — Active */}
