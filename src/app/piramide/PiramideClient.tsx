@@ -422,6 +422,7 @@ function ExerciseBlock({
   exerciseNumber?: number;
 }) {
   const isTable = exercise.layout === "table";
+  const isObjectives = exercise.layout === "objectives";
 
   return (
     <div className="border border-borde/30 rounded-2xl overflow-hidden">
@@ -452,7 +453,13 @@ function ExerciseBlock({
 
       {/* Fields */}
       <div className="p-5">
-        {isTable ? (
+        {isObjectives ? (
+          <ObjectivesFields
+            exercise={exercise}
+            stepData={stepData}
+            onFieldChange={onFieldChange}
+          />
+        ) : isTable ? (
           <TableFields
             exercise={exercise}
             stepData={stepData}
@@ -530,6 +537,125 @@ function TableFields({
           ))}
         </tbody>
       </table>
+    </div>
+  );
+}
+
+// ─── Objectives Fields (hierarchical: 3 principales → secundarios → KPIs) ───
+
+function ObjectivesFields({
+  exercise,
+  stepData,
+  onFieldChange,
+}: {
+  exercise: PiramideExercise;
+  stepData: Record<string, string>;
+  onFieldChange: (key: string, value: string) => void;
+}) {
+  // Group fields into 3 objective blocks (7 fields each: principal + 3x(sec+kpi))
+  const objectiveBlocks = [
+    {
+      emoji: "❤️",
+      color: "border-red-200 bg-red-50/30",
+      headerColor: "text-red-700 bg-red-100/60",
+      prefix: "obj_pasional",
+      label: "Objetivo pasional",
+      sublabel: "Lo que te mueve por dentro",
+    },
+    {
+      emoji: "⭐",
+      color: "border-amber-200 bg-amber-50/30",
+      headerColor: "text-amber-700 bg-amber-100/60",
+      prefix: "obj_referencia",
+      label: "Objetivo de referencia",
+      sublabel: "Cómo quieres ser percibido",
+    },
+    {
+      emoji: "💰",
+      color: "border-green-200 bg-green-50/30",
+      headerColor: "text-green-700 bg-green-100/60",
+      prefix: "obj_economico",
+      label: "Objetivo económico",
+      sublabel: "La sostenibilidad de tu proyecto",
+    },
+  ];
+
+  return (
+    <div className="space-y-6">
+      {objectiveBlocks.map((block) => {
+        // Find the main field and secondary fields
+        const mainField = exercise.fields.find((f) => f.key === block.prefix);
+        const secFields = [1, 2, 3].map((n) => ({
+          sec: exercise.fields.find((f) => f.key === `${block.prefix}_sec_${n}`),
+          kpi: exercise.fields.find((f) => f.key === `${block.prefix}_sec_${n}_kpi`),
+        }));
+
+        return (
+          <div key={block.prefix} className={`rounded-xl border ${block.color} overflow-hidden`}>
+            {/* Block header */}
+            <div className={`px-4 py-2.5 ${block.headerColor} border-b border-inherit`}>
+              <div className="flex items-center gap-2">
+                <span className="text-lg">{block.emoji}</span>
+                <div>
+                  <p className="text-sm font-semibold">{block.label}</p>
+                  <p className="text-[10px] opacity-70">{block.sublabel}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-4 space-y-4">
+              {/* Main objective */}
+              {mainField && (
+                <div>
+                  <label className="block text-sm font-semibold text-negro mb-1">
+                    {block.emoji} {block.label}
+                  </label>
+                  {mainField.hint && (
+                    <p className="text-xs text-muted/60 italic mb-1.5">{mainField.hint}</p>
+                  )}
+                  <textarea
+                    value={stepData[mainField.key] || ""}
+                    onChange={(e) => onFieldChange(mainField.key, e.target.value)}
+                    placeholder={mainField.placeholder}
+                    rows={3}
+                    className="w-full rounded-xl border border-borde/60 bg-white px-4 py-3 text-sm text-negro placeholder:text-muted/30 focus:outline-none focus:ring-2 focus:ring-naranja/20 focus:border-naranja/40 resize-y transition-all leading-relaxed"
+                  />
+                </div>
+              )}
+
+              {/* Secondary objectives with KPIs */}
+              <div className="space-y-3">
+                <p className="text-[10px] font-semibold text-muted/50 uppercase tracking-widest">
+                  Objetivos secundarios y KPIs
+                </p>
+                {secFields.map(({ sec, kpi }, idx) => (
+                  <div key={idx} className="grid grid-cols-2 gap-2">
+                    <div>
+                      <input
+                        type="text"
+                        value={stepData[sec?.key || ""] || ""}
+                        onChange={(e) => sec && onFieldChange(sec.key, e.target.value)}
+                        placeholder={sec?.placeholder || `Objetivo secundario ${idx + 1}${idx === 2 ? " (opcional)" : ""}`}
+                        className="w-full rounded-lg border border-borde/40 bg-white px-3 py-2 text-sm text-negro placeholder:text-muted/25 focus:outline-none focus:ring-2 focus:ring-naranja/20 focus:border-naranja/40 transition-all"
+                      />
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="text-[10px] text-muted/40 flex-shrink-0">KPI:</span>
+                      <input
+                        type="text"
+                        value={stepData[kpi?.key || ""] || ""}
+                        onChange={(e) => kpi && onFieldChange(kpi.key, e.target.value)}
+                        placeholder={kpi?.placeholder || "Indicador medible"}
+                        className="w-full rounded-lg border border-borde/40 bg-white px-3 py-2 text-sm text-negro placeholder:text-muted/25 focus:outline-none focus:ring-2 focus:ring-naranja/20 focus:border-naranja/40 transition-all"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

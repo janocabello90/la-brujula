@@ -379,22 +379,31 @@ export interface Nivel2Data {
   pv_sin_necesidad: string;       // ...sin necesidad de [lo que odian o temen]
   pv_frase_completa: string;      // Tu propuesta de valor en una frase completa
   pv_por_que_tu: string;          // ¿Por qué tú y no otro? ¿Qué te diferencia?
-  // Ejercicio 3: Cuadro de objetivos (tabla estructurada)
-  obj_principal_1: string;         // Objetivo principal #1
-  obj_principal_1_kpi: string;     // KPI / Indicador medible
-  obj_principal_1_plazo: string;   // Plazo
-  obj_principal_2: string;
-  obj_principal_2_kpi: string;
-  obj_principal_2_plazo: string;
-  obj_principal_3: string;
-  obj_principal_3_kpi: string;
-  obj_principal_3_plazo: string;
-  obj_secundario_1: string;        // Objetivo secundario #1
-  obj_secundario_1_kpi: string;
-  obj_secundario_2: string;
-  obj_secundario_2_kpi: string;
-  obj_secundario_3: string;
-  obj_secundario_3_kpi: string;
+  // Ejercicio 3: Cuadro de objetivos — Estructura jerárquica
+  // ❤️ Objetivo pasional (lo que te mueve por dentro)
+  obj_pasional: string;
+  obj_pasional_sec_1: string;       // Secundario 1 del pasional
+  obj_pasional_sec_1_kpi: string;   // KPI del secundario 1
+  obj_pasional_sec_2: string;       // Secundario 2 del pasional
+  obj_pasional_sec_2_kpi: string;
+  obj_pasional_sec_3: string;       // Secundario 3 del pasional (opcional)
+  obj_pasional_sec_3_kpi: string;
+  // ⭐ Objetivo de referencia (cómo quieres ser percibido)
+  obj_referencia: string;
+  obj_referencia_sec_1: string;
+  obj_referencia_sec_1_kpi: string;
+  obj_referencia_sec_2: string;
+  obj_referencia_sec_2_kpi: string;
+  obj_referencia_sec_3: string;
+  obj_referencia_sec_3_kpi: string;
+  // 💰 Objetivo económico (la sostenibilidad de tu proyecto)
+  obj_economico: string;
+  obj_economico_sec_1: string;
+  obj_economico_sec_1_kpi: string;
+  obj_economico_sec_2: string;
+  obj_economico_sec_2_kpi: string;
+  obj_economico_sec_3: string;
+  obj_economico_sec_3_kpi: string;
   // Ejercicio 4: Conexión propuesta → audiencia → objetivos
   conexion_propuesta_audiencia: string;  // ¿Tu propuesta resuelve el problema real de tu audiencia?
   conexion_objetivos_coherencia: string; // ¿Tus objetivos están alineados con tu buena vida?
@@ -523,12 +532,9 @@ export const DEFAULT_PIRAMIDE: Omit<PiramideData, 'id' | 'user_id' | 'created_at
   nivel_2: {
     audiencia_nombre: '', audiencia_edad_contexto: '', audiencia_frustracion: '', audiencia_deseo: '', audiencia_objecion: '', audiencia_donde_esta: '', audiencia_lenguaje: '',
     pv_ayudo_a: '', pv_a_conseguir: '', pv_a_traves_de: '', pv_sin_necesidad: '', pv_frase_completa: '', pv_por_que_tu: '',
-    obj_principal_1: '', obj_principal_1_kpi: '', obj_principal_1_plazo: '',
-    obj_principal_2: '', obj_principal_2_kpi: '', obj_principal_2_plazo: '',
-    obj_principal_3: '', obj_principal_3_kpi: '', obj_principal_3_plazo: '',
-    obj_secundario_1: '', obj_secundario_1_kpi: '',
-    obj_secundario_2: '', obj_secundario_2_kpi: '',
-    obj_secundario_3: '', obj_secundario_3_kpi: '',
+    obj_pasional: '', obj_pasional_sec_1: '', obj_pasional_sec_1_kpi: '', obj_pasional_sec_2: '', obj_pasional_sec_2_kpi: '', obj_pasional_sec_3: '', obj_pasional_sec_3_kpi: '',
+    obj_referencia: '', obj_referencia_sec_1: '', obj_referencia_sec_1_kpi: '', obj_referencia_sec_2: '', obj_referencia_sec_2_kpi: '', obj_referencia_sec_3: '', obj_referencia_sec_3_kpi: '',
+    obj_economico: '', obj_economico_sec_1: '', obj_economico_sec_1_kpi: '', obj_economico_sec_2: '', obj_economico_sec_2_kpi: '', obj_economico_sec_3: '', obj_economico_sec_3_kpi: '',
     conexion_propuesta_audiencia: '', conexion_objetivos_coherencia: '', conexion_que_falta: '',
   },
   nivel_3: {
@@ -567,7 +573,7 @@ export interface PiramideExercise {
   description?: string;
   theoryLink?: string; // URL a la comunidad Skool con la teoría
   fields: PiramideField[];
-  layout?: 'default' | 'table'; // 'table' = renderizar campos en tabla
+  layout?: 'default' | 'table' | 'objectives'; // rendering layout
   tableHeaders?: string[];      // headers para layout table
 }
 
@@ -589,7 +595,7 @@ function buildFlatFields(exercises: PiramideExercise[]): PiramideField[] {
   return exercises.flatMap((ex) => ex.fields);
 }
 
-const COMMUNITY_URL = 'https://www.skool.com/el-sistema-de-buena-vida';
+const THEORY_URL = 'https://www.skool.com/una-buena-vida-comunidad-2471/classroom/24c4710c?md=7daa9e990c64473b9ee1de3969644264';
 
 // ===== STEP DEFINITIONS =====
 
@@ -597,7 +603,7 @@ const PROLOGO_EXERCISES: PiramideExercise[] = [
   {
     title: 'Cuéntate tu historia',
     description: 'Este es un mapa emocional, una declaración de intenciones, un ejercicio de memoria, gratitud y proyección. Si lo haces con sinceridad, verás que el resto de esta formación será mucho más clara y transformadora. Porque sabrás desde dónde partes. Y si alguna vez te pierdes, vuelve aquí.',
-    theoryLink: `${COMMUNITY_URL}/classroom/la-piramide`,
+    theoryLink: THEORY_URL,
     fields: [
       { key: 'el_comienzo', label: 'El comienzo', placeholder: '¿De dónde vienes? ¿Cómo era tu infancia? ¿Qué aprendiste de tu entorno, tus referentes, tus heridas? ¿Qué es lo primero que recuerdas que te emocionaba o te hacía sentirte tú? ¿Hay algún fuego que te guíe desde pequeño?', hint: 'Hay un fuego que te guía desde pequeño. Encuéntralo.' },
       { key: 'los_nudos', label: 'Los nudos del viaje', placeholder: '¿Qué momentos marcaron tu vida? ¿Cuándo sentiste que estabas perdido, cambiado, roto, o a punto de rendirte? ¿Qué decisiones te han traído hasta aquí? ¿Qué batallas has librado contigo mismo o con el mundo?', hint: 'Las batallas que has librado contigo mismo o con el mundo te han moldeado.' },
@@ -611,7 +617,7 @@ const MENTALIDAD_EXERCISES: PiramideExercise[] = [
   {
     title: 'Diseña tu escaparate personal',
     description: 'Tu marca personal es el escaparate de tu talento, tus atributos y también tus defectos. Tu misión es saber identificarlos, ordenarlos y ponerlos en el lugar adecuado en pro de tus objetivos.',
-    theoryLink: `${COMMUNITY_URL}/classroom/la-piramide`,
+    theoryLink: THEORY_URL,
     fields: [
       { key: 'que_sienta', label: '¿Qué quieres que la gente sienta al mirar tu escaparate?', placeholder: '¿Confianza? ¿Curiosidad? ¿Inspiración? ¿Cercanía? Escribe al menos tres palabras que definan esa atmósfera emocional.', hint: 'Piensa en la emoción o sensaciones que provocarías en alguien que te ve por primera vez.' },
       { key: 'elementos_centro', label: '¿Qué elementos colocas en el centro del escaparate?', placeholder: '¿Qué talentos, experiencias, habilidades o pasiones deben estar siempre visibles en tu marca? Lista entre tres y cinco elementos.', hint: 'El corazón de tu propuesta. Lo que te representa y debe ser reconocible a simple vista.' },
@@ -625,7 +631,7 @@ const BUENA_VIDA_EXERCISES: PiramideExercise[] = [
   {
     title: 'Ejercicio de reflexión: Éxito y Buena Vida',
     description: 'Este ejercicio no es para hacerlo rápido. Busca un momento tranquilo, sin interrupciones. Responde sin filtro. No hay respuestas buenas o malas, solo las que te acerquen a ti mismo.',
-    theoryLink: `${COMMUNITY_URL}/classroom/la-piramide`,
+    theoryLink: THEORY_URL,
     fields: [
       { key: 'definiendo_buena_vida', label: '1. Definiendo la buena vida', placeholder: 'Imagina que tienes todo resuelto: dinero, tiempo y salud.\n\n¿Cómo es un día normal en esa vida ideal?\n¿Con quién compartes tu tiempo?\n¿Dónde estás viviendo?\n¿Qué estás haciendo que te hace sentir pleno/a?\n¿Qué estás evitando conscientemente?', hint: '¿Qué estás evitando conscientemente en esa vida ideal?' },
       { key: 'espacios_resonancia', label: '2. Tus espacios de resonancia', placeholder: 'La paz no se encuentra, se recuerda. ¿Dónde la has sentido antes?\n\n¿Cuándo fue la última vez que sentiste paz mental?\n¿Qué estabas haciendo?\n¿Qué elementos había en ese momento que puedes replicar hoy?\n¿Qué decisiones te alejan de esa paz?', hint: '¿Qué decisiones te alejan de esa paz?' },
@@ -642,7 +648,7 @@ const BAJO_TIERRA_EXERCISES: PiramideExercise[] = [
   {
     title: 'Ejercicio 1: Tu historia subterránea',
     description: 'Las broncas que te echaba tu padre por suspender, las veces que fracasaste o triunfaste en el amor, tu relación con tu abuelo o aquella frase que te dijo una vez un amigo, forman parte de lo que está bajo tierra. Lo que no se ve, pero sostiene todo.',
-    theoryLink: `${COMMUNITY_URL}/classroom/la-piramide`,
+    theoryLink: THEORY_URL,
     fields: [
       { key: 'historia_infancia', label: '¿Qué aprendiste en casa?', placeholder: '¿Qué valores o carencias heredaste de tu familia? ¿Qué se premiaba y qué se castigaba? ¿Qué patrones reconoces hoy que vienen de entonces?' },
       { key: 'historia_formacion', label: 'Tus experiencias formativas', placeholder: '¿Qué estudios, trabajos, relaciones o viajes te moldearon de forma definitiva? ¿Qué te enseñaron sobre ti mismo?' },
@@ -653,7 +659,7 @@ const BAJO_TIERRA_EXERCISES: PiramideExercise[] = [
   {
     title: 'Ejercicio 2: Mapa de creencias',
     description: 'Tu sistema de creencias con el dinero determina tu habilidad para ganarlo, gastarlo o ahorrarlo. Lo mismo pasa con el éxito, la exposición y la venta. Identificar estas creencias es el primer paso para transformarlas.',
-    theoryLink: `${COMMUNITY_URL}/classroom/la-piramide`,
+    theoryLink: THEORY_URL,
     fields: [
       { key: 'creencia_sobre_ti', label: '¿Qué crees sobre ti mismo?', placeholder: 'Ej: "Soy bueno en...", "No soy capaz de...", "La gente me ve como...", "No merezco..."', type: 'short' as PiramideFieldType },
       { key: 'creencia_sobre_dinero', label: '¿Qué crees sobre el dinero?', placeholder: 'Ej: "El dinero es difícil de ganar", "Los ricos son...", "Cobrar por lo que sé es..."', type: 'short' as PiramideFieldType },
@@ -690,7 +696,7 @@ const BAJO_TIERRA_EXERCISES: PiramideExercise[] = [
   {
     title: 'Ejercicio 5: Tu unicidad — Teoría de los sistemas complejos',
     description: 'La Teoría de los sistemas complejos dice que cada persona es un sistema único e irrepetible. Nadie puede conseguir lo mismo que tú haciendo exactamente los mismos pasos. Tu camino hacia la buena vida es solamente tuyo.',
-    theoryLink: `${COMMUNITY_URL}/classroom/la-piramide`,
+    theoryLink: THEORY_URL,
     fields: [
       { key: 'combinacion_unica', label: '¿Cuál es tu combinación irrepetible?', placeholder: '¿Qué mezcla de experiencias, talentos, conocimientos y formas de ver el mundo tienes que nadie más tiene exactamente igual?' },
       { key: 'que_haces_diferente', label: '¿Qué haces de una forma que nadie más hace?', placeholder: 'Piensa en tu manera de trabajar, de comunicar, de resolver problemas. ¿Qué es lo tuyo?', type: 'short' as PiramideFieldType },
@@ -711,7 +717,7 @@ const NIVEL_1_EXERCISES: PiramideExercise[] = [
   {
     title: 'Ejercicio 1: Tus 5 valores innegociables',
     description: 'Construir tu marca personal sin una buena base asentada en tu identidad significa construir un relato que no va en coherencia con lo que de verdad eres. Asentar bien esta base es crucial.',
-    theoryLink: `${COMMUNITY_URL}/classroom/la-piramide`,
+    theoryLink: THEORY_URL,
     fields: [
       { key: 'valor_1', label: 'Valor #1', placeholder: 'Ej: Honestidad, libertad, familia, creatividad...', type: 'short' as PiramideFieldType },
       { key: 'valor_1_significado', label: '¿Qué significa este valor para ti en la práctica?', placeholder: '¿Cómo se traduce en acciones concretas en tu día a día?', type: 'short' as PiramideFieldType },
@@ -733,7 +739,7 @@ const NIVEL_1_EXERCISES: PiramideExercise[] = [
   {
     title: 'Ejercicio 2: Los 5 porqués del propósito',
     description: 'Profundiza hasta llegar a tu propósito real. Empieza por lo superficial y ve profundizando capa a capa hasta encontrar lo que de verdad te mueve. El propósito no tiene que ser grandioso. Tiene que ser tuyo.',
-    theoryLink: `${COMMUNITY_URL}/classroom/la-piramide`,
+    theoryLink: THEORY_URL,
     fields: [
       { key: 'proposito_superficie', label: '¿A qué te dedicas?', placeholder: 'La respuesta superficial, la que le dices a cualquiera.', type: 'short' as PiramideFieldType },
       { key: 'proposito_porque_1', label: '¿Por qué haces esto?', placeholder: 'Primera capa. ¿Por qué elegiste este camino?', type: 'short' as PiramideFieldType },
@@ -789,7 +795,7 @@ const NIVEL_2_EXERCISES: PiramideExercise[] = [
   {
     title: 'Ejercicio 1: Tu audiencia como persona real',
     description: 'Tu mayor enemigo será la ilusión de las masas. La falsa creencia de que debes conquistar a cientos de miles de personas. No es cierto. Solo necesitas una sala de cien personas que te necesiten de verdad. Describe a UNA persona concreta.',
-    theoryLink: `${COMMUNITY_URL}/classroom/la-piramide`,
+    theoryLink: THEORY_URL,
     fields: [
       { key: 'audiencia_nombre', label: 'Dale un nombre a tu cliente ideal', placeholder: 'Un nombre ficticio que te ayude a humanizarle. Ej: "Laura"', type: 'short' as PiramideFieldType },
       { key: 'audiencia_edad_contexto', label: 'Edad, situación vital y contexto profesional', placeholder: '¿Cuántos años tiene? ¿Trabaja por cuenta propia o ajena? ¿Tiene familia? ¿En qué momento vital está?', type: 'short' as PiramideFieldType },
@@ -803,7 +809,7 @@ const NIVEL_2_EXERCISES: PiramideExercise[] = [
   {
     title: 'Ejercicio 2: Propuesta de valor — La fórmula',
     description: 'Tu propuesta de valor conecta lo que sabes hacer mejor con lo que tu audiencia necesita desesperadamente. Completa cada parte de la fórmula por separado y luego escribe la frase completa.',
-    theoryLink: `${COMMUNITY_URL}/classroom/la-piramide`,
+    theoryLink: THEORY_URL,
     fields: [
       { key: 'pv_ayudo_a', label: 'Ayudo a...', placeholder: '¿A qué tipo de persona? (usa el perfil del ejercicio anterior)', type: 'short' as PiramideFieldType },
       { key: 'pv_a_conseguir', label: '...a conseguir...', placeholder: '¿Qué resultado concreto y medible?', type: 'short' as PiramideFieldType },
@@ -814,35 +820,35 @@ const NIVEL_2_EXERCISES: PiramideExercise[] = [
     ],
   },
   {
-    title: 'Ejercicio 3: Cuadro de objetivos, KPIs y plazos',
-    description: 'Los objetivos no son sueños — son compromisos con fecha. Define tus objetivos principales (los que mueven la aguja), los secundarios (los que apoyan) y los KPIs para medir tu progreso.',
-    theoryLink: `${COMMUNITY_URL}/classroom/la-piramide`,
-    layout: 'table',
-    tableHeaders: ['Objetivo', 'KPI / Indicador', 'Plazo'],
+    title: 'Ejercicio 3: Cuadro de objetivos',
+    description: 'Los objetivos no son sueños — son compromisos. Cada objetivo principal tiene entre 2 y 3 objetivos secundarios, y cada secundario tiene un KPI medible. Los tres tipos de objetivo conviven para que tu marca personal sea sostenible, reconocible y auténtica.',
+    theoryLink: THEORY_URL,
+    layout: 'objectives',
     fields: [
-      { key: 'obj_principal_1', label: 'Objetivo principal #1', placeholder: 'Ej: Conseguir 50 clientes', type: 'table_row' as PiramideFieldType },
-      { key: 'obj_principal_1_kpi', label: 'KPI', placeholder: 'Ej: Llamadas de venta semanales', type: 'table_row' as PiramideFieldType },
-      { key: 'obj_principal_1_plazo', label: 'Plazo', placeholder: 'Ej: Dic 2026', type: 'table_row' as PiramideFieldType },
-      { key: 'obj_principal_2', label: 'Objetivo principal #2', placeholder: '', type: 'table_row' as PiramideFieldType },
-      { key: 'obj_principal_2_kpi', label: 'KPI', placeholder: '', type: 'table_row' as PiramideFieldType },
-      { key: 'obj_principal_2_plazo', label: 'Plazo', placeholder: '', type: 'table_row' as PiramideFieldType },
-      { key: 'obj_principal_3', label: 'Objetivo principal #3', placeholder: '', type: 'table_row' as PiramideFieldType },
-      { key: 'obj_principal_3_kpi', label: 'KPI', placeholder: '', type: 'table_row' as PiramideFieldType },
-      { key: 'obj_principal_3_plazo', label: 'Plazo', placeholder: '', type: 'table_row' as PiramideFieldType },
-    ],
-  },
-  {
-    title: 'Objetivos secundarios',
-    description: 'Los objetivos secundarios apoyan a los principales. Son más pequeños pero igual de importantes.',
-    layout: 'table',
-    tableHeaders: ['Objetivo secundario', 'KPI / Indicador'],
-    fields: [
-      { key: 'obj_secundario_1', label: 'Objetivo secundario #1', placeholder: 'Ej: Publicar 3 posts/semana', type: 'table_row' as PiramideFieldType },
-      { key: 'obj_secundario_1_kpi', label: 'KPI', placeholder: 'Ej: Engagement rate', type: 'table_row' as PiramideFieldType },
-      { key: 'obj_secundario_2', label: 'Objetivo secundario #2', placeholder: '', type: 'table_row' as PiramideFieldType },
-      { key: 'obj_secundario_2_kpi', label: 'KPI', placeholder: '', type: 'table_row' as PiramideFieldType },
-      { key: 'obj_secundario_3', label: 'Objetivo secundario #3', placeholder: '', type: 'table_row' as PiramideFieldType },
-      { key: 'obj_secundario_3_kpi', label: 'KPI', placeholder: '', type: 'table_row' as PiramideFieldType },
+      // ❤️ Objetivo pasional
+      { key: 'obj_pasional', label: '❤️ Objetivo pasional', placeholder: 'Lo que te mueve por dentro. El objetivo que nace de tu propósito y tu pasión. Ej: "Ayudar a 100 personas a encontrar su camino profesional"', hint: 'Si este objetivo no te emociona, no es el correcto.' },
+      { key: 'obj_pasional_sec_1', label: 'Objetivo secundario 1', placeholder: 'Ej: Crear una comunidad activa de marca personal', type: 'short' as PiramideFieldType },
+      { key: 'obj_pasional_sec_1_kpi', label: 'KPI', placeholder: 'Ej: 100 miembros activos en 6 meses', type: 'short' as PiramideFieldType },
+      { key: 'obj_pasional_sec_2', label: 'Objetivo secundario 2', placeholder: 'Ej: Publicar contenido de valor semanal', type: 'short' as PiramideFieldType },
+      { key: 'obj_pasional_sec_2_kpi', label: 'KPI', placeholder: 'Ej: 2 posts/semana con >5% engagement', type: 'short' as PiramideFieldType },
+      { key: 'obj_pasional_sec_3', label: 'Objetivo secundario 3 (opcional)', placeholder: '', type: 'short' as PiramideFieldType },
+      { key: 'obj_pasional_sec_3_kpi', label: 'KPI', placeholder: '', type: 'short' as PiramideFieldType },
+      // ⭐ Objetivo de referencia
+      { key: 'obj_referencia', label: '⭐ Objetivo de referencia', placeholder: 'Cómo quieres que te perciban. El posicionamiento que buscas. Ej: "Ser el referente en marca personal con propósito en España"', hint: 'Este objetivo habla de tu reputación y autoridad.' },
+      { key: 'obj_referencia_sec_1', label: 'Objetivo secundario 1', placeholder: 'Ej: Conseguir 5 colaboraciones con referentes del sector', type: 'short' as PiramideFieldType },
+      { key: 'obj_referencia_sec_1_kpi', label: 'KPI', placeholder: 'Ej: 5 podcasts/entrevistas en 12 meses', type: 'short' as PiramideFieldType },
+      { key: 'obj_referencia_sec_2', label: 'Objetivo secundario 2', placeholder: 'Ej: Aumentar la audiencia cualificada', type: 'short' as PiramideFieldType },
+      { key: 'obj_referencia_sec_2_kpi', label: 'KPI', placeholder: 'Ej: 5.000 seguidores relevantes en 12 meses', type: 'short' as PiramideFieldType },
+      { key: 'obj_referencia_sec_3', label: 'Objetivo secundario 3 (opcional)', placeholder: '', type: 'short' as PiramideFieldType },
+      { key: 'obj_referencia_sec_3_kpi', label: 'KPI', placeholder: '', type: 'short' as PiramideFieldType },
+      // 💰 Objetivo económico
+      { key: 'obj_economico', label: '💰 Objetivo económico', placeholder: 'La sostenibilidad de tu proyecto. Sin esto, el resto se cae. Ej: "Facturar 5.000€/mes con mi marca personal"', hint: 'Este objetivo es el que hace que tu buena vida sea viable.' },
+      { key: 'obj_economico_sec_1', label: 'Objetivo secundario 1', placeholder: 'Ej: Lanzar mi primer producto digital', type: 'short' as PiramideFieldType },
+      { key: 'obj_economico_sec_1_kpi', label: 'KPI', placeholder: 'Ej: 50 ventas en los primeros 3 meses', type: 'short' as PiramideFieldType },
+      { key: 'obj_economico_sec_2', label: 'Objetivo secundario 2', placeholder: 'Ej: Crear un servicio de mentoría', type: 'short' as PiramideFieldType },
+      { key: 'obj_economico_sec_2_kpi', label: 'KPI', placeholder: 'Ej: 10 clientes/mes a 200€', type: 'short' as PiramideFieldType },
+      { key: 'obj_economico_sec_3', label: 'Objetivo secundario 3 (opcional)', placeholder: '', type: 'short' as PiramideFieldType },
+      { key: 'obj_economico_sec_3_kpi', label: 'KPI', placeholder: '', type: 'short' as PiramideFieldType },
     ],
   },
   {
@@ -860,7 +866,7 @@ const NIVEL_3_EXERCISES: PiramideExercise[] = [
   {
     title: 'Ejercicio 1: Selección de canales',
     description: 'Las estrategias de marca personal son cambiantes y se ajustan a los tiempos, la tecnología y el entorno. Elige máximo 2-3 canales donde tu audiencia realmente está y donde tú te sientes cómodo. Qué contenido hacer y cómo hacerlo te saldrá solo al concluir este apartado.',
-    theoryLink: `${COMMUNITY_URL}/classroom/la-piramide`,
+    theoryLink: THEORY_URL,
     fields: [
       { key: 'canal_1_nombre', label: 'Canal principal', placeholder: 'Ej: Instagram, YouTube, LinkedIn, Newsletter, Podcast...', type: 'short' as PiramideFieldType },
       { key: 'canal_1_por_que', label: '¿Por qué este canal?', placeholder: '¿Tu audiencia está aquí? ¿Te sientes cómodo comunicando en este formato?', type: 'short' as PiramideFieldType },
@@ -879,7 +885,7 @@ const NIVEL_3_EXERCISES: PiramideExercise[] = [
   {
     title: 'Ejercicio 2: Pilares de contenido y formato',
     description: 'Nadie debería decirte qué contenido hacer. Lo sabrás tú, que para eso eres el constructor de tu pirámide. Conocerás y te sentirás cómodo con el mensaje, el tono y el formato adecuados porque habrás hecho el trabajo previo.',
-    theoryLink: `${COMMUNITY_URL}/classroom/la-piramide`,
+    theoryLink: THEORY_URL,
     fields: [
       { key: 'pilar_1', label: 'Pilar de contenido #1', placeholder: 'Ej: Educativo — enseñar sobre marca personal', type: 'short' as PiramideFieldType },
       { key: 'pilar_2', label: 'Pilar de contenido #2', placeholder: 'Ej: Personal — compartir mi proceso y aprendizajes', type: 'short' as PiramideFieldType },
@@ -892,7 +898,7 @@ const NIVEL_3_EXERCISES: PiramideExercise[] = [
   {
     title: 'Ejercicio 3: Tu embudo de confianza — paso a paso',
     description: 'Un camino de migas de pan que guíe a una persona desde que te conoce hasta que se enamora de lo que ofreces. Describe cada paso del recorrido.',
-    theoryLink: `${COMMUNITY_URL}/classroom/la-piramide`,
+    theoryLink: THEORY_URL,
     fields: [
       { key: 'embudo_descubrimiento', label: 'Paso 1: Descubrimiento', placeholder: '¿Cómo te descubre alguien por primera vez? ¿A través de qué canal, contenido o referencia?', type: 'short' as PiramideFieldType },
       { key: 'embudo_primera_impresion', label: 'Paso 2: Primera impresión', placeholder: '¿Qué ve cuando llega a tu perfil, web o canal? ¿Qué se lleva en los primeros 10 segundos?', type: 'short' as PiramideFieldType },
@@ -913,7 +919,7 @@ const NIVEL_3_EXERCISES: PiramideExercise[] = [
   {
     title: 'Ejercicio 5: Resistencia al algoritmo',
     description: 'Te invito a generar resistencia al algoritmo. Son numerosos los casos de personas que han sabido resistirse a la moda de publicar lo que el algoritmo desea para crear el contenido que quieren. La marca personal no es una carrera hacia la viralidad, es una construcción a fuego lento y con propósito.',
-    theoryLink: `${COMMUNITY_URL}/classroom/la-piramide`,
+    theoryLink: THEORY_URL,
     fields: [
       { key: 'resistencia_que_no_haras', label: '¿Qué NO vas a hacer, aunque funcione?', placeholder: '¿Qué tendencias, formatos o prácticas de tu sector rechazas conscientemente? ¿Qué contenido nunca crearás aunque te dé más visitas?' },
       { key: 'resistencia_tu_diferencia', label: '¿Qué vas a hacer diferente al resto?', placeholder: '¿Qué hace que tu forma de comunicar sea distinta? ¿Qué apuesta haces que el mercado no espera?' },
@@ -926,7 +932,7 @@ const NIVEL_4_EXERCISES: PiramideExercise[] = [
   {
     title: 'Ejercicio 1: Métricas visibles',
     description: 'En este nivel habrás culminado tu estrategia de marca personal. Ahora necesitas métricas para saber si funciona. Empieza por las visibles: las que puedes medir con números.',
-    theoryLink: `${COMMUNITY_URL}/classroom/la-piramide`,
+    theoryLink: THEORY_URL,
     layout: 'table',
     tableHeaders: ['Métrica', 'Valor actual', 'Meta a 12 meses'],
     fields: [
@@ -944,7 +950,7 @@ const NIVEL_4_EXERCISES: PiramideExercise[] = [
   {
     title: 'Ejercicio 2: Métricas invisibles',
     description: 'Las métricas invisibles son tan importantes como las visibles. Algunos modelos mentales y la propia vida te dirán si estás en el buen camino. El mercado te dirá que optimices y escales. Pero la decisión debe ser tuya. Personal e intransferible.',
-    theoryLink: `${COMMUNITY_URL}/classroom/la-piramide`,
+    theoryLink: THEORY_URL,
     fields: [
       { key: 'metrica_inv_paz_mental', label: 'Tu paz mental', placeholder: '¿Cómo está ahora? Del 1 al 10, ¿cuánta paz sientes? ¿Qué la mejoraría?', type: 'short' as PiramideFieldType },
       { key: 'metrica_inv_coherencia', label: 'Tu coherencia', placeholder: '¿Vives en coherencia con tus valores del Nivel 1? ¿Tu marca refleja quién eres de verdad?', type: 'short' as PiramideFieldType },
