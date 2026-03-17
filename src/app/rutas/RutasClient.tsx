@@ -428,7 +428,7 @@ function PhaseCard({
                 border: `1px solid ${RUTA_CONFIG[journey.ruta_asignada].color}20`,
               }}
             >
-              <div className="flex items-center gap-2 mb-1">
+              <div className="flex items-center gap-2 mb-2">
                 <span className="text-lg">{RUTA_CONFIG[journey.ruta_asignada].icon}</span>
                 <span
                   className="font-heading text-base font-semibold"
@@ -437,9 +437,40 @@ function PhaseCard({
                   {RUTA_CONFIG[journey.ruta_asignada].name}
                 </span>
               </div>
-              <p className="text-xs text-muted">
+              <p className="text-xs text-muted mb-3">
                 {RUTA_CONFIG[journey.ruta_asignada].tagline}
               </p>
+              {/* Route modules */}
+              {journey.ruta_modulos && journey.ruta_modulos.length > 0 && (
+                <div className="space-y-2 mt-3">
+                  {journey.ruta_modulos.map((mod, i) => (
+                    <div
+                      key={mod.id}
+                      className={`flex items-start gap-3 rounded-lg p-2.5 border transition-all ${
+                        mod.completado
+                          ? "bg-green-50/50 border-green-200/40"
+                          : "bg-white/50 border-borde/20"
+                      }`}
+                    >
+                      <span className={`w-5 h-5 flex items-center justify-center rounded-full text-[10px] font-bold flex-shrink-0 mt-0.5 ${
+                        mod.completado
+                          ? "bg-green-500 text-white"
+                          : "bg-borde/30 text-muted"
+                      }`}>
+                        {mod.completado ? "✓" : i + 1}
+                      </span>
+                      <div className="min-w-0">
+                        <p className={`text-sm font-medium ${mod.completado ? "text-green-800 line-through" : "text-negro"}`}>
+                          {mod.nombre}
+                        </p>
+                        <p className="text-[11px] text-muted mt-0.5 leading-relaxed">
+                          {mod.descripcion}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 

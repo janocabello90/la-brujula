@@ -3,8 +3,23 @@
 import { useState, useCallback } from "react";
 import AppShell from "@/components/AppShell";
 import type { ArbolData, ArquetipoSeleccion } from "@/lib/types";
-import { DEFAULT_ARBOL } from "@/lib/types";
+import { DEFAULT_ARBOL, RUTA_CONFIG } from "@/lib/types";
+import type { RutaType, DiagnosticProfile } from "@/lib/types";
 import { createClient } from "@/lib/supabase/client";
+
+interface DiagnosticResult {
+  profile: DiagnosticProfile;
+  ruta: RutaType;
+  diagnostico: {
+    score: number;
+    grietas: string[];
+    fortalezas: string[];
+    sectionScores: { name: string; score: number; layer: string }[];
+    layers: { foundation: number; core: number; expression: number; reach: number };
+  };
+  modulos: { id: string; nombre: string; descripcion: string; completado: boolean; fecha_completado: string | null }[];
+  completedSections: number;
+}
 
 // ===== STEP DEFINITIONS =====
 const ARBOL_STEPS = [
@@ -102,6 +117,31 @@ export default function ArbolClient({ userId, userName, initialData, brujulaData
   );
   const [step, setStep] = useState(initialData?.onboarding_step || 0);
   const [saving, setSaving] = useState(false);
+  const [diagResult, setDiagResult] = useState<DiagnosticResult | null>(null);
+  const [diagLoading, setDiagLoading] = useState(false);
+  const [diagError, setDiagError] = useState<string | null>(null);
+
+  const runDiagnostic = useCallback(async () => {
+    setDiagLoading(true);
+    setDiagError(null);
+    try {
+      const res = await fetch("/api/arbol/diagnose", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        setDiagError(json.error || "Error al diagnosticar");
+        return;
+      }
+      setDiagResult(json);
+    } catch {
+      setDiagError("Error de conexión al diagnosticar");
+    } finally {
+      setDiagLoading(false);
+    }
+  }, [userId]);
   const [data, setData] = useState<ArbolData>(() => {
     if (initialData) {
       // Handle migration from old "producto" to new "cofre"
@@ -166,6 +206,8 @@ export default function ArbolClient({ userId, userName, initialData, brujulaData
     } else {
       await save(step, true);
       setView("canvas");
+      // Auto-run diagnostic when completing the tree
+      runDiagnostic();
     }
   };
 
@@ -192,6 +234,10 @@ export default function ArbolClient({ userId, userName, initialData, brujulaData
           onSave={() => save(step, true)}
           saving={saving}
           onEditSection={(idx: number) => { setStep(idx); setView("questionnaire"); }}
+          diagResult={diagResult}
+          diagLoading={diagLoading}
+          diagError={diagError}
+          onRunDiagnostic={runDiagnostic}
         />
       </AppShell>
     );
@@ -704,8 +750,9 @@ function StepCofre({ data, setData }: { data: any; setData: (v: any) => void }) 
 
 // ===== CANVAS VIEW =====
 
-function ArbolCanvas({ data, setData, userName, onSave, saving, onEditSection }: {
+function ArbolCanvas({ data, setData, userName, onSave, saving, onEditSection, diagResult, diagLoading, diagError, onRunDiagnostic }: {
   data: ArbolData; setData: (d: ArbolData) => void; userName: string; onSave: () => void; saving: boolean; onEditSection: (idx: number) => void;
+  diagResult: DiagnosticResult | null; diagLoading: boolean; diagError: string | null; onRunDiagnostic: () => void;
 }) {
   const [expandedSection, setExpandedSection] = useState<number | null>(null);
 
@@ -837,6 +884,181 @@ function ArbolCanvas({ data, setData, userName, onSave, saving, onEditSection }:
 
       <div className="mt-8 text-center">
         <p className="text-xs text-muted">{sections.filter((s) => s.summary !== "Sin completar").length} de {sections.length} secciones completadas</p>
+      </div>
+
+      {/* Diagnostic Section */}
+      <div className="mt-10 border-t border-borde/40 pt-8">
+        {!diagResult && !diagLoading && (
+          <div className="text-center">
+            <h3 className="font-heading text-lg text-negro mb-2">Diagnostica tu Árbol</h3>
+            <p className="text-sm text-muted mb-4 max-w-md mx-auto">
+              Analiza la coherencia de tu marca personal, identifica grietas y fortalezas, y descubre qué ruta seguir.
+            </p>
+            <button
+              onClick={onRunDiagnostic}
+              disabled={diagLoading}
+              className="px-6 py-3 bg-negro text-white rounded-xl hover:bg-negro/80 transition-colors font-medium text-sm"
+            >
+              🔬 Diagnosticar mi Árbol
+            </button>
+            {diagError && (
+              <p className="mt-3 text-sm text-red-600">{diagError}</p>
+            )}
+          </div>
+        )}
+
+        {diagLoading && (
+          <div className="text-center py-8">
+            <div className="inline-block w-8 h-8 border-2 border-naranja/30 border-t-naranja rounded-full animate-spin mb-3" />
+            <p className="text-sm text-muted">Analizando tu Árbol...</p>
+          </div>
+        )}
+
+        {diagResult && (
+          <div className="space-y-6">
+            {/* Score + Profile Header */}
+            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+              <div className="relative">
+                <svg className="w-24 h-24 -rotate-90" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="42" fill="none" stroke="#e5e7eb" strokeWidth="8" />
+                  <circle
+                    cx="50" cy="50" r="42" fill="none"
+                    stroke={diagResult.diagnostico.score >= 70 ? "#22c55e" : diagResult.diagnostico.score >= 40 ? "#f59e0b" : "#ef4444"}
+                    strokeWidth="8" strokeLinecap="round"
+                    strokeDasharray={`${(diagResult.diagnostico.score / 100) * 264} 264`}
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-xl font-heading font-bold text-negro">{diagResult.diagnostico.score}</span>
+                </div>
+              </div>
+              <div className="text-center sm:text-left">
+                <h3 className="font-heading text-xl text-negro">Perfil {diagResult.profile}</h3>
+                <div
+                  className="mt-1 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium"
+                  style={{
+                    background: RUTA_CONFIG[diagResult.ruta].color + "15",
+                    color: RUTA_CONFIG[diagResult.ruta].color,
+                    border: `1px solid ${RUTA_CONFIG[diagResult.ruta].color}30`,
+                  }}
+                >
+                  <span>{RUTA_CONFIG[diagResult.ruta].icon}</span>
+                  {RUTA_CONFIG[diagResult.ruta].name}
+                </div>
+                <p className="text-xs text-muted mt-1">{RUTA_CONFIG[diagResult.ruta].tagline}</p>
+              </div>
+            </div>
+
+            {/* Layer Breakdown */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {[
+                { key: "foundation", label: "Cimientos", icon: "🏗️", desc: "Semilla + Raíces" },
+                { key: "core", label: "Núcleo", icon: "🪵", desc: "Tronco" },
+                { key: "expression", label: "Expresión", icon: "☁️", desc: "Ramas + Copa" },
+                { key: "reach", label: "Alcance", icon: "📡", desc: "Frutos + Entorno" },
+              ].map((layer) => {
+                const score = diagResult.diagnostico.layers[layer.key as keyof typeof diagResult.diagnostico.layers];
+                return (
+                  <div key={layer.key} className="bg-white border border-borde/40 rounded-xl p-3 text-center">
+                    <span className="text-lg">{layer.icon}</span>
+                    <p className="text-xs font-medium text-negro mt-1">{layer.label}</p>
+                    <p className="text-[10px] text-muted">{layer.desc}</p>
+                    <div className="mt-2 w-full h-1.5 bg-borde/30 rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all"
+                        style={{
+                          width: `${score}%`,
+                          background: score >= 70 ? "#22c55e" : score >= 40 ? "#f59e0b" : "#ef4444",
+                        }}
+                      />
+                    </div>
+                    <p className="text-xs font-medium mt-1" style={{ color: score >= 70 ? "#22c55e" : score >= 40 ? "#f59e0b" : "#ef4444" }}>
+                      {score}%
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Fortalezas & Grietas */}
+            <div className="grid sm:grid-cols-2 gap-4">
+              {diagResult.diagnostico.fortalezas.length > 0 && (
+                <div className="bg-green-50/50 border border-green-200/60 rounded-xl p-4">
+                  <h4 className="text-sm font-medium text-green-800 mb-2">Fortalezas</h4>
+                  <ul className="space-y-1.5">
+                    {diagResult.diagnostico.fortalezas.map((f, i) => (
+                      <li key={i} className="text-xs text-green-700 flex items-start gap-2">
+                        <span className="flex-shrink-0 mt-0.5">✓</span>
+                        <span>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {diagResult.diagnostico.grietas.length > 0 && (
+                <div className="bg-amber-50/50 border border-amber-200/60 rounded-xl p-4">
+                  <h4 className="text-sm font-medium text-amber-800 mb-2">Grietas</h4>
+                  <ul className="space-y-1.5">
+                    {diagResult.diagnostico.grietas.map((g, i) => (
+                      <li key={i} className="text-xs text-amber-700 flex items-start gap-2">
+                        <span className="flex-shrink-0 mt-0.5">⚠</span>
+                        <span>{g}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+
+            {/* Tu Ruta */}
+            <div
+              className="rounded-xl p-5"
+              style={{
+                background: RUTA_CONFIG[diagResult.ruta].color + "08",
+                border: `1px solid ${RUTA_CONFIG[diagResult.ruta].color}25`,
+              }}
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-xl">{RUTA_CONFIG[diagResult.ruta].icon}</span>
+                <h4
+                  className="font-heading text-base font-semibold"
+                  style={{ color: RUTA_CONFIG[diagResult.ruta].color }}
+                >
+                  {RUTA_CONFIG[diagResult.ruta].name}
+                </h4>
+              </div>
+              <p className="text-xs text-muted mb-4">{diagResult.modulos.length} módulos para tu camino</p>
+              <div className="space-y-2">
+                {diagResult.modulos.map((mod, i) => (
+                  <div key={mod.id} className="flex items-start gap-3 bg-white/60 rounded-lg p-3 border border-borde/20">
+                    <span className="text-xs font-bold text-muted w-5 flex-shrink-0 mt-0.5">{i + 1}</span>
+                    <div>
+                      <p className="text-sm font-medium text-negro">{mod.nombre}</p>
+                      <p className="text-xs text-muted mt-0.5">{mod.descripcion}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <a
+                href="/rutas"
+                className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white transition-colors"
+                style={{ background: RUTA_CONFIG[diagResult.ruta].color }}
+              >
+                Ir a Las Rutas →
+              </a>
+            </div>
+
+            {/* Re-run button */}
+            <div className="text-center">
+              <button
+                onClick={onRunDiagnostic}
+                className="text-xs text-muted hover:text-negro transition-colors"
+              >
+                🔄 Volver a diagnosticar
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
