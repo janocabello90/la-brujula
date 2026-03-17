@@ -14,9 +14,10 @@ import {
 interface Props {
   initialData: PiramideData;
   userId: string;
+  isAdmin?: boolean;
 }
 
-export default function PiramideClient({ initialData, userId }: Props) {
+export default function PiramideClient({ initialData, userId, isAdmin = false }: Props) {
   const [data, setData] = useState<PiramideData>(initialData);
   const [activeStep, setActiveStep] = useState<PiramideStep>(initialData.current_step);
   const [saving, setSaving] = useState(false);
@@ -28,6 +29,19 @@ export default function PiramideClient({ initialData, userId }: Props) {
   const activeConfig = PIRAMIDE_STEPS.find((s) => s.id === activeStep)!;
   const activeIndex = PIRAMIDE_STEPS.findIndex((s) => s.id === activeStep);
   const isCompleted = data.steps_completed?.includes(activeStep);
+
+  // Check if a step is unlocked (admin sees everything, users unlock sequentially)
+  const isStepUnlocked = (stepId: PiramideStep): boolean => {
+    if (isAdmin) return true;
+    const stepIndex = PIRAMIDE_STEPS.findIndex((s) => s.id === stepId);
+    if (stepIndex === 0) return true; // First step always unlocked
+    // A step is unlocked if the previous step is completed
+    const prevStep = PIRAMIDE_STEPS[stepIndex - 1];
+    return data.steps_completed?.includes(prevStep.id) || false;
+  };
+
+  // Is the active step locked?
+  const isActiveLocked = !isStepUnlocked(activeStep);
 
   // Get the data object for the current step
   const getStepData = (step: PiramideStep): Record<string, string> => {
@@ -137,8 +151,9 @@ export default function PiramideClient({ initialData, userId }: Props) {
     }
   };
 
-  // Navigate to a step
+  // Navigate to a step (respects locking)
   const goToStep = (step: PiramideStep) => {
+    if (!isStepUnlocked(step)) return;
     setActiveStep(step);
     contentRef.current?.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -184,6 +199,7 @@ export default function PiramideClient({ initialData, userId }: Props) {
                 step={step}
                 isActive={activeStep === step.id}
                 isCompleted={data.steps_completed?.includes(step.id)}
+                isLocked={!isStepUnlocked(step.id)}
                 hasContent={hasContent(step.id)}
                 stats={countFilledFields(step.id)}
                 onClick={() => goToStep(step.id)}
@@ -201,21 +217,25 @@ export default function PiramideClient({ initialData, userId }: Props) {
             {[...piramideSteps].reverse().map((step, i) => {
               const isStepComplete = data.steps_completed?.includes(step.id);
               const isStepActive = activeStep === step.id;
+              const locked = !isStepUnlocked(step.id);
               const widths = ["w-16", "w-24", "w-32", "w-40", "w-48"];
               return (
                 <button
                   key={step.id}
                   onClick={() => goToStep(step.id)}
+                  disabled={locked}
                   className={`${widths[i]} h-7 rounded-sm flex items-center justify-center text-[10px] font-medium transition-all ${
-                    isStepActive
+                    locked
+                      ? "bg-borde/10 text-muted/20 cursor-not-allowed"
+                      : isStepActive
                       ? "bg-naranja text-white"
                       : isStepComplete
                       ? "bg-naranja/20 text-naranja"
                       : "bg-borde/15 text-muted/40 hover:bg-borde/25"
                   }`}
-                  title={step.title}
+                  title={locked ? `Completa ${PIRAMIDE_STEPS[PIRAMIDE_STEPS.findIndex(s => s.id === step.id) - 1]?.label || 'el paso anterior'} para desbloquear` : step.title}
                 >
-                  {step.label}
+                  {locked ? "🔒" : step.label}
                 </button>
               );
             })}
@@ -228,6 +248,7 @@ export default function PiramideClient({ initialData, userId }: Props) {
                 step={step}
                 isActive={activeStep === step.id}
                 isCompleted={data.steps_completed?.includes(step.id)}
+                isLocked={!isStepUnlocked(step.id)}
                 hasContent={hasContent(step.id)}
                 stats={countFilledFields(step.id)}
                 onClick={() => goToStep(step.id)}
@@ -270,20 +291,44 @@ export default function PiramideClient({ initialData, userId }: Props) {
             </p>
           </div>
 
-          {/* Exercises */}
-          <div className="space-y-10">
-            {activeConfig.exercises.map((exercise, exIdx) => (
-              <ExerciseBlock
-                key={exIdx}
-                exercise={exercise}
-                stepData={stepData}
-                onFieldChange={handleFieldChange}
-                exerciseNumber={activeConfig.exercises.length > 1 ? exIdx + 1 : undefined}
-              />
-            ))}
-          </div>
+          {/* Locked state */}
+          {isActiveLocked ? (
+            <div className="text-center py-16">
+              <div className="text-5xl mb-4">🔒</div>
+              <h2 className="font-heading text-xl text-negro mb-2">Este paso aún no está desbloqueado</h2>
+              <p className="text-sm text-muted/60 max-w-md mx-auto mb-6">
+                Completa <strong>&ldquo;{PIRAMIDE_STEPS[activeIndex - 1]?.label}&rdquo;</strong> para desbloquear este paso.
+                Cada nivel se construye sobre el anterior — sin prisas, con profundidad.
+              </p>
+              <button
+                onClick={() => goToStep(PIRAMIDE_STEPS[activeIndex - 1]?.id || 'prologo')}
+                className="inline-flex items-center gap-2 text-sm font-medium bg-negro text-white px-5 py-2.5 rounded-xl hover:bg-negro/90 transition-all"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+                Ir a {PIRAMIDE_STEPS[activeIndex - 1]?.label}
+              </button>
+            </div>
+          ) : (
+            <>
+              {/* Exercises */}
+              <div className="space-y-10">
+                {activeConfig.exercises.map((exercise, exIdx) => (
+                  <ExerciseBlock
+                    key={exIdx}
+                    exercise={exercise}
+                    stepData={stepData}
+                    onFieldChange={handleFieldChange}
+                    exerciseNumber={activeConfig.exercises.length > 1 ? exIdx + 1 : undefined}
+                  />
+                ))}
+              </div>
+            </>
+          )}
 
           {/* Footer: Save status + Complete button */}
+          {!isActiveLocked && (
           <div className="mt-10 pt-6 border-t border-borde/30 flex items-center justify-between">
             <div className="flex items-center gap-2 text-xs text-muted/50">
               {saving && (
@@ -356,6 +401,7 @@ export default function PiramideClient({ initialData, userId }: Props) {
               </button>
             </div>
           </div>
+          )}
         </div>
       </div>
     </div>
@@ -543,6 +589,7 @@ function StepNavItem({
   step,
   isActive,
   isCompleted,
+  isLocked,
   hasContent,
   stats,
   onClick,
@@ -550,6 +597,7 @@ function StepNavItem({
   step: PiramideStepConfig;
   isActive: boolean;
   isCompleted?: boolean;
+  isLocked?: boolean;
   hasContent: boolean;
   stats: { filled: number; total: number };
   onClick: () => void;
@@ -557,8 +605,11 @@ function StepNavItem({
   return (
     <button
       onClick={onClick}
+      disabled={isLocked}
       className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left text-sm transition-all ${
-        isActive
+        isLocked
+          ? "text-muted/20 cursor-not-allowed"
+          : isActive
           ? "bg-naranja/10 text-naranja font-medium"
           : isCompleted
           ? "text-negro/70 hover:bg-negro/[0.03]"
@@ -567,18 +618,17 @@ function StepNavItem({
           : "text-muted/40 hover:bg-negro/[0.03]"
       }`}
     >
-      <span className="text-sm flex-shrink-0">{step.icon}</span>
+      <span className="text-sm flex-shrink-0">{isLocked ? "🔒" : step.icon}</span>
       <span className="flex-1 truncate">{step.label}</span>
-      {isCompleted && (
+      {isLocked ? null : isCompleted ? (
         <svg className="w-3.5 h-3.5 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
         </svg>
-      )}
-      {!isCompleted && hasContent && (
+      ) : hasContent ? (
         <span className="text-[9px] text-muted/40 flex-shrink-0">
           {stats.filled}/{stats.total}
         </span>
-      )}
+      ) : null}
     </button>
   );
 }

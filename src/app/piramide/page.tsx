@@ -5,6 +5,8 @@ import AppShell from "@/components/AppShell";
 import type { PiramideData } from "@/lib/types";
 import { DEFAULT_PIRAMIDE } from "@/lib/types";
 
+const ADMIN_EMAILS = ["janocabellom@gmail.com", "jano.cmg@gmail.com"];
+
 export default async function PiramidePage() {
   const supabase = await createServerClient();
   const {
@@ -12,6 +14,8 @@ export default async function PiramidePage() {
   } = await supabase.auth.getUser();
 
   if (!user) redirect("/acceso-buena-vida");
+
+  const isAdmin = ADMIN_EMAILS.includes(user.email || "");
 
   // Fetch existing piramide data
   let { data: piramide } = await supabase
@@ -44,7 +48,7 @@ export default async function PiramidePage() {
 
   return (
     <AppShell fullWidth>
-      <PiramideClient initialData={piramide as PiramideData} userId={user.id} />
+      <PiramideClient initialData={piramide as PiramideData} userId={user.id} isAdmin={isAdmin} />
     </AppShell>
   );
 }
