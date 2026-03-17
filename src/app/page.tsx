@@ -1,3 +1,5 @@
+"use client";
+
 export default function Home() {
   const SKOOL_URL = "https://www.skool.com/una-buena-vida-comunidad-2471";
 
@@ -51,10 +53,13 @@ export default function Home() {
               </svg>
             </a>
             <a
-              href="#el-problema"
-              className="inline-flex items-center gap-2 border-2 border-borde text-negro font-semibold px-7 py-3.5 rounded-xl hover:border-negro/30 transition-colors text-sm"
+              href="/diagnostico"
+              className="inline-flex items-center gap-2 border-2 border-naranja/40 text-naranja font-semibold px-7 py-3.5 rounded-xl hover:bg-naranja/[0.06] hover:border-naranja/60 transition-colors text-sm"
             >
-              Quiero entenderlo
+              Descubre tu nivel (gratis)
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
             </a>
           </div>
         </div>
@@ -348,6 +353,60 @@ export default function Home() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ─── Captación de email — Lead Magnet ──────────── */}
+      <section className="bg-[#ede8df] border-y border-borde/40">
+        <div className="max-w-3xl mx-auto px-6 sm:px-10 py-14 sm:py-20 text-center">
+          <p className="text-naranja text-xs font-bold uppercase tracking-widest mb-4">Diagnóstico gratuito</p>
+          <h2 className="font-heading text-3xl sm:text-4xl text-negro mb-4 leading-snug">
+            ¿En qué nivel está tu marca personal?
+          </h2>
+          <p className="text-muted text-base leading-relaxed mb-8 max-w-xl mx-auto">
+            La mayoría de profesionales construyen su marca empezando por el tejado. Descubre en 2 minutos dónde tienes el bloqueo real — y qué hacer con él.
+          </p>
+
+          <form
+            id="lead-form"
+            className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto mb-4"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const form = e.target as HTMLFormElement;
+              const email = (form.elements.namedItem("email") as HTMLInputElement).value;
+              if (email) {
+                fetch("/api/lead-magnet", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ email }),
+                }).then(() => {
+                  window.location.href = "/diagnostico?email=" + encodeURIComponent(email);
+                }).catch(() => {
+                  window.location.href = "/diagnostico";
+                });
+              }
+            }}
+          >
+            <input
+              name="email"
+              type="email"
+              required
+              placeholder="tu@email.com"
+              className="flex-1 px-4 py-3 rounded-xl border border-borde/60 bg-white text-negro text-sm focus:outline-none focus:border-naranja focus:ring-2 focus:ring-naranja/20 transition-all"
+            />
+            <button
+              type="submit"
+              className="inline-flex items-center justify-center gap-2 bg-naranja text-white font-semibold px-6 py-3 rounded-xl hover:bg-naranja-hover transition-colors text-sm whitespace-nowrap"
+            >
+              Quiero saberlo
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </button>
+          </form>
+          <p className="text-xs text-muted/60">
+            <span className="text-naranja/60">✓</span> Gratis · 2 minutos · Sin spam
+          </p>
         </div>
       </section>
 
