@@ -8,7 +8,8 @@ import { createClient } from "@/lib/supabase/client";
 
 const ADMIN_EMAILS = ["janocabellom@gmail.com", "jano.cmg@gmail.com"];
 
-const BRUJULA_SECTIONS = [
+// Free tools — always accessible
+const FREE_TOOLS = [
   { href: "/minority-report", label: "Mi Mapa", icon: "🗺️" },
   { href: "/ideas", label: "Ideas", icon: "💡" },
   { href: "/maestro", label: "Maestro", icon: "🎯" },
@@ -19,21 +20,27 @@ const BRUJULA_SECTIONS = [
 interface AppShellProps {
   children: React.ReactNode;
   fullWidth?: boolean;
+  userPhase?: number;
+  piramideCompleted?: boolean;
+  arbolCompleted?: boolean;
 }
 
-export default function AppShell({ children, fullWidth = false }: AppShellProps) {
+export default function AppShell({
+  children,
+  fullWidth = false,
+  userPhase = 1,
+  piramideCompleted = false,
+  arbolCompleted = false
+}: AppShellProps) {
   const pathname = usePathname();
   const [isAdmin, setIsAdmin] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [brujulaOpen, setBrujulaOpen] = useState(false);
+  const [lockedTooltip, setLockedTooltip] = useState<string | null>(null);
 
   useEffect(() => {
     setMobileOpen(false);
-    // Auto-expand brújula when navigating to one of its pages
-    if (["/minority-report", "/ideas", "/maestro", "/piezas", "/planner", "/onboarding"].some((p) => pathname.startsWith(p))) {
-      setBrujulaOpen(true);
-    }
   }, [pathname]);
 
   useEffect(() => {
@@ -47,13 +54,68 @@ export default function AppShell({ children, fullWidth = false }: AppShellProps)
     checkAdmin();
   }, []);
 
-  const isBrujulaRoute = ["/minority-report", "/ideas", "/maestro", "/piezas", "/planner", "/onboarding"].some(
-    (p) => pathname.startsWith(p)
+  // Check if a free tool is active
+  const isFreeToolRoute = FREE_TOOLS.some((tool) => pathname === tool.href);
+  const isOnboardingRoute = pathname === "/onboarding" || pathname.startsWith("/onboarding/");
+  const isBrujulaRoute = isFreeToolRoute || isOnboardingRoute;
+
+  // Helper: render locked item
+  const renderLockedItem = (icon: string, label: string, blockReason: string) => (
+    <div
+      className="relative flex items-center gap-2.5 px-2.5 py-2 rounded-xl opacity-40 cursor-not-allowed"
+      onMouseEnter={() => setLockedTooltip(blockReason)}
+      onMouseLeave={() => setLockedTooltip(null)}
+    >
+      <span className="text-lg flex-shrink-0">{icon}</span>
+      {!sidebarCollapsed && (
+        <div className="flex items-center gap-2 flex-1 min-w-0">
+          <span className="text-sm text-negro/30 truncate">{label}</span>
+          <span className="text-sm flex-shrink-0">🔒</span>
+        </div>
+      )}
+      {!sidebarCollapsed && lockedTooltip === blockReason && (
+        <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 z-50 bg-negro text-white text-xs rounded px-2 py-1 whitespace-nowrap">
+          {blockReason}
+        </div>
+      )}
+    </div>
   );
-  const isBrujulaExpanded = isBrujulaRoute || brujulaOpen;
+
+  // Helper: render phase progress indicator
+  const renderPhaseProgress = () => (
+    <div className="flex items-center justify-center gap-2 mb-4 px-2">
+      <div className="flex items-center gap-1.5">
+        {/* Phase 1 */}
+        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+          userPhase >= 1 ? "bg-naranja text-white" : "bg-borde/40 text-negro/40"
+        }`}>
+          1
+        </div>
+        <div className={`w-4 h-0.5 ${userPhase >= 2 ? "bg-naranja" : "bg-borde/40"}`} />
+
+        {/* Phase 2 */}
+        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+          userPhase >= 2 ? "bg-naranja text-white" : "bg-borde/40 text-negro/40"
+        }`}>
+          2
+        </div>
+        <div className={`w-4 h-0.5 ${userPhase >= 3 ? "bg-naranja" : "bg-borde/40"}`} />
+
+        {/* Phase 3 */}
+        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+          userPhase >= 3 ? "bg-naranja text-white" : "bg-borde/40 text-negro/40"
+        }`}>
+          3
+        </div>
+      </div>
+    </div>
+  );
 
   const sidebarContent = (
     <>
+      {/* Phase progress indicator */}
+      {!sidebarCollapsed && renderPhaseProgress()}
+
       {/* Panel — Top level */}
       <div className="mb-1">
         <Link
@@ -69,49 +131,14 @@ export default function AppShell({ children, fullWidth = false }: AppShellProps)
         </Link>
       </div>
 
-      {/* El Espejo — Top level */}
-      <div className="mb-1">
-        <Link
-          href="/espejo"
-          className={`flex items-center gap-2.5 px-2.5 py-2 rounded-xl transition-all ${
-            pathname === "/espejo"
-              ? "bg-negro text-white font-medium"
-              : "text-negro/70 hover:bg-negro/[0.04]"
-          }`}
-        >
-          <span className="text-lg flex-shrink-0">🪞</span>
-          {!sidebarCollapsed && <span className="text-sm">El Espejo</span>}
-        </Link>
-      </div>
-
-      {/* Las Rutas — Below Espejo */}
-      <div className="mb-3">
-        <Link
-          href="/rutas"
-          className={`flex items-center gap-2.5 px-2.5 py-2 rounded-xl transition-all ${
-            pathname === "/rutas"
-              ? "bg-negro text-white font-medium"
-              : "text-negro/70 hover:bg-negro/[0.04]"
-          }`}
-        >
-          <span className="text-lg flex-shrink-0">🗺️</span>
-          {!sidebarCollapsed && (
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-sm">Las Rutas</span>
-              <span className={`text-[10px] italic ${pathname === "/rutas" ? "text-white/70" : "text-naranja"}`}>tu camino</span>
-            </div>
-          )}
-        </Link>
-      </div>
-
-      {/* Tools label */}
+      {/* Tu Recorrido section header */}
       {!sidebarCollapsed && (
-        <p className="text-[10px] font-semibold text-muted/60 uppercase tracking-widest px-2 mb-2">
-          Herramientas
+        <p className="text-[10px] font-semibold text-muted/60 uppercase tracking-widest px-2 my-3 mb-2">
+          Tu Recorrido
         </p>
       )}
 
-      {/* 1. La Pirámide — Active */}
+      {/* 1. La Pirámide — Always accessible (Phase 1) */}
       <div className="mb-1">
         <Link
           href="/piramide"
@@ -125,100 +152,110 @@ export default function AppShell({ children, fullWidth = false }: AppShellProps)
           {!sidebarCollapsed && (
             <div className="flex items-baseline gap-1.5">
               <span className="text-sm">La Pirámide</span>
-              <span className={`text-[10px] italic ${pathname === "/piramide" ? "text-naranja/70" : "text-naranja"}`}>estructura</span>
+              <span className={`text-[10px] italic ${pathname === "/piramide" ? "text-naranja/70" : "text-naranja"}`}>Fase 1</span>
             </div>
           )}
         </Link>
       </div>
 
-      {/* 2. El Árbol — Active */}
+      {/* 2. El Árbol — Unlocks after Pirámide */}
       <div className="mb-1">
-        <Link
-          href="/arbol"
-          className={`flex items-center gap-2.5 px-2.5 py-2 rounded-xl transition-all ${
-            pathname.startsWith("/arbol")
-              ? "bg-naranja/10 text-naranja font-semibold"
-              : "text-negro/70 hover:bg-negro/[0.04]"
-          }`}
-        >
-          <span className="text-lg flex-shrink-0">🌳</span>
-          {!sidebarCollapsed && (
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-sm">El Árbol</span>
-              <span className={`text-[10px] italic ${pathname.startsWith("/arbol") ? "text-naranja/70" : "text-naranja"}`}>identidad</span>
-            </div>
-          )}
-        </Link>
-      </div>
-
-      {/* 3. La Brújula — Expandable */}
-      <div className="mb-1">
-        <button
-          onClick={() => setBrujulaOpen(!brujulaOpen)}
-          className={`flex items-center gap-2.5 px-2.5 py-2 rounded-xl transition-all w-full text-left ${
-            isBrujulaRoute
-              ? "bg-naranja/10 text-naranja font-semibold"
-              : "text-negro/70 hover:bg-negro/[0.04]"
-          }`}
-        >
-          <span className="text-lg flex-shrink-0">🧭</span>
-          {!sidebarCollapsed && (
-            <>
-              <div className="flex items-baseline gap-1.5 flex-1">
-                <span className="text-sm">La Brújula</span>
-                <span className={`text-[10px] italic ${isBrujulaRoute ? "text-naranja/70" : "text-naranja"}`}>contenido</span>
+        {piramideCompleted ? (
+          <Link
+            href="/arbol"
+            className={`flex items-center gap-2.5 px-2.5 py-2 rounded-xl transition-all ${
+              pathname.startsWith("/arbol")
+                ? "bg-naranja/10 text-naranja font-semibold"
+                : "text-negro/70 hover:bg-negro/[0.04]"
+            }`}
+          >
+            <span className="text-lg flex-shrink-0">🌳</span>
+            {!sidebarCollapsed && (
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-sm">El Árbol</span>
+                <span className={`text-[10px] italic ${pathname.startsWith("/arbol") ? "text-naranja/70" : "text-naranja"}`}>Fase 2</span>
               </div>
-              <svg className={`w-3.5 h-3.5 transition-transform ${isBrujulaExpanded ? "rotate-90" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </>
-          )}
-        </button>
-
-        {/* Sub-sections when Brújula is expanded */}
-        {isBrujulaExpanded && !sidebarCollapsed && (
-          <div className="ml-4 mt-1 space-y-0.5 border-l-2 border-naranja/20 pl-3">
-            {BRUJULA_SECTIONS.map((s) => {
-              const isActive = pathname === s.href;
-              return (
-                <Link
-                  key={s.href}
-                  href={s.href}
-                  className={`flex items-center gap-2 px-2 py-1.5 rounded-lg text-[13px] transition-all ${
-                    isActive
-                      ? "bg-negro text-white font-medium"
-                      : "text-negro/60 hover:text-negro hover:bg-negro/[0.03]"
-                  }`}
-                >
-                  <span className="text-xs">{s.icon}</span>
-                  {s.label}
-                </Link>
-              );
-            })}
-          </div>
-        )}
-
-        {/* Collapsed: sub-icons */}
-        {isBrujulaExpanded && sidebarCollapsed && (
-          <div className="mt-1 space-y-0.5 flex flex-col items-center">
-            {BRUJULA_SECTIONS.map((s) => {
-              const isActive = pathname === s.href;
-              return (
-                <Link
-                  key={s.href}
-                  href={s.href}
-                  className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm transition-all ${
-                    isActive ? "bg-negro text-white" : "text-negro/50 hover:bg-negro/[0.04]"
-                  }`}
-                  title={s.label}
-                >
-                  {s.icon}
-                </Link>
-              );
-            })}
-          </div>
+            )}
+          </Link>
+        ) : (
+          renderLockedItem("🌳", "El Árbol", "Completa La Pirámide primero")
         )}
       </div>
+
+      {/* 3. La Brújula — Unlocks after Árbol */}
+      <div className="mb-1">
+        {arbolCompleted ? (
+          <Link
+            href="/onboarding"
+            className={`flex items-center gap-2.5 px-2.5 py-2 rounded-xl transition-all ${
+              isOnboardingRoute
+                ? "bg-naranja/10 text-naranja font-semibold"
+                : "text-negro/70 hover:bg-negro/[0.04]"
+            }`}
+          >
+            <span className="text-lg flex-shrink-0">🧭</span>
+            {!sidebarCollapsed && (
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-sm">La Brújula</span>
+                <span className={`text-[10px] italic ${isOnboardingRoute ? "text-naranja/70" : "text-naranja"}`}>Fase 3</span>
+              </div>
+            )}
+          </Link>
+        ) : (
+          renderLockedItem("🧭", "La Brújula", "Completa El Árbol primero")
+        )}
+      </div>
+
+      {/* 4. Las Rutas — Unlocks after Árbol */}
+      <div className="mb-3">
+        {arbolCompleted ? (
+          <Link
+            href="/rutas"
+            className={`flex items-center gap-2.5 px-2.5 py-2 rounded-xl transition-all ${
+              pathname === "/rutas"
+                ? "bg-negro text-white font-medium"
+                : "text-negro/70 hover:bg-negro/[0.04]"
+            }`}
+          >
+            <span className="text-lg flex-shrink-0">🗺️</span>
+            {!sidebarCollapsed && (
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-sm">Las Rutas</span>
+                <span className={`text-[10px] italic ${pathname === "/rutas" ? "text-white/70" : "text-naranja"}`}>tu camino</span>
+              </div>
+            )}
+          </Link>
+        ) : (
+          renderLockedItem("🗺️", "Las Rutas", "Completa El Árbol primero")
+        )}
+      </div>
+
+      {/* Herramientas section header */}
+      {!sidebarCollapsed && (
+        <p className="text-[10px] font-semibold text-muted/60 uppercase tracking-widest px-2 my-3 mb-2">
+          Herramientas
+        </p>
+      )}
+
+      {/* Free Tools — Always accessible */}
+      {FREE_TOOLS.map((tool) => {
+        const isActive = pathname === tool.href;
+        return (
+          <div key={tool.href} className="mb-1">
+            <Link
+              href={tool.href}
+              className={`flex items-center gap-2.5 px-2.5 py-2 rounded-xl transition-all ${
+                isActive
+                  ? "bg-negro text-white font-medium"
+                  : "text-negro/70 hover:bg-negro/[0.04]"
+              }`}
+            >
+              <span className="text-lg flex-shrink-0">{tool.icon}</span>
+              {!sidebarCollapsed && <span className="text-sm">{tool.label}</span>}
+            </Link>
+          </div>
+        );
+      })}
 
       {/* Divider */}
       <div className="my-3 mx-2 h-px bg-borde/40" />

@@ -50,6 +50,9 @@ export interface DashboardStats {
   journeyPhase: number;
   journeyRuta: string | null;
   journeyPerfil: string | null;
+  // Phases
+  piramideCompleted: boolean;
+  userPhase: number;
 }
 
 export interface SmartTask {
@@ -90,7 +93,7 @@ export default async function DashboardPage() {
   // Check onboarding
   const { data: existingProfile } = await supabase
     .from("profiles")
-    .select("onboarding_completed, api_key, display_name")
+    .select("onboarding_completed, api_key, display_name, tour_completed")
     .eq("id", user.id)
     .single();
 
@@ -110,6 +113,10 @@ export default async function DashboardPage() {
     redirect("/onboarding");
   }
 
+  if (!existingProfile.tour_completed) {
+    redirect("/tour");
+  }
+
   const profile = existingProfile;
 
   // Today's date for planner query
@@ -119,6 +126,7 @@ export default async function DashboardPage() {
   const [
     { data: brujulaData },
     { data: arbolData },
+    { data: piramideData },
     { data: todayPlanner },
     { count: ideasTotal },
     { count: ideasRaw },
@@ -136,6 +144,7 @@ export default async function DashboardPage() {
   ] = await Promise.all([
     supabase.from("brujula_data").select("*").eq("user_id", user.id).single(),
     supabase.from("arbol_data").select("*").eq("user_id", user.id).single(),
+    supabase.from("piramide_data").select("steps_completed").eq("user_id", user.id).single(),
     supabase.from("planner_items").select("id, title, pilar, formato, canal, scheduled_time, status").eq("user_id", user.id).eq("scheduled_date", today).order("scheduled_time", { ascending: true }),
     supabase.from("ideas").select("*", { count: "exact", head: true }).eq("user_id", user.id),
     supabase.from("ideas").select("*", { count: "exact", head: true }).eq("user_id", user.id).eq("status", "raw"),
@@ -197,6 +206,11 @@ export default async function DashboardPage() {
 
   const arbolCompleted = arbolSections.filter((s) => s.completed).length;
 
+  // Determine phase completion
+  const piramideCompleted = piramideData?.steps_completed?.includes("nivel_2") || false;
+  const arbolFullyCompleted = arbolCompleted === 9;
+  const userPhase = arbolFullyCompleted ? 3 : piramideCompleted ? 2 : 1;
+
   // Today items
   const todayItems: TodayItem[] = (todayPlanner || []).map((item: any) => ({
     id: item.id,
@@ -237,6 +251,8 @@ export default async function DashboardPage() {
     journeyPhase: userJourney?.current_phase || 1,
     journeyRuta: userJourney?.ruta_asignada || null,
     journeyPerfil: userJourney?.perfil_diagnostico || null,
+    piramideCompleted,
+    userPhase,
   };
 
   // Generate smart tasks
