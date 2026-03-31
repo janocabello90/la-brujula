@@ -42,6 +42,7 @@ const TASK_ICONS: Record<string, string> = {
 
 interface DashboardClientStats extends DashboardStats {
   piramideCompleted: boolean;
+  rutasCompleted: boolean;
   userPhase: number;
 }
 
@@ -72,7 +73,7 @@ export default function DashboardClient({ stats, tasks }: Props) {
   const brujulaCompleted = brujulaSteps.filter((s) => s.done).length;
 
   return (
-    <AppShell userPhase={stats.userPhase} piramideCompleted={stats.piramideCompleted} arbolCompleted={stats.arbolCompleted === stats.arbolTotal}>
+    <AppShell userPhase={stats.userPhase} piramideCompleted={stats.piramideCompleted} arbolCompleted={stats.arbolCompleted === stats.arbolTotal} rutasCompleted={stats.rutasCompleted}>
       <div className="max-w-3xl mx-auto">
         {/* Greeting + Quote */}
         <div className="mb-8">
@@ -129,9 +130,9 @@ export default function DashboardClient({ stats, tasks }: Props) {
           </div>
         </Link>
 
-        {/* ===== PROGRESS SECTION: 3-PHASE JOURNEY ===== */}
+        {/* ===== PROGRESS SECTION: 4-PHASE JOURNEY ===== */}
         <div className="mb-8">
-          <div className="flex items-center justify-between gap-3">
+          <div className="hidden sm:flex items-center justify-between gap-3">
             {/* Phase 1: La Pirámide */}
             <PhaseCard
               phase={1}
@@ -161,15 +162,77 @@ export default function DashboardClient({ stats, tasks }: Props) {
             {/* Arrow */}
             <div className="flex-shrink-0 text-muted/40 text-lg">→</div>
 
-            {/* Phase 3: La Brújula + Rutas */}
+            {/* Phase 3: Las Rutas */}
             <PhaseCard
               phase={3}
-              name="La Brújula"
-              icon="🧭"
-              completed={false}
+              name="Las Rutas"
+              icon="🗺️"
+              completed={stats.rutasCompleted}
               locked={stats.arbolCompleted !== stats.arbolTotal}
               userPhase={stats.userPhase}
               href="/rutas"
+            />
+
+            {/* Arrow */}
+            <div className="flex-shrink-0 text-muted/40 text-lg">→</div>
+
+            {/* Phase 4: La Brújula */}
+            <PhaseCard
+              phase={4}
+              name="La Brújula"
+              icon="🧭"
+              completed={false}
+              locked={!stats.rutasCompleted}
+              userPhase={stats.userPhase}
+              href="/onboarding"
+            />
+          </div>
+
+          {/* Mobile 2x2 grid */}
+          <div className="sm:hidden grid grid-cols-2 gap-3">
+            {/* Phase 1: La Pirámide */}
+            <PhaseCard
+              phase={1}
+              name="La Pirámide"
+              icon="🔺"
+              completed={stats.piramideCompleted}
+              locked={false}
+              userPhase={stats.userPhase}
+              href="/piramide"
+            />
+
+            {/* Phase 2: El Árbol */}
+            <PhaseCard
+              phase={2}
+              name="El Árbol"
+              icon="🌳"
+              completed={stats.arbolCompleted === stats.arbolTotal}
+              locked={!stats.piramideCompleted}
+              userPhase={stats.userPhase}
+              href="/arbol"
+              progress={stats.piramideCompleted ? `${stats.arbolCompleted}/${stats.arbolTotal}` : undefined}
+            />
+
+            {/* Phase 3: Las Rutas */}
+            <PhaseCard
+              phase={3}
+              name="Las Rutas"
+              icon="🗺️"
+              completed={stats.rutasCompleted}
+              locked={stats.arbolCompleted !== stats.arbolTotal}
+              userPhase={stats.userPhase}
+              href="/rutas"
+            />
+
+            {/* Phase 4: La Brújula */}
+            <PhaseCard
+              phase={4}
+              name="La Brújula"
+              icon="🧭"
+              completed={false}
+              locked={!stats.rutasCompleted}
+              userPhase={stats.userPhase}
+              href="/onboarding"
             />
           </div>
         </div>
@@ -245,7 +308,7 @@ export default function DashboardClient({ stats, tasks }: Props) {
             </h2>
             <div className="flex flex-col gap-2">
               {/* Phase-specific primary task */}
-              <PhaseTask userPhase={stats.userPhase} piramideCompleted={stats.piramideCompleted} arbolCompleted={stats.arbolCompleted === stats.arbolTotal} />
+              <PhaseTask userPhase={stats.userPhase} piramideCompleted={stats.piramideCompleted} arbolCompleted={stats.arbolCompleted === stats.arbolTotal} rutasCompleted={stats.rutasCompleted} />
 
               {/* Other high priority tasks */}
               {highTasks.map((task) => (
@@ -435,10 +498,12 @@ function PhaseTask({
   userPhase,
   piramideCompleted,
   arbolCompleted,
+  rutasCompleted,
 }: {
   userPhase: number;
   piramideCompleted: boolean;
   arbolCompleted: boolean;
+  rutasCompleted?: boolean;
 }) {
   const phaseMessages: Record<number, { text: string; href: string; icon: string }> = {
     1: {
@@ -452,8 +517,13 @@ function PhaseTask({
       icon: "🌳",
     },
     3: {
-      text: "Explora Las Rutas — tu estrategia personalizada",
+      text: "Sigue Las Rutas — tu estrategia personalizada",
       href: "/rutas",
+      icon: "🗺️",
+    },
+    4: {
+      text: "Configura La Brújula — tu sistema de contenido",
+      href: "/onboarding",
       icon: "🧭",
     },
   };

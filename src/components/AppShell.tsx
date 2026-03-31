@@ -20,9 +20,10 @@ const FREE_TOOLS = [
 interface AppShellProps {
   children: React.ReactNode;
   fullWidth?: boolean;
-  userPhase?: number;
+  userPhase?: number; // 1-4
   piramideCompleted?: boolean;
   arbolCompleted?: boolean;
+  rutasCompleted?: boolean;
 }
 
 export default function AppShell({
@@ -30,7 +31,8 @@ export default function AppShell({
   fullWidth = false,
   userPhase = 1,
   piramideCompleted = false,
-  arbolCompleted = false
+  arbolCompleted = false,
+  rutasCompleted = false
 }: AppShellProps) {
   const pathname = usePathname();
   const [isAdmin, setIsAdmin] = useState(false);
@@ -107,6 +109,14 @@ export default function AppShell({
         }`}>
           3
         </div>
+        <div className={`w-4 h-0.5 ${userPhase >= 4 ? "bg-naranja" : "bg-borde/40"}`} />
+
+        {/* Phase 4 */}
+        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+          userPhase >= 4 ? "bg-naranja text-white" : "bg-borde/40 text-negro/40"
+        }`}>
+          4
+        </div>
       </div>
     </div>
   );
@@ -138,7 +148,7 @@ export default function AppShell({
         </p>
       )}
 
-      {/* 1. La Pirámide — Always accessible (Phase 1) */}
+      {/* Phase 1. La Pirámide — Always accessible */}
       <div className="mb-1">
         <Link
           href="/piramide"
@@ -158,7 +168,7 @@ export default function AppShell({
         </Link>
       </div>
 
-      {/* 2. El Árbol — Unlocks after Pirámide */}
+      {/* Phase 2. El Árbol — Unlocks after Pirámide completed */}
       <div className="mb-1">
         {piramideCompleted ? (
           <Link
@@ -182,9 +192,33 @@ export default function AppShell({
         )}
       </div>
 
-      {/* 3. La Brújula — Unlocks after Árbol */}
+      {/* Phase 3. Las Rutas — Unlocks after Árbol completed */}
       <div className="mb-1">
         {arbolCompleted ? (
+          <Link
+            href="/rutas"
+            className={`flex items-center gap-2.5 px-2.5 py-2 rounded-xl transition-all ${
+              pathname === "/rutas"
+                ? "bg-naranja/10 text-naranja font-semibold"
+                : "text-negro/70 hover:bg-negro/[0.04]"
+            }`}
+          >
+            <span className="text-lg flex-shrink-0">🗺️</span>
+            {!sidebarCollapsed && (
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-sm">Las Rutas</span>
+                <span className={`text-[10px] italic ${pathname === "/rutas" ? "text-naranja/70" : "text-naranja"}`}>Fase 3</span>
+              </div>
+            )}
+          </Link>
+        ) : (
+          renderLockedItem("🗺️", "Las Rutas", "Completa El Árbol primero")
+        )}
+      </div>
+
+      {/* Phase 4. La Brújula — Unlocks after Rutas completed, links to /onboarding */}
+      <div className="mb-3">
+        {rutasCompleted ? (
           <Link
             href="/onboarding"
             className={`flex items-center gap-2.5 px-2.5 py-2 rounded-xl transition-all ${
@@ -197,36 +231,12 @@ export default function AppShell({
             {!sidebarCollapsed && (
               <div className="flex items-baseline gap-1.5">
                 <span className="text-sm">La Brújula</span>
-                <span className={`text-[10px] italic ${isOnboardingRoute ? "text-naranja/70" : "text-naranja"}`}>Fase 3</span>
+                <span className={`text-[10px] italic ${isOnboardingRoute ? "text-naranja/70" : "text-naranja"}`}>Fase 4</span>
               </div>
             )}
           </Link>
         ) : (
-          renderLockedItem("🧭", "La Brújula", "Completa El Árbol primero")
-        )}
-      </div>
-
-      {/* 4. Las Rutas — Unlocks after Árbol */}
-      <div className="mb-3">
-        {arbolCompleted ? (
-          <Link
-            href="/rutas"
-            className={`flex items-center gap-2.5 px-2.5 py-2 rounded-xl transition-all ${
-              pathname === "/rutas"
-                ? "bg-negro text-white font-medium"
-                : "text-negro/70 hover:bg-negro/[0.04]"
-            }`}
-          >
-            <span className="text-lg flex-shrink-0">🗺️</span>
-            {!sidebarCollapsed && (
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-sm">Las Rutas</span>
-                <span className={`text-[10px] italic ${pathname === "/rutas" ? "text-white/70" : "text-naranja"}`}>tu camino</span>
-              </div>
-            )}
-          </Link>
-        ) : (
-          renderLockedItem("🗺️", "Las Rutas", "Completa El Árbol primero")
+          renderLockedItem("🧭", "La Brújula", "Completa Las Rutas primero")
         )}
       </div>
 

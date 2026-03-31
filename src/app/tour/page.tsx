@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from "@/lib/supabase/client";
 import Link from 'next/link';
-import Image from 'next/image';
 
 export default function TourPage() {
   const [step, setStep] = useState(0);
@@ -45,7 +44,7 @@ export default function TourPage() {
   };
 
   const nextStep = () => {
-    if (step < 5) setStep(step + 1);
+    if (step < 6) setStep(step + 1);
   };
 
   const prevStep = () => {
@@ -54,11 +53,11 @@ export default function TourPage() {
 
   const pyramidLevels = ['Historia', 'Valores', 'Mercado', 'Estrategia', 'Resultados'];
   const freeTools = [
+    { icon: '🪞', name: 'El Espejo', desc: 'Tu marca de un vistazo.' },
     { icon: '🎯', name: 'El Maestro', desc: 'Tu director creativo con IA. Genera ideas, titulares y estrategias.' },
     { icon: '📅', name: 'El Planificador', desc: 'Organiza tu contenido por semanas.' },
     { icon: '💡', name: 'Ideas', desc: 'Tu banco de ideas siempre abierto.' },
     { icon: '📝', name: 'Piezas', desc: 'Tu biblioteca de contenido.' },
-    { icon: '🪞', name: 'El Espejo', desc: 'Tu marca de un vistazo.' },
   ];
 
   return (
@@ -70,14 +69,14 @@ export default function TourPage() {
             La Brújula
           </Link>
           <div className="text-xs text-muted">
-            {step + 1} de 6
+            {step + 1} de 7
           </div>
         </div>
       </nav>
 
       {/* Progress Dots */}
       <div className="flex justify-center gap-2 pt-8 pb-12">
-        {[0, 1, 2, 3, 4, 5].map((dot) => (
+        {[0, 1, 2, 3, 4, 5, 6].map((dot) => (
           <button
             key={dot}
             onClick={() => setStep(dot)}
@@ -216,26 +215,23 @@ export default function TourPage() {
           </div>
         )}
 
-        {/* Step 4: La Brújula + Las Rutas */}
+        {/* Step 3: Las Rutas */}
         {step === 3 && (
           <div className="animate-fadeIn space-y-8">
             <div className="space-y-6">
-              <div className="text-5xl mb-4 space-y-2">
-                <div>🧭</div>
-                <div className="text-4xl">🗺️</div>
-              </div>
+              <div className="text-5xl mb-4">🗺️</div>
               <h2 className="text-3xl md:text-4xl font-heading text-negro">
-                Fase 3 — La Brújula + Las Rutas
+                Fase 3 — Las Rutas
               </h2>
               <p className="text-sm text-naranja font-heading uppercase tracking-wide">
-                (qué hacer)
+                (tu estrategia)
               </p>
               <div className="space-y-4 text-lg text-negro">
                 <p>
-                  Con tu identidad clara y tu marca diagnosticada, llega el momento de actuar.
+                  Con tu marca diagnosticada, Las Rutas te asignan un camino personalizado según tu perfil.
                 </p>
                 <p className="text-muted">
-                  La Brújula te ayuda a generar contenido alineado con tu marca. Las Rutas te dan una estrategia personalizada basada en tu diagnóstico.
+                  No es un plan genérico. Es tu hoja de ruta basada en tus fortalezas y tus grietas, con estrategias generadas por IA.
                 </p>
               </div>
             </div>
@@ -264,8 +260,53 @@ export default function TourPage() {
           </div>
         )}
 
-        {/* Step 5: Free Tools */}
+        {/* Step 4: La Brújula */}
         {step === 4 && (
+          <div className="animate-fadeIn space-y-8">
+            <div className="space-y-6">
+              <div className="text-5xl mb-4">🧭</div>
+              <h2 className="text-3xl md:text-4xl font-heading text-negro">
+                Fase 4 — La Brújula
+              </h2>
+              <p className="text-sm text-naranja font-heading uppercase tracking-wide">
+                (tu contenido)
+              </p>
+              <div className="space-y-4 text-lg text-negro">
+                <p>
+                  Con tu identidad clara, tu marca diagnosticada y tu estrategia definida, llega el momento de crear contenido.
+                </p>
+                <p className="text-muted">
+                  La Brújula es tu sistema de contenido: defines tu briefing, tus buyer persona, tus pilares y tu estrategia de canales. Todo alineado con lo que ya has trabajado.
+                </p>
+              </div>
+            </div>
+
+            {/* Locked State */}
+            <div className="bg-naranja/10 border-2 border-naranja/30 rounded-lg p-8 text-center space-y-3">
+              <div className="text-3xl">🔒</div>
+              <p className="text-negro font-heading">Se desbloquea al completar</p>
+              <p className="text-naranja font-heading">Las Rutas</p>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={prevStep}
+                className="text-naranja hover:text-naranja/70 font-heading transition-colors"
+              >
+                ← Atrás
+              </button>
+              <button
+                onClick={nextStep}
+                className="bg-naranja text-crema px-6 py-3 rounded-lg font-heading hover:bg-naranja/90 transition-colors ml-auto"
+              >
+                Siguiente →
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 5: Herramientas libres */}
+        {step === 5 && (
           <div className="animate-fadeIn space-y-8">
             <div className="space-y-6">
               <h2 className="text-3xl md:text-4xl font-heading text-negro">
@@ -325,7 +366,7 @@ export default function TourPage() {
         )}
 
         {/* Step 6: Ready to Start */}
-        {step === 5 && (
+        {step === 6 && (
           <div className="animate-fadeIn space-y-8">
             <div className="space-y-6">
               <h2 className="text-3xl md:text-4xl font-heading text-negro">
@@ -352,10 +393,11 @@ export default function TourPage() {
                 <div className="flex-1 h-1 bg-naranja"></div>
               </div>
               <div className="flex items-center gap-3 ml-12">
-                <div className="flex gap-2">
-                  <div className="text-3xl">🧭</div>
-                  <div className="text-3xl">🗺️</div>
-                </div>
+                <div className="text-3xl">🗺️</div>
+                <div className="flex-1 h-1 bg-naranja"></div>
+              </div>
+              <div className="flex items-center gap-3 ml-12">
+                <div className="text-3xl">🧭</div>
               </div>
             </div>
 

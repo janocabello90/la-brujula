@@ -52,6 +52,7 @@ export interface DashboardStats {
   journeyPerfil: string | null;
   // Phases
   piramideCompleted: boolean;
+  rutasCompleted: boolean;
   userPhase: number;
 }
 
@@ -106,10 +107,6 @@ export default async function DashboardPage() {
       display_name: displayName,
       onboarding_completed: false,
     });
-    redirect("/onboarding");
-  }
-
-  if (!existingProfile.onboarding_completed) {
     redirect("/onboarding");
   }
 
@@ -206,10 +203,12 @@ export default async function DashboardPage() {
 
   const arbolCompleted = arbolSections.filter((s) => s.completed).length;
 
-  // Determine phase completion
+  // Determine phase completion with 4 phases
   const piramideCompleted = piramideData?.steps_completed?.includes("nivel_2") || false;
   const arbolFullyCompleted = arbolCompleted === 9;
-  const userPhase = arbolFullyCompleted ? 3 : piramideCompleted ? 2 : 1;
+  // For rutas: check if user_journey has ruta_asignada (meaning they got their diagnosis)
+  const rutasCompleted = !!userJourney?.ruta_asignada;
+  const userPhase = rutasCompleted ? 4 : arbolFullyCompleted ? 3 : piramideCompleted ? 2 : 1;
 
   // Today items
   const todayItems: TodayItem[] = (todayPlanner || []).map((item: any) => ({
@@ -252,6 +251,7 @@ export default async function DashboardPage() {
     journeyRuta: userJourney?.ruta_asignada || null,
     journeyPerfil: userJourney?.perfil_diagnostico || null,
     piramideCompleted,
+    rutasCompleted,
     userPhase,
   };
 
