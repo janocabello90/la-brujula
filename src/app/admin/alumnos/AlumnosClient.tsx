@@ -835,6 +835,323 @@ const BrujulaSection = ({ data }: { data: any }) => {
   );
 };
 
+// ─── TXT Export Function ────────────────────────────────────
+function exportAlumnoToTxt(alumno: AlumnoData) {
+  const val = (v: any): string => {
+    if (v === null || v === undefined || v === '') return '—';
+    if (Array.isArray(v)) return v.length > 0 ? v.join(', ') : '—';
+    return String(v);
+  };
+
+  const field = (label: string, value: any): string => {
+    const v = val(value);
+    return v !== '—' ? `${label}: ${v}\n` : '';
+  };
+
+  const section = (title: string): string => `\n${'='.repeat(60)}\n${title.toUpperCase()}\n${'='.repeat(60)}\n\n`;
+  const subsection = (title: string): string => `\n--- ${title} ---\n\n`;
+
+  let txt = '';
+  txt += `INFORME COMPLETO DEL ALUMNO\n`;
+  txt += `Generado: ${new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}\n`;
+  txt += `${'='.repeat(60)}\n\n`;
+  txt += field('Nombre', alumno.displayName);
+  txt += field('Email', alumno.email);
+  txt += field('Registrado', new Date(alumno.createdAt).toLocaleDateString('es-ES'));
+  txt += field('Pirámide completada', alumno.piramideCompleted ? 'Sí' : 'No');
+  txt += field('Árbol completado', alumno.arbolCompleted ? 'Sí' : 'No');
+  txt += field('Ruta asignada', alumno.rutaAsignada || 'No');
+  txt += field('Brújula completada', alumno.brujulaCompleted ? 'Sí' : 'No');
+
+  // ── PIRÁMIDE ──
+  const p = alumno.piramide;
+  if (p) {
+    txt += section('LA PIRÁMIDE DE LA MARCA PERSONAL');
+
+    txt += subsection('Prólogo');
+    txt += field('¿Cuál es tu comienzo? ¿De dónde vienes?', p.prologo?.el_comienzo);
+    txt += field('¿Cuáles son tus nudos? ¿Qué te ha frenado?', p.prologo?.los_nudos);
+    txt += field('¿Cuáles son tus semillas? ¿Qué has aprendido?', p.prologo?.las_semillas);
+    txt += field('¿Cuál es tu proyección? ¿Hacia dónde quieres ir?', p.prologo?.la_proyeccion);
+
+    txt += subsection('Mentalidad');
+    txt += field('¿Qué quieres que sienta tu audiencia?', p.mentalidad?.que_sienta);
+    txt += field('¿Qué elementos deben estar en el centro?', p.mentalidad?.elementos_centro);
+    txt += field('¿Qué valores quieres que se respiren en tu marca?', p.mentalidad?.valores_ambiente);
+    txt += field('¿Qué quieres que recuerden de ti?', p.mentalidad?.que_recuerden);
+
+    txt += subsection('Buena Vida');
+    txt += field('¿Cómo defines una buena vida?', p.buena_vida?.definiendo_buena_vida);
+    txt += field('¿Qué espacios te generan resonancia?', p.buena_vida?.espacios_resonancia);
+    txt += field('¿Cuál es tu relación con el trabajo?', p.buena_vida?.relacion_trabajo);
+    txt += field('¿Cómo defines el éxito?', p.buena_vida?.definicion_exito);
+    txt += field('¿Cuáles son tus principios guía?', p.buena_vida?.principios_guia);
+    txt += field('¿Cuál es tu brújula emocional?', p.buena_vida?.brujula_emocional);
+    txt += field('¿Cuál es tu recordatorio personal?', p.buena_vida?.recordatorio_personal);
+
+    txt += subsection('Bajo Tierra — Historia');
+    txt += field('Historia de infancia', p.bajo_tierra?.historia_infancia);
+    txt += field('Historia de adolescencia', p.bajo_tierra?.historia_adolescencia);
+    txt += field('Historia adulta', p.bajo_tierra?.historia_adulta);
+    txt += field('Momentos difíciles', p.bajo_tierra?.momentos_dificiles);
+    txt += field('Momentos de triunfo', p.bajo_tierra?.momentos_triunfo);
+
+    txt += subsection('Bajo Tierra — Creencias');
+    txt += field('Creencia limitante 1', p.bajo_tierra?.creencia_limitante_1);
+    txt += field('Reformulada 1', p.bajo_tierra?.creencia_limitante_1_reformulada);
+    txt += field('Creencia limitante 2', p.bajo_tierra?.creencia_limitante_2);
+    txt += field('Reformulada 2', p.bajo_tierra?.creencia_limitante_2_reformulada);
+    txt += field('Creencia limitante 3', p.bajo_tierra?.creencia_limitante_3);
+    txt += field('Reformulada 3', p.bajo_tierra?.creencia_limitante_3_reformulada);
+    txt += field('Creencia potenciadora 1', p.bajo_tierra?.creencia_potenciadora_1);
+    txt += field('Creencia potenciadora 2', p.bajo_tierra?.creencia_potenciadora_2);
+    txt += field('Creencia potenciadora 3', p.bajo_tierra?.creencia_potenciadora_3);
+    txt += field('Creencia sobre el dinero', p.bajo_tierra?.creencia_sobre_dinero);
+    txt += field('Creencia sobre el éxito', p.bajo_tierra?.creencia_sobre_exito);
+
+    txt += subsection('Bajo Tierra — Identidad');
+    txt += field('Tu superpoder', p.bajo_tierra?.tu_superpoder);
+    txt += field('¿Qué te hace único?', p.bajo_tierra?.que_te_hace_unico);
+    txt += field('Tu talento natural', p.bajo_tierra?.talento_natural);
+
+    txt += subsection('Bajo Tierra — Espejos');
+    txt += field('Espejo del pasado (¿quién eras?)', p.bajo_tierra?.espejo_pasado);
+    txt += field('Espejo del presente (¿quién eres?)', p.bajo_tierra?.espejo_presente);
+    txt += field('Espejo del futuro (¿quién quieres ser?)', p.bajo_tierra?.espejo_futuro);
+
+    txt += subsection('Nivel 1 — Valores');
+    for (let i = 1; i <= 5; i++) {
+      const v = p.nivel_1?.[`valor_${i}`] || p[`valor_${i}`];
+      const s = p.nivel_1?.[`significado_${i}`] || p[`significado_${i}`];
+      const e = p.nivel_1?.[`ejemplo_${i}`] || p[`ejemplo_${i}`];
+      if (v) {
+        txt += field(`Valor ${i}`, v);
+        txt += field(`  ¿Qué significa para ti?`, s);
+        txt += field(`  Ejemplo concreto`, e);
+      }
+    }
+
+    txt += subsection('Nivel 1 — Propósito (Los 5 por qué)');
+    for (let i = 1; i <= 5; i++) {
+      txt += field(`¿Por qué ${i}?`, p.nivel_1?.[`por_que_${i}`] || p[`por_que_${i}`]);
+    }
+
+    txt += subsection('Nivel 1 — Visión');
+    for (let i = 1; i <= 4; i++) {
+      txt += field(`Visión ${i}`, p.nivel_1?.[`vision_${i}`] || p[`vision_${i}`]);
+    }
+
+    txt += subsection('Nivel 1 — Banderas Rojas');
+    for (let i = 1; i <= 5; i++) {
+      txt += field(`Bandera roja ${i} (lo que no cruzas)`, p.nivel_1?.[`bandera_roja_${i}`] || p[`bandera_roja_${i}`]);
+    }
+
+    txt += field('Identidad', p.nivel_1?.identidad || p.identidad);
+    txt += field('Coherencia', p.nivel_1?.coherencia || p.coherencia);
+
+    txt += subsection('Nivel 2 — Mercado y Audiencia');
+    txt += field('¿A quién ayudas? (nombre)', p.nivel_2?.nombre_audiencia || p.nombre_audiencia);
+    txt += field('Edad', p.nivel_2?.edad_audiencia || p.edad_audiencia);
+    txt += field('¿Cuál es su frustración?', p.nivel_2?.frustracion || p.frustracion);
+    txt += field('¿Cuál es su deseo?', p.nivel_2?.deseo || p.deseo);
+    txt += field('¿Cuál es su objeción?', p.nivel_2?.objecion || p.objecion);
+    txt += field('¿Dónde está?', p.nivel_2?.donde_esta || p.donde_esta);
+    txt += field('¿Cómo habla?', p.nivel_2?.lenguaje || p.lenguaje);
+
+    txt += subsection('Nivel 2 — Propuesta de Valor');
+    txt += field('Ayudo a...', p.nivel_2?.ayudo_a || p.ayudo_a);
+    txt += field('A conseguir...', p.nivel_2?.a_conseguir || p.a_conseguir);
+    txt += field('A través de...', p.nivel_2?.a_traves_de || p.a_traves_de);
+    txt += field('Sin necesidad de...', p.nivel_2?.sin_necesidad || p.sin_necesidad);
+    txt += field('Frase completa', p.nivel_2?.frase_completa || p.frase_completa);
+    txt += field('¿Por qué tú?', p.nivel_2?.por_que_tu || p.por_que_tu);
+
+    txt += subsection('Nivel 2 — Objetivos');
+    txt += field('Objetivo pasional', p.nivel_2?.objetivo_pasional || p.objetivo_pasional);
+    txt += field('  Secundario', p.nivel_2?.objetivo_pasional_secundario || p.objetivo_pasional_secundario);
+    txt += field('  KPI', p.nivel_2?.objetivo_pasional_kpi || p.objetivo_pasional_kpi);
+    txt += field('Objetivo de referencia', p.nivel_2?.objetivo_referencia || p.objetivo_referencia);
+    txt += field('  Secundario', p.nivel_2?.objetivo_referencia_secundario || p.objetivo_referencia_secundario);
+    txt += field('  KPI', p.nivel_2?.objetivo_referencia_kpi || p.objetivo_referencia_kpi);
+    txt += field('Objetivo económico', p.nivel_2?.objetivo_economico || p.objetivo_economico);
+    txt += field('  Secundario', p.nivel_2?.objetivo_economico_secundario || p.objetivo_economico_secundario);
+    txt += field('  KPI', p.nivel_2?.objetivo_economico_kpi || p.objetivo_economico_kpi);
+
+    txt += subsection('Nivel 3 — Estrategia y Canales');
+    for (let i = 1; i <= 3; i++) {
+      const canal = p.nivel_3?.[`canal_${i}`] || p[`canal_${i}`];
+      if (canal) {
+        txt += field(`Canal ${i}`, canal);
+        txt += field(`  Descripción`, p.nivel_3?.[`canal_${i}_descripcion`] || p[`canal_${i}_descripcion`]);
+        txt += field(`  Frecuencia`, p.nivel_3?.[`canal_${i}_frecuencia`] || p[`canal_${i}_frecuencia`]);
+      }
+    }
+    txt += field('Pilar de contenido 1', p.nivel_3?.pilar_contenido_1 || p.pilar_contenido_1);
+    txt += field('Pilar de contenido 2', p.nivel_3?.pilar_contenido_2 || p.pilar_contenido_2);
+    txt += field('Pilar de contenido 3', p.nivel_3?.pilar_contenido_3 || p.pilar_contenido_3);
+    txt += field('Etapa funnel: Awareness', p.nivel_3?.etapa_funnel_awareness || p.etapa_funnel_awareness);
+    txt += field('Etapa funnel: Consideration', p.nivel_3?.etapa_funnel_consideration || p.etapa_funnel_consideration);
+    txt += field('Etapa funnel: Decision', p.nivel_3?.etapa_funnel_decision || p.etapa_funnel_decision);
+    txt += field('Estrategia', p.nivel_3?.estrategia || p.estrategia);
+    txt += field('Resistencia', p.nivel_3?.resistencia || p.resistencia);
+
+    txt += subsection('Nivel 4 — Resultados');
+    txt += field('Métrica visible', p.nivel_4?.metrica_visible || p.metrica_visible);
+    txt += field('Métrica invisible', p.nivel_4?.metrica_invisible || p.metrica_invisible);
+    txt += field('Indicador de buena vida', p.nivel_4?.indicador_buena_vida || p.indicador_buena_vida);
+    txt += field('Review trimestral', p.nivel_4?.review_trimestral || p.review_trimestral);
+    txt += field('Commitment', p.nivel_4?.commitment || p.commitment);
+  }
+
+  // ── ÁRBOL ──
+  const a = alumno.arbol;
+  if (a) {
+    txt += section('EL ÁRBOL — PLAYBOOK DE MARCA');
+
+    txt += subsection('La Semilla');
+    txt += field('¿Cuál es tu propósito?', a.semilla?.proposito);
+    txt += field('¿Cuál es tu visión?', a.semilla?.vision);
+    txt += field('¿Cuál es tu intención?', a.semilla?.intencion);
+    txt += field('¿Cuáles son tus objetivos?', a.semilla?.objetivos);
+
+    txt += subsection('Las Raíces');
+    txt += field('¿Cuáles son tus creencias fundamentales?', a.raices?.creencias);
+    txt += field('Valores', val(a.raices?.valores));
+    txt += field('¿Cómo defines tu identidad?', a.raices?.identidad);
+    txt += field('¿Cuál es tu historia?', a.raices?.historia);
+    txt += field('Conocimientos y habilidades', a.raices?.conocimientoHabilidades);
+    txt += field('Fortalezas', val(a.raices?.fortalezas));
+    txt += field('Experiencia', a.raices?.experiencia);
+    txt += field('Intuición', a.raices?.intuicion);
+
+    txt += subsection('El Tronco');
+    txt += field('¿Cuál es tu tema principal?', a.tronco?.temaPrincipal);
+    txt += field('¿Cuál es tu propuesta de valor?', a.tronco?.propuestaValor);
+    txt += field('¿Cuál es tu zona de genialidad?', a.tronco?.zonaGenialidad);
+
+    txt += subsection('Las Ramas');
+    txt += field('Pasiones', val(a.ramas?.pasiones));
+    txt += field('Intereses', val(a.ramas?.intereses));
+    txt += field('Hobbies', val(a.ramas?.hobbies));
+    txt += field('Habilidades secundarias', val(a.ramas?.habilidadesSecundarias));
+    txt += field('Contextos profesionales', val(a.ramas?.contextosProfesionales));
+    txt += field('Formatos de comunicación', val(a.ramas?.formatosComunicacion));
+
+    txt += subsection('La Copa');
+    txt += field('Atributos', val(a.copa?.atributos));
+    if (a.copa?.arquetipos?.length) {
+      txt += 'Arquetipos:\n';
+      a.copa.arquetipos.forEach((arq: any) => {
+        txt += `  - ${arq.nombre}: ${arq.porcentaje}%\n`;
+      });
+    }
+    txt += field('Tono de voz', a.copa?.tonoDeVoz);
+    txt += field('Narrativa', a.copa?.narrativa);
+    txt += field('Energía', a.copa?.energia);
+    txt += field('Presencia', a.copa?.presencia);
+    txt += field('Percepción', a.copa?.percepcion);
+
+    txt += subsection('Los Frutos');
+    txt += field('¿Qué deseas recibir?', a.frutos?.queDeseasRecibir);
+    txt += field('Meta de seguidores', a.frutos?.metaSeguidores);
+    txt += field('Mensajes que quieres recibir', a.frutos?.mensajesQueQuieres);
+    txt += field('Impacto deseado', a.frutos?.impactoDeseado);
+    txt += field('Testimonio ideal', a.frutos?.testimonioIdeal);
+
+    txt += subsection('El Entorno');
+    txt += field('¿Quién es tu audiencia principal?', a.entorno?.audienciaPrincipal);
+    txt += field('¿Dónde están?', val(a.entorno?.dondeEstan));
+    txt += field('Competencia', a.entorno?.competencia);
+    txt += field('Aliados potenciales', a.entorno?.aliadosPotenciales);
+    txt += field('Posicionamiento', a.entorno?.posicionamiento);
+
+    txt += subsection('El Tiempo');
+    txt += field('Ritmo de publicación', a.tiempo?.ritmoPublicacion);
+    txt += field('Próximo hito', a.tiempo?.proximoHito);
+    txt += field('Meta anual', a.tiempo?.metaAnual);
+    txt += field('Definición de buena vida', a.tiempo?.buenaVida);
+
+    if (a.cofre?.productos?.length) {
+      txt += subsection('El Cofre — Productos');
+      a.cofre.productos.forEach((prod: any, i: number) => {
+        txt += `\nProducto ${i + 1}: ${prod.nombreProducto || prod.nombre || 'Sin nombre'}\n`;
+        txt += field('  Oferta', prod.oferta);
+        txt += field('  Packaging narrativo', prod.packagingNarrativo);
+        txt += field('  Cliente', prod.cliente);
+        txt += field('  Canales', prod.canales);
+        txt += field('  Sistema de entrega', prod.sistemaEntrega);
+        txt += field('  Precio', prod.precio);
+        txt += field('  Estado actual', prod.estadoActual);
+      });
+    }
+  }
+
+  // ── BRÚJULA ──
+  const b = alumno.brujula;
+  if (b) {
+    txt += section('LA BRÚJULA — SISTEMA DE CONTENIDO');
+
+    txt += subsection('Briefing');
+    txt += field('¿Cuál es tu tema raíz?', b.briefing?.temaRaiz);
+    txt += field('¿Cuál es tu propuesta de valor?', b.briefing?.propuestaValor);
+    txt += field('¿Cuál es tu etiqueta profesional?', b.briefing?.etiquetaProfesional);
+    txt += field('¿Por qué tú?', b.briefing?.porQueTu);
+
+    const buyers = b.buyers || (b.buyer?.nombre ? [b.buyer] : []);
+    if (buyers.length > 0) {
+      txt += subsection('Buyer Personas');
+      buyers.forEach((bp: any, i: number) => {
+        txt += `\nPersona ${i + 1}: ${bp.nombre || 'Sin nombre'}\n`;
+        txt += field('  Edad', bp.edad);
+        txt += field('  Profesión', bp.profesion);
+        txt += field('  ¿Qué quiere?', bp.queQuiere);
+        txt += field('  ¿Qué le frena?', bp.queLeFrena);
+        txt += field('  ¿Qué consume?', bp.queConsumo);
+        txt += field('  ¿Dónde está?', bp.dondeEsta);
+        txt += field('  ¿Cómo habla?', bp.lenguaje);
+      });
+    }
+
+    txt += subsection('Mapa de Empatía');
+    txt += field('¿Qué ve tu audiencia?', b.empathy?.queVe);
+    txt += field('¿Qué oye?', b.empathy?.queOye);
+    txt += field('¿Qué dice y hace?', b.empathy?.queDiceHace);
+    txt += field('¿Qué piensa y siente?', b.empathy?.quePiensaSiente);
+    txt += field('¿Cuáles son sus dolores?', b.empathy?.dolores);
+    txt += field('¿Cuáles son sus deseos?', b.empathy?.deseos);
+
+    txt += subsection('Insight');
+    txt += field('Insight estratégico', b.insight?.insight);
+    txt += field('Frase que diría tu audiencia', b.insight?.fraseAudiencia);
+
+    if (b.tree?.pilares?.length) {
+      txt += subsection('Pilares de Contenido');
+      b.tree.pilares.forEach((pilar: any, i: number) => {
+        txt += `\nPilar ${i + 1}: ${pilar.nombre || 'Sin nombre'}\n`;
+        txt += field('  Subtemas', val(pilar.subtemas));
+        txt += field('  Ángulos', val(pilar.angulos));
+        txt += field('  Titulares', val(pilar.titulares));
+      });
+    }
+
+    txt += subsection('Canales');
+    txt += field('Canales seleccionados', val(b.channels?.canales));
+    txt += field('Objetivos principales', val(b.channels?.objetivosPrincipales));
+  }
+
+  txt += `\n${'='.repeat(60)}\n`;
+  txt += `Fin del informe de ${alumno.displayName || alumno.email}\n`;
+
+  // Download
+  const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a2 = document.createElement('a');
+  a2.href = url;
+  a2.download = `alumno-${(alumno.displayName || alumno.email).replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}.txt`;
+  a2.click();
+  URL.revokeObjectURL(url);
+}
+
 export default function AlumnosClient({ alumnos }: Props) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedAlumnoId, setSelectedAlumnoId] = useState<string | null>(null);
@@ -873,13 +1190,21 @@ export default function AlumnosClient({ alumnos }: Props) {
     return (
       <AppShell fullWidth>
         <div className="max-w-6xl mx-auto px-4 py-8">
-          {/* Back button */}
-          <button
-            onClick={() => setSelectedAlumnoId(null)}
-            className="mb-6 text-naranja hover:text-naranja/80 font-heading transition-colors"
-          >
-            ← Volver a la lista
-          </button>
+          {/* Back button + Export */}
+          <div className="flex items-center justify-between mb-6">
+            <button
+              onClick={() => setSelectedAlumnoId(null)}
+              className="text-naranja hover:text-naranja/80 font-heading transition-colors"
+            >
+              ← Volver a la lista
+            </button>
+            <button
+              onClick={() => exportAlumnoToTxt(selectedAlumno)}
+              className="bg-negro text-white px-5 py-2.5 rounded-lg font-medium text-sm hover:bg-negro/80 transition-colors"
+            >
+              📄 Exportar a TXT
+            </button>
+          </div>
 
           {/* Header */}
           <div className="bg-white border border-borde rounded-lg p-6 mb-6">
