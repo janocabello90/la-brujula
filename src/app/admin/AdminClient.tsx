@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import AppShell from "@/components/AppShell";
 import type { AdminStats, AdminUser } from "./page";
 
@@ -83,9 +84,17 @@ export default function AdminClient({ stats }: Props) {
   return (
     <AppShell fullWidth>
       <div className="max-w-6xl mx-auto">
-        <div className="mb-8">
-          <h1 className="font-heading text-3xl text-negro mb-1">Admin Panel</h1>
-          <p className="text-muted text-sm">Control de usuarios y métricas de La Brújula</p>
+        <div className="mb-8 flex items-start justify-between">
+          <div>
+            <h1 className="font-heading text-3xl text-negro mb-1">Admin Panel</h1>
+            <p className="text-muted text-sm">Control de usuarios y métricas de La Brújula</p>
+          </div>
+          <Link
+            href="/admin/alumnos"
+            className="bg-naranja text-white px-5 py-2.5 rounded-lg font-medium text-sm hover:bg-naranja-hover transition-colors flex-shrink-0"
+          >
+            📋 Ver ejercicios de alumnos
+          </Link>
         </div>
 
         {/* Global stats */}
