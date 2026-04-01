@@ -1,9 +1,39 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import AppShell from "@/components/AppShell";
 import { createClient } from "@/lib/supabase/client";
+
+// Web Speech API types
+interface SpeechRecognitionEvent {
+  results: SpeechRecognitionResultList;
+  resultIndex: number;
+}
+
+interface SpeechRecognitionErrorEvent {
+  error: string;
+}
+
+interface SpeechRecognitionInstance extends EventTarget {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  start(): void;
+  stop(): void;
+  abort(): void;
+  onresult: ((event: SpeechRecognitionEvent) => void) | null;
+  onerror: ((event: SpeechRecognitionErrorEvent) => void) | null;
+  onend: (() => void) | null;
+  onstart: (() => void) | null;
+}
+
+declare global {
+  interface Window {
+    SpeechRecognition: new () => SpeechRecognitionInstance;
+    webkitSpeechRecognition: new () => SpeechRecognitionInstance;
+  }
+}
 
 interface Props {
   userId: string;
@@ -55,8 +85,100 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
   const [frases, setFrases] = useState(initialFrases);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [isListening, setIsListening] = useState(false);
+  const [interimTranscript, setInterimTranscript] = useState("");
+  const [speechSupported, setSpeechSupported] = useState(false);
+  const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Check speech recognition support
+  useEffect(() => {
+    const supported = typeof window !== "undefined" &&
+      ("SpeechRecognition" in window || "webkitSpeechRecognition" in window);
+    setSpeechSupported(supported);
+  }, []);
+
+  const startListening = useCallback(() => {
+    if (!speechSupported || isListening) return;
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = "es-ES";
+
+    recognition.onstart = () => {
+      setIsListening(true);
+      setInterimTranscript("");
+    };
+
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
+      let finalText = "";
+      let interimText = "";
+
+      for (let i = 0; i < event.results.length; i++) {
+        const result = event.results[i];
+        if (result.isFinal) {
+          finalText += result[0].transcript;
+        } else {
+          interimText += result[0].transcript;
+        }
+      }
+
+      if (finalText) {
+        setInputValue((prev) => {
+          const separator = prev && !prev.endsWith(" ") ? " " : "";
+          return prev + separator + finalText;
+        });
+        setInterimTranscript("");
+      } else {
+        setInterimTranscript(interimText);
+      }
+    };
+
+    recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+      console.error("Speech recognition error:", event.error);
+      if (event.error !== "no-speech") {
+        setIsListening(false);
+      }
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+      setInterimTranscript("");
+    };
+
+    recognitionRef.current = recognition;
+    recognition.start();
+  }, [speechSupported, isListening]);
+
+  const stopListening = useCallback(() => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+      recognitionRef.current = null;
+    }
+    setIsListening(false);
+    setInterimTranscript("");
+  }, []);
+
+  const toggleListening = useCallback(() => {
+    if (isListening) {
+      stopListening();
+    } else {
+      startListening();
+    }
+  }, [isListening, startListening, stopListening]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.abort();
+      }
+    };
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -399,8 +521,39 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
                   <div ref={messagesEndRef} />
                 </div>
 
-                {/* Input */}
+                {/* Interim transcript indicator */}
+                {isListening && interimTranscript && (
+                  <div className="px-3 py-1.5 bg-red-50 border border-red-200 rounded-lg mb-2">
+                    <p className="text-xs text-red-400 italic">{interimTranscript}...</p>
+                  </div>
+                )}
+
+                {/* Input with voice */}
                 <div className="flex gap-2">
+                  {speechSupported && (
+                    <button
+                      onClick={toggleListening}
+                      disabled={loading}
+                      className={`flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center transition-all ${
+                        isListening
+                          ? "bg-red-500 text-white animate-pulse shadow-lg shadow-red-500/30"
+                          : "bg-negro/5 border border-negro/10 text-negro hover:bg-negro/10"
+                      } disabled:opacity-40 disabled:cursor-not-allowed`}
+                      title={isListening ? "Parar dictado" : "Dictar con voz"}
+                    >
+                      {isListening ? (
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor" />
+                        </svg>
+                      ) : (
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+                          <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                          <line x1="12" y1="19" x2="12" y2="22" />
+                        </svg>
+                      )}
+                    </button>
+                  )}
                   <input
                     ref={inputRef}
                     type="text"
@@ -408,21 +561,32 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyPress={(e) => {
                       if (e.key === "Enter" && !loading) {
+                        if (isListening) stopListening();
                         sendMessage();
                       }
                     }}
-                    placeholder="Tu respuesta..."
+                    placeholder={isListening ? "Escuchando... habla ahora" : "Tu respuesta..."}
                     disabled={loading}
-                    className="flex-1 px-4 py-3 border border-borde rounded-lg bg-white text-negro placeholder:text-muted focus:outline-none focus:border-naranja disabled:opacity-50"
+                    className={`flex-1 px-4 py-3 border rounded-lg bg-white text-negro placeholder:text-muted focus:outline-none focus:border-naranja disabled:opacity-50 ${
+                      isListening ? "border-red-300 bg-red-50/30" : "border-borde"
+                    }`}
                   />
                   <button
-                    onClick={sendMessage}
+                    onClick={() => {
+                      if (isListening) stopListening();
+                      sendMessage();
+                    }}
                     disabled={!inputValue.trim() || loading}
                     className="bg-naranja text-white px-6 py-3 rounded-lg font-medium hover:bg-naranja-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
                   >
                     Enviar
                   </button>
                 </div>
+                {isListening && (
+                  <p className="text-xs text-red-500 mt-1.5 text-center animate-pulse">
+                    Grabando... pulsa el botón rojo para parar o Enviar cuando termines
+                  </p>
+                )}
               </div>
             )}
           </div>
