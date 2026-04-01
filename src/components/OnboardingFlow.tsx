@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { STEPS, ANGLES, CHANNELS, OBJECTIVES } from "@/lib/constants";
 import type { BrujulaState, BuyerData, Pilar } from "@/lib/types";
@@ -16,6 +16,8 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
+  const saveTimeout = useRef<NodeJS.Timeout | null>(null);
 
   // Form state
   const [briefing, setBriefing] = useState(initialData?.briefing || DEFAULT_STATE.briefing);
@@ -33,7 +35,37 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
 
   const currentStep = STEPS[step];
 
+  // Auto-save with debounce (saves without advancing)
+  const autoSave = useCallback(async () => {
+    if (saveTimeout.current) clearTimeout(saveTimeout.current);
+    saveTimeout.current = setTimeout(async () => {
+      setSaveStatus('saving');
+      const supabase = createClient();
+
+      const payload = {
+        user_id: userId,
+        briefing,
+        buyer: buyers[0] || DEFAULT_STATE.buyer,
+        buyers,
+        empathy,
+        insight,
+        tree,
+        channels,
+        updated_at: new Date().toISOString(),
+      };
+
+      await supabase.from("brujula_data").upsert(payload, { onConflict: "user_id" });
+
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 2000);
+    }, 1500);
+  }, [briefing, buyers, empathy, insight, tree, channels, userId]);
+
   const saveAndNext = useCallback(async () => {
+    // Clear any pending auto-save timeout
+    if (saveTimeout.current) clearTimeout(saveTimeout.current);
+    setSaveStatus('idle');
+
     setSaving(true);
     const supabase = createClient();
 
@@ -70,12 +102,14 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
     setTree((prev) => ({
       pilares: [...prev.pilares, { nombre: "", subtemas: [], angulos: [], titulares: [] }],
     }));
+    autoSave();
   };
 
   const removePilar = (i: number) => {
     setTree((prev) => ({
       pilares: prev.pilares.filter((_, idx) => idx !== i),
     }));
+    autoSave();
   };
 
   const updatePilar = (i: number, field: keyof Pilar, value: any) => {
@@ -84,6 +118,7 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
       copy[i] = { ...copy[i], [field]: value };
       return { pilares: copy };
     });
+    autoSave();
   };
 
   const addSubtema = (pilarIdx: number, subtema: string) => {
@@ -96,6 +131,7 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
       };
       return { pilares: copy };
     });
+    autoSave();
   };
 
   const removeSubtema = (pilarIdx: number, subIdx: number) => {
@@ -107,6 +143,7 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
       };
       return { pilares: copy };
     });
+    autoSave();
   };
 
   const toggleAngulo = (pilarIdx: number, angulo: string) => {
@@ -121,6 +158,7 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
       };
       return { pilares: copy };
     });
+    autoSave();
   };
 
   const addTitular = (pilarIdx: number, titular: string) => {
@@ -133,6 +171,7 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
       };
       return { pilares: copy };
     });
+    autoSave();
   };
 
   const removeTitular = (pilarIdx: number, titIdx: number) => {
@@ -144,6 +183,7 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
       };
       return { pilares: copy };
     });
+    autoSave();
   };
 
   // --- CHANNEL/OBJECTIVE TOGGLES ---
@@ -154,6 +194,7 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
         ? prev.canales.filter((c) => c !== canal)
         : [...prev.canales, canal],
     }));
+    autoSave();
   };
 
   const toggleObjetivo = (obj: string) => {
@@ -163,6 +204,7 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
         ? prev.objetivosPrincipales.filter((o) => o !== obj)
         : [...prev.objetivosPrincipales, obj],
     }));
+    autoSave();
   };
 
   // --- RENDER STEPS ---
@@ -171,10 +213,44 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
       case "briefing":
         return (
           <>
-            <TextInput label="Tema raíz" value={briefing.temaRaiz} onChange={(v) => setBriefing({ ...briefing, temaRaiz: v })} placeholder="Ej: Marca personal para profesionales" />
-            <TextInput label="Propuesta de valor" value={briefing.propuestaValor} onChange={(v) => setBriefing({ ...briefing, propuestaValor: v })} placeholder="¿Qué transformación ofreces?" textarea />
-            <TextInput label="Etiqueta profesional" value={briefing.etiquetaProfesional} onChange={(v) => setBriefing({ ...briefing, etiquetaProfesional: v })} placeholder="Ej: Consultor de marca personal" />
-            <TextInput label="¿Por qué tú?" value={briefing.porQueTu} onChange={(v) => setBriefing({ ...briefing, porQueTu: v })} placeholder="¿Qué te hace diferente?" textarea />
+            <TextInput
+              label="Tema raíz"
+              value={briefing.temaRaiz}
+              onChange={(v) => {
+                setBriefing({ ...briefing, temaRaiz: v });
+                autoSave();
+              }}
+              placeholder="Ej: Marca personal para profesionales"
+            />
+            <TextInput
+              label="Propuesta de valor"
+              value={briefing.propuestaValor}
+              onChange={(v) => {
+                setBriefing({ ...briefing, propuestaValor: v });
+                autoSave();
+              }}
+              placeholder="¿Qué transformación ofreces?"
+              textarea
+            />
+            <TextInput
+              label="Etiqueta profesional"
+              value={briefing.etiquetaProfesional}
+              onChange={(v) => {
+                setBriefing({ ...briefing, etiquetaProfesional: v });
+                autoSave();
+              }}
+              placeholder="Ej: Consultor de marca personal"
+            />
+            <TextInput
+              label="¿Por qué tú?"
+              value={briefing.porQueTu}
+              onChange={(v) => {
+                setBriefing({ ...briefing, porQueTu: v });
+                autoSave();
+              }}
+              placeholder="¿Qué te hace diferente?"
+              textarea
+            />
           </>
         );
 
@@ -188,6 +264,7 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
                   copy[i] = { ...copy[i], [field]: value };
                   return copy;
                 });
+                autoSave();
               };
               const isComplete = b.nombre && b.profesion && b.queQuiere;
               const isLast = i === buyers.length - 1;
@@ -201,7 +278,10 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
                     </span>
                     {buyers.length > 1 && (
                       <button
-                        onClick={() => setBuyers((prev) => prev.filter((_, idx) => idx !== i))}
+                        onClick={() => {
+                          setBuyers((prev) => prev.filter((_, idx) => idx !== i));
+                          autoSave();
+                        }}
                         className="text-danger text-xs hover:underline"
                       >
                         Eliminar
@@ -236,12 +316,13 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
                         </p>
                       </div>
                       <button
-                        onClick={() =>
+                        onClick={() => {
                           setBuyers((prev) => [
                             ...prev,
                             { nombre: "", edad: "", profesion: "", queQuiere: "", queLeFrena: "", queConsumo: "", dondeEsta: "", lenguaje: "" },
-                          ])
-                        }
+                          ]);
+                          autoSave();
+                        }}
                         className="px-4 py-2 bg-naranja text-white text-sm font-medium rounded-lg hover:bg-naranja-hover transition-colors flex-shrink-0"
                       >
                         + Añadir persona
@@ -257,12 +338,66 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
       case "empathy":
         return (
           <>
-            <TextInput label="¿Qué ve?" value={empathy.queVe} onChange={(v) => setEmpathy({ ...empathy, queVe: v })} textarea placeholder="¿Qué ve en su entorno, en redes, en su sector?" />
-            <TextInput label="¿Qué oye?" value={empathy.queOye} onChange={(v) => setEmpathy({ ...empathy, queOye: v })} textarea placeholder="¿Qué le dicen amigos, jefes, la sociedad?" />
-            <TextInput label="¿Qué dice y hace?" value={empathy.queDiceHace} onChange={(v) => setEmpathy({ ...empathy, queDiceHace: v })} textarea placeholder="Su comportamiento público" />
-            <TextInput label="¿Qué piensa y siente?" value={empathy.quePiensaSiente} onChange={(v) => setEmpathy({ ...empathy, quePiensaSiente: v })} textarea placeholder="Lo que no dice pero le da vueltas" />
-            <TextInput label="Dolores / Frustraciones" value={empathy.dolores} onChange={(v) => setEmpathy({ ...empathy, dolores: v })} textarea placeholder="Lo que le quita el sueño" />
-            <TextInput label="Deseos / Aspiraciones" value={empathy.deseos} onChange={(v) => setEmpathy({ ...empathy, deseos: v })} textarea placeholder="Lo que le haría feliz" />
+            <TextInput
+              label="¿Qué ve?"
+              value={empathy.queVe}
+              onChange={(v) => {
+                setEmpathy({ ...empathy, queVe: v });
+                autoSave();
+              }}
+              textarea
+              placeholder="¿Qué ve en su entorno, en redes, en su sector?"
+            />
+            <TextInput
+              label="¿Qué oye?"
+              value={empathy.queOye}
+              onChange={(v) => {
+                setEmpathy({ ...empathy, queOye: v });
+                autoSave();
+              }}
+              textarea
+              placeholder="¿Qué le dicen amigos, jefes, la sociedad?"
+            />
+            <TextInput
+              label="¿Qué dice y hace?"
+              value={empathy.queDiceHace}
+              onChange={(v) => {
+                setEmpathy({ ...empathy, queDiceHace: v });
+                autoSave();
+              }}
+              textarea
+              placeholder="Su comportamiento público"
+            />
+            <TextInput
+              label="¿Qué piensa y siente?"
+              value={empathy.quePiensaSiente}
+              onChange={(v) => {
+                setEmpathy({ ...empathy, quePiensaSiente: v });
+                autoSave();
+              }}
+              textarea
+              placeholder="Lo que no dice pero le da vueltas"
+            />
+            <TextInput
+              label="Dolores / Frustraciones"
+              value={empathy.dolores}
+              onChange={(v) => {
+                setEmpathy({ ...empathy, dolores: v });
+                autoSave();
+              }}
+              textarea
+              placeholder="Lo que le quita el sueño"
+            />
+            <TextInput
+              label="Deseos / Aspiraciones"
+              value={empathy.deseos}
+              onChange={(v) => {
+                setEmpathy({ ...empathy, deseos: v });
+                autoSave();
+              }}
+              textarea
+              placeholder="Lo que le haría feliz"
+            />
           </>
         );
 
@@ -272,14 +407,20 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
             <TextInput
               label="El Insight"
               value={insight.insight}
-              onChange={(v) => setInsight({ ...insight, insight: v })}
+              onChange={(v) => {
+                setInsight({ ...insight, insight: v });
+                autoSave();
+              }}
               textarea
               placeholder="La verdad oculta que conecta lo que ofreces con lo que necesitan. Ej: 'No necesitan más seguidores, necesitan sentir que lo que dicen importa.'"
             />
             <TextInput
               label="La frase de tu audiencia"
               value={insight.fraseAudiencia}
-              onChange={(v) => setInsight({ ...insight, fraseAudiencia: v })}
+              onChange={(v) => {
+                setInsight({ ...insight, fraseAudiencia: v });
+                autoSave();
+              }}
               placeholder="Lo que dirían en una charla de café. Ej: 'Es que yo tengo mucho que contar pero no sé cómo.'"
             />
           </>
@@ -433,7 +574,10 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
               <input
                 type="password"
                 value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
+                onChange={(e) => {
+                  setApiKey(e.target.value);
+                  autoSave();
+                }}
                 placeholder="sk-ant-..."
                 className="w-full px-4 py-3 border border-borde rounded-lg bg-crema text-negro placeholder:text-muted-light focus:outline-none focus:border-naranja transition-colors font-mono text-sm"
               />
@@ -469,7 +613,7 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
         {renderStepContent()}
 
         {/* Navigation */}
-        <div className="flex justify-between mt-8">
+        <div className="flex justify-between items-center mt-8">
           <button
             onClick={() => setStep(Math.max(0, step - 1))}
             disabled={step === 0}
@@ -477,6 +621,22 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
           >
             ← Anterior
           </button>
+
+          <div className="flex items-center gap-3">
+            {/* Auto-save status indicator */}
+            {saveStatus === 'saving' && (
+              <span className="flex items-center gap-2 text-sm text-muted">
+                <span className="loader" style={{ width: 14, height: 14, borderWidth: 2 }} />
+                Guardando...
+              </span>
+            )}
+            {saveStatus === 'saved' && (
+              <span className="text-sm text-green-600 font-medium flex items-center gap-1">
+                ✓ Guardado
+              </span>
+            )}
+          </div>
+
           <button
             onClick={saveAndNext}
             disabled={saving}

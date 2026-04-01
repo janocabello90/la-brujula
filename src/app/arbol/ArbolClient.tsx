@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import AppShell from "@/components/AppShell";
 import type { ArbolData, ArquetipoSeleccion } from "@/lib/types";
 import { DEFAULT_ARBOL, RUTA_CONFIG } from "@/lib/types";
@@ -117,9 +117,11 @@ export default function ArbolClient({ userId, userName, initialData, brujulaData
   );
   const [step, setStep] = useState(initialData?.onboarding_step || 0);
   const [saving, setSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [diagResult, setDiagResult] = useState<DiagnosticResult | null>(null);
   const [diagLoading, setDiagLoading] = useState(false);
   const [diagError, setDiagError] = useState<string | null>(null);
+  const saveTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const runDiagnostic = useCallback(async () => {
     setDiagLoading(true);
@@ -198,7 +200,42 @@ export default function ArbolClient({ userId, userName, initialData, brujulaData
     [data, step, userId, initialData]
   );
 
+  // Auto-save with debounce (same pattern as Pirámide)
+  const autoSave = useCallback(async () => {
+    if (saveTimeout.current) clearTimeout(saveTimeout.current);
+    saveTimeout.current = setTimeout(async () => {
+      setSaveStatus("saving");
+      const supabase = createClient();
+      const payload: any = {
+        user_id: userId,
+        semilla: data.semilla,
+        raices: data.raices,
+        tronco: data.tronco,
+        ramas: data.ramas,
+        copa: data.copa,
+        frutos: data.frutos,
+        entorno: data.entorno,
+        tiempo: data.tiempo,
+        cofre: data.cofre,
+        onboarding_step: step,
+        completed: initialData?.completed || false,
+        updated_at: new Date().toISOString(),
+      };
+      const { error } = await supabase.from("arbol_data").upsert(payload, { onConflict: "user_id" });
+
+      if (!error) {
+        setSaveStatus("saved");
+        setTimeout(() => setSaveStatus("idle"), 2000);
+      } else {
+        setSaveStatus("idle");
+      }
+    }, 1500);
+  }, [data, step, userId, initialData]);
+
   const goNext = async () => {
+    // Clear debounce timer for immediate save on step change
+    if (saveTimeout.current) clearTimeout(saveTimeout.current);
+
     if (step < ARBOL_STEPS.length - 1) {
       const next = step + 1;
       setStep(next);
@@ -212,16 +249,26 @@ export default function ArbolClient({ userId, userName, initialData, brujulaData
   };
 
   const goPrev = () => {
-    if (step > 0) setStep(step - 1);
+    if (step > 0) {
+      // Clear debounce timer for immediate save on step change
+      if (saveTimeout.current) clearTimeout(saveTimeout.current);
+      save(step - 1);
+      setStep(step - 1);
+    }
   };
 
   const currentStep = ARBOL_STEPS[step];
 
   const updateField = (section: keyof ArbolData, field: string, value: any) => {
-    setData((prev) => ({
-      ...prev,
-      [section]: { ...prev[section], [field]: value },
-    }));
+    setData((prev) => {
+      const updated = {
+        ...prev,
+        [section]: { ...prev[section], [field]: value },
+      };
+      // Trigger debounced auto-save
+      autoSave();
+      return updated;
+    });
   };
 
   if (view === "canvas") {
@@ -261,7 +308,12 @@ export default function ArbolClient({ userId, userName, initialData, brujulaData
           </div>
           <div className="flex justify-between mt-2 overflow-x-auto gap-1 pb-1 -mx-1 px-1 scrollbar-hide">
             {ARBOL_STEPS.map((s, i) => (
-              <button key={s.id} onClick={() => { save(step); setStep(i); }} className={`text-sm transition-all flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg ${i === step ? "scale-110 bg-naranja/10" : i < step ? "opacity-70" : "opacity-30"}`} title={s.title}>
+              <button key={s.id} onClick={() => {
+                // Clear debounce timer and save immediately when jumping to a step
+                if (saveTimeout.current) clearTimeout(saveTimeout.current);
+                save(i);
+                setStep(i);
+              }} className={`text-sm transition-all flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg ${i === step ? "scale-110 bg-naranja/10" : i < step ? "opacity-70" : "opacity-30"}`} title={s.title}>
                 {s.icon}
               </button>
             ))}
@@ -290,15 +342,27 @@ export default function ArbolClient({ userId, userName, initialData, brujulaData
           {step === 5 && <StepFrutos data={data.frutos} update={(f, v) => updateField("frutos", f, v)} />}
           {step === 6 && <StepEntorno data={data.entorno} update={(f, v) => updateField("entorno", f, v)} />}
           {step === 7 && <StepTiempo data={data.tiempo} update={(f, v) => updateField("tiempo", f, v)} />}
-          {step === 8 && <StepCofre data={data.cofre} setData={(cofre) => setData((prev) => ({ ...prev, cofre }))} />}
+          {step === 8 && <StepCofre data={data.cofre} setData={(cofre) => {
+            setData((prev) => ({ ...prev, cofre }));
+            autoSave();
+          }} />}
         </div>
 
         {/* Navigation */}
         <div className="flex items-center justify-between mt-6 gap-3">
           <button onClick={goPrev} disabled={step === 0} className="text-sm text-muted hover:text-negro disabled:opacity-30 transition-colors py-2">← Anterior</button>
-          <button onClick={goNext} disabled={saving} className="bg-naranja text-white font-semibold px-5 sm:px-6 py-2.5 rounded-xl hover:bg-naranja-hover transition-colors disabled:opacity-50 text-sm min-w-0">
-            {saving ? "Guardando..." : step === ARBOL_STEPS.length - 1 ? "Ver mi Árbol 🌳" : "Siguiente →"}
-          </button>
+          <div className="flex items-center gap-3">
+            {/* Auto-save status indicator */}
+            {saveStatus === "saving" && (
+              <span className="text-xs text-muted animate-pulse">Guardando...</span>
+            )}
+            {saveStatus === "saved" && (
+              <span className="text-xs text-green-600 font-medium">Guardado ✓</span>
+            )}
+            <button onClick={goNext} disabled={saving} className="bg-naranja text-white font-semibold px-5 sm:px-6 py-2.5 rounded-xl hover:bg-naranja-hover transition-colors disabled:opacity-50 text-sm min-w-0">
+              {saving ? "Guardando..." : step === ARBOL_STEPS.length - 1 ? "Ver mi Árbol 🌳" : "Siguiente →"}
+            </button>
+          </div>
         </div>
       </div>
     </AppShell>
