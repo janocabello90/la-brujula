@@ -106,8 +106,9 @@ export default async function DashboardPage() {
       email: user.email,
       display_name: displayName,
       onboarding_completed: false,
+      tour_completed: false,
     });
-    redirect("/onboarding");
+    redirect("/tour");
   }
 
   if (!existingProfile.tour_completed) {
