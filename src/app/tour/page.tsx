@@ -54,6 +54,7 @@ export default function TourPage() {
   const pyramidLevels = ['Historia', 'Valores', 'Mercado', 'Estrategia', 'Resultados'];
   const freeTools = [
     { icon: '🪞', name: 'El Espejo', desc: 'Tu marca de un vistazo.' },
+    { icon: '🎙️', name: 'El Entrevistador', desc: 'Tu podcast privado. Practica tu relato y descubre tus mejores frases.' },
     { icon: '🎯', name: 'El Maestro', desc: 'Tu director creativo con IA. Genera ideas, titulares y estrategias.' },
     { icon: '📅', name: 'El Planificador', desc: 'Organiza tu contenido por semanas.' },
     { icon: '💡', name: 'Ideas', desc: 'Tu banco de ideas siempre abierto.' },

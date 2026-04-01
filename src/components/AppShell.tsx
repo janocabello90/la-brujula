@@ -11,6 +11,7 @@ const ADMIN_EMAILS = ["janocabellom@gmail.com", "jano.cmg@gmail.com"];
 // Free tools — always accessible
 const FREE_TOOLS = [
   { href: "/espejo", label: "El Espejo", icon: "🪞" },
+  { href: "/entrevistador", label: "Entrevistador", icon: "🎙️" },
   { href: "/minority-report", label: "Mi Mapa", icon: "🗺️" },
   { href: "/ideas", label: "Ideas", icon: "💡" },
   { href: "/maestro", label: "Maestro", icon: "🎯" },
