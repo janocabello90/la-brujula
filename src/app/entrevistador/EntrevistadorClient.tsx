@@ -89,8 +89,10 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
   const [interimTranscript, setInterimTranscript] = useState("");
   const [speechSupported, setSpeechSupported] = useState(false);
   const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
+  const wantsListeningRef = useRef(false);
+  const processedResultsRef = useRef(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   // Check speech recognition support
   useEffect(() => {
@@ -109,43 +111,60 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
     recognition.interimResults = true;
     recognition.lang = "es-ES";
 
+    processedResultsRef.current = 0;
+    wantsListeningRef.current = true;
+
     recognition.onstart = () => {
       setIsListening(true);
       setInterimTranscript("");
     };
 
     recognition.onresult = (event: SpeechRecognitionEvent) => {
-      let finalText = "";
+      let newFinalText = "";
       let interimText = "";
 
-      for (let i = 0; i < event.results.length; i++) {
+      // Only process results we haven't seen yet
+      for (let i = processedResultsRef.current; i < event.results.length; i++) {
         const result = event.results[i];
         if (result.isFinal) {
-          finalText += result[0].transcript;
+          newFinalText += result[0].transcript;
+          processedResultsRef.current = i + 1;
         } else {
           interimText += result[0].transcript;
         }
       }
 
-      if (finalText) {
+      if (newFinalText) {
         setInputValue((prev) => {
           const separator = prev && !prev.endsWith(" ") ? " " : "";
-          return prev + separator + finalText;
+          return prev + separator + newFinalText;
         });
-        setInterimTranscript("");
-      } else {
-        setInterimTranscript(interimText);
       }
+      setInterimTranscript(interimText);
     };
 
     recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
       console.error("Speech recognition error:", event.error);
-      if (event.error !== "no-speech") {
+      // Don't stop on transient errors like no-speech or network
+      if (event.error === "not-allowed" || event.error === "service-not-allowed") {
+        wantsListeningRef.current = false;
         setIsListening(false);
+        setInterimTranscript("");
       }
     };
 
     recognition.onend = () => {
+      // Auto-restart if user hasn't explicitly stopped
+      // This handles Chrome's tendency to stop after silence
+      if (wantsListeningRef.current && recognitionRef.current) {
+        try {
+          processedResultsRef.current = 0;
+          recognitionRef.current.start();
+          return;
+        } catch (e) {
+          // If restart fails, fall through to stop
+        }
+      }
       setIsListening(false);
       setInterimTranscript("");
     };
@@ -155,6 +174,7 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
   }, [speechSupported, isListening]);
 
   const stopListening = useCallback(() => {
+    wantsListeningRef.current = false;
     if (recognitionRef.current) {
       recognitionRef.current.stop();
       recognitionRef.current = null;
@@ -172,8 +192,18 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
   }, [isListening, startListening, stopListening]);
 
   // Cleanup on unmount
+  // Auto-resize textarea when voice dictation adds text
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.style.height = "auto";
+      inputRef.current.style.height = Math.min(inputRef.current.scrollHeight, 200) + "px";
+    }
+  }, [inputValue]);
+
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
+      wantsListeningRef.current = false;
       if (recognitionRef.current) {
         recognitionRef.current.abort();
       }
@@ -237,6 +267,10 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
 
     const userMessage = inputValue.trim();
     setInputValue("");
+    // Reset textarea height
+    if (inputRef.current) {
+      inputRef.current.style.height = "auto";
+    }
 
     const newMessages: Message[] = [...messages, { role: "user", content: userMessage }];
     setMessages(newMessages);
@@ -554,22 +588,29 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
                       )}
                     </button>
                   )}
-                  <input
+                  <textarea
                     ref={inputRef}
-                    type="text"
                     value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    onKeyPress={(e) => {
-                      if (e.key === "Enter" && !loading) {
+                    onChange={(e) => {
+                      setInputValue(e.target.value);
+                      // Auto-resize
+                      e.target.style.height = "auto";
+                      e.target.style.height = Math.min(e.target.scrollHeight, 200) + "px";
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey && !loading) {
+                        e.preventDefault();
                         if (isListening) stopListening();
                         sendMessage();
                       }
                     }}
-                    placeholder={isListening ? "Escuchando... habla ahora" : "Tu respuesta..."}
+                    placeholder={isListening ? "Escuchando... habla ahora. Extiéndete todo lo que quieras." : "Tu respuesta... (Shift+Enter para nueva línea)"}
                     disabled={loading}
-                    className={`flex-1 px-4 py-3 border rounded-lg bg-white text-negro placeholder:text-muted focus:outline-none focus:border-naranja disabled:opacity-50 ${
+                    rows={2}
+                    className={`flex-1 px-4 py-3 border rounded-lg bg-white text-negro placeholder:text-muted focus:outline-none focus:border-naranja disabled:opacity-50 resize-none overflow-y-auto ${
                       isListening ? "border-red-300 bg-red-50/30" : "border-borde"
                     }`}
+                    style={{ maxHeight: "200px" }}
                   />
                   <button
                     onClick={() => {
