@@ -250,9 +250,9 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
       setMessages([{ role: "assistant", content: data.response }]);
       setHasStarted(true);
 
-      // Process and save any frases detected
+      // Update local frases state (API already saved them to DB)
       if (data.frases && data.frases.length > 0) {
-        await saveFrases(data.frases, data.response, selectedEstilo, data.sessionId);
+        addFrasesToLocal(data.frases);
       }
     } catch (err: any) {
       console.error("Error starting interview:", err);
@@ -295,9 +295,9 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
       const data = await res.json();
       setMessages((prev) => [...prev, { role: "assistant", content: data.response }]);
 
-      // Process and save any frases detected
+      // Update local frases state (API already saved them to DB)
       if (data.frases && data.frases.length > 0) {
-        await saveFrases(data.frases, data.response, selectedEstilo, currentSessionId);
+        addFrasesToLocal(data.frases);
       }
     } catch (err: any) {
       console.error("Error sending message:", err);
@@ -311,30 +311,22 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
     }
   };
 
-  const saveFrases = async (
-    newFrases: Array<{ frase: string; pregunta?: string }>,
-    fullResponse: string,
-    estilo: string,
-    sessionId: string
+  // Add frases to local state (DB save already handled by API route)
+  const addFrasesToLocal = (
+    newFrases: Array<{ frase: string; pregunta?: string; contexto?: string }>
   ) => {
-    const supabase = createClient();
-
     for (const frase of newFrases) {
-      const { data, error } = await supabase
-        .from("entrevistador_frases")
-        .insert({
-          user_id: userId,
-          frase: frase.frase,
-          contexto: estilo,
-          pregunta: frase.pregunta || "",
-          session_id: sessionId,
-        })
-        .select("id, frase, contexto, pregunta, created_at");
-
-      if (!error && data && data.length > 0) {
-        setFrases((prev) => [data[0], ...prev]);
-        showToast("💎 Frase guardada en tu repositorio");
-      }
+      const localFrase = {
+        id: crypto.randomUUID(),
+        frase: frase.frase,
+        contexto: frase.contexto || selectedEstilo || "",
+        pregunta: frase.pregunta || "",
+        created_at: new Date().toISOString(),
+      };
+      setFrases((prev) => [localFrase, ...prev]);
+    }
+    if (newFrases.length > 0) {
+      showToast(`💎 ${newFrases.length === 1 ? "Frase guardada" : newFrases.length + " frases guardadas"} en tu repositorio`);
     }
   };
 

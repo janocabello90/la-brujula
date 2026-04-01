@@ -242,17 +242,22 @@ Sé el entrevistador. Habla español de España (Madrid, Barcelona, informal).`;
       [];
     let match;
 
-    // Find the last user message as context for the phrase
-    const lastUserMessage = messages
+    // Find the last ASSISTANT message as context (the question that triggered the user's response)
+    const lastAssistantQuestion = messages
       .slice()
       .reverse()
-      .find((m: any) => m.role === "user")?.content || "";
+      .find((m: any) => m.role === "assistant")?.content || "";
+
+    // Truncate to first 300 chars (just the question, not a wall of text)
+    const truncatedQuestion = lastAssistantQuestion.length > 300
+      ? lastAssistantQuestion.substring(0, 300) + "..."
+      : lastAssistantQuestion;
 
     while ((match = fraseRegex.exec(responseText)) !== null) {
       frases.push({
         frase: match[1].trim(),
         contexto: estilo,
-        pregunta: lastUserMessage,
+        pregunta: truncatedQuestion,
       });
     }
 
