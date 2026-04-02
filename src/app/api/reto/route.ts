@@ -1,16 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
-
-// Use service-level client for reto (no auth required)
-function getSupabase() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
-}
+import { createServerClient } from "@/lib/supabase/server";
 
 // Challenge start date — adjust as needed
-const RETO_START = new Date("2026-04-07T00:00:00Z"); // Monday after announcement
+const RETO_START = new Date("2026-04-07T00:00:00Z");
 
 function getCurrentDay(): number {
   const now = new Date();
@@ -20,24 +12,25 @@ function getCurrentDay(): number {
 }
 
 /**
- * GET /api/reto — Fetch ranking data
- * Query: ?action=ranking | ?action=participant&token=xxx
+ * GET /api/reto — Fetch ranking + optional personal data
+ * Query: ?action=ranking | ?action=me
  */
 export async function GET(req: NextRequest) {
-  const supabase = getSupabase();
+  const supabase = await createServerClient();
   const action = req.nextUrl.searchParams.get("action");
-  const token = req.nextUrl.searchParams.get("token");
 
-  if (action === "participant" && token) {
-    // Fetch single participant + their checkins
+  if (action === "me") {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return NextResponse.json({ error: "No auth" }, { status: 401 });
+
     const { data: participant } = await supabase
       .from("reto_participantes")
-      .select("id, nombre, instagram_username, objetivo, created_at")
-      .eq("token", token)
+      .select("id, instagram_username, objetivo, created_at")
+      .eq("user_id", user.id)
       .single();
 
     if (!participant) {
-      return NextResponse.json({ error: "Not found" }, { status: 404 });
+      return NextResponse.json({ registered: false, currentDay: getCurrentDay() });
     }
 
     const { data: checkins } = await supabase
@@ -46,25 +39,52 @@ export async function GET(req: NextRequest) {
       .eq("participante_id", participant.id)
       .order("dia", { ascending: true });
 
+    // Get user's display name from profile
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("display_name")
+      .eq("id", user.id)
+      .single();
+
     return NextResponse.json({
-      participant,
+      registered: true,
+      participant: { ...participant, nombre: profile?.display_name || "" },
       checkins: checkins || [],
       currentDay: getCurrentDay(),
-      retoStart: RETO_START.toISOString(),
     });
   }
 
   // Default: return full ranking
   const { data: participantes } = await supabase
     .from("reto_participantes")
-    .select("id, nombre, instagram_username, objetivo, created_at");
+    .select("id, user_id, instagram_username, objetivo, created_at");
 
+  if (!participantes || participantes.length === 0) {
+    return NextResponse.json({
+      ranking: [],
+      currentDay: getCurrentDay(),
+      totalParticipantes: 0,
+    });
+  }
+
+  // Fetch profiles for names
+  const userIds = participantes.map((p) => p.user_id);
+  const { data: profiles } = await supabase
+    .from("profiles")
+    .select("id, display_name")
+    .in("id", userIds);
+
+  const profileMap = new Map((profiles || []).map((p) => [p.id, p.display_name || ""]));
+
+  // Fetch all checkins
+  const participantIds = participantes.map((p) => p.id);
   const { data: allCheckins } = await supabase
     .from("reto_checkins")
-    .select("participante_id, dia, likes, comentarios, desbloqueador");
+    .select("participante_id, dia, likes, comentarios, desbloqueador")
+    .in("participante_id", participantIds);
 
   // Build ranking
-  const ranking = (participantes || []).map((p) => {
+  const ranking = participantes.map((p) => {
     const checkins = (allCheckins || []).filter((c) => c.participante_id === p.id);
     const diasPublicados = checkins.length;
     const totalLikes = checkins.reduce((sum, c) => sum + (c.likes || 0), 0);
@@ -74,7 +94,7 @@ export async function GET(req: NextRequest) {
       .filter((c) => c.desbloqueador && c.desbloqueador.trim().length > 0)
       .map((c) => ({ dia: c.dia, texto: c.desbloqueador }));
 
-    // Calculate streak (consecutive days from day 1)
+    // Streak: consecutive days from day 1
     let racha = 0;
     for (let d = 1; d <= 15; d++) {
       if (checkins.some((c) => c.dia === d)) {
@@ -86,7 +106,7 @@ export async function GET(req: NextRequest) {
 
     return {
       id: p.id,
-      nombre: p.nombre,
+      nombre: profileMap.get(p.user_id) || "Participante",
       instagram: p.instagram_username,
       objetivo: p.objetivo,
       diasPublicados,
@@ -98,7 +118,6 @@ export async function GET(req: NextRequest) {
     };
   });
 
-  // Sort by engagement (primary), then by streak
   ranking.sort((a, b) => {
     if (b.racha !== a.racha) return b.racha - a.racha;
     return b.totalEngagement - a.totalEngagement;
@@ -107,77 +126,77 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({
     ranking,
     currentDay: getCurrentDay(),
-    retoStart: RETO_START.toISOString(),
     totalParticipantes: ranking.length,
   });
 }
 
 /**
- * POST /api/reto — Register or Check-in
- * Body: { action: "register", nombre, email, instagram_username, objetivo }
- *     | { action: "checkin", token, dia, likes, comentarios, desbloqueador }
+ * POST /api/reto — Join or Check-in
+ * Body: { action: "join", instagram_username, objetivo }
+ *     | { action: "checkin", dia, likes, comentarios, desbloqueador }
  */
 export async function POST(req: NextRequest) {
-  const supabase = getSupabase();
+  const supabase = await createServerClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: "Inicia sesión primero" }, { status: 401 });
+  }
+
   const body = await req.json();
 
-  if (body.action === "register") {
-    const { nombre, email, instagram_username, objetivo } = body;
+  if (body.action === "join") {
+    const { instagram_username, objetivo } = body;
 
-    if (!nombre || !email || !instagram_username) {
-      return NextResponse.json({ error: "Nombre, email e Instagram son obligatorios" }, { status: 400 });
+    if (!instagram_username) {
+      return NextResponse.json({ error: "Instagram es obligatorio" }, { status: 400 });
     }
 
-    // Check if email already registered
+    // Check if already registered
     const { data: existing } = await supabase
       .from("reto_participantes")
-      .select("token")
-      .eq("email", email.toLowerCase().trim())
+      .select("id")
+      .eq("user_id", user.id)
       .single();
 
     if (existing) {
-      // Return existing token
-      return NextResponse.json({ token: existing.token, existing: true });
+      return NextResponse.json({ ok: true, already: true });
     }
 
-    // Clean instagram username (remove @ if present)
     const igClean = instagram_username.trim().replace(/^@/, "");
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("reto_participantes")
       .insert({
-        nombre: nombre.trim(),
-        email: email.toLowerCase().trim(),
+        user_id: user.id,
         instagram_username: igClean,
         objetivo: objetivo?.trim() || null,
-      })
-      .select("token")
-      .single();
+      });
 
     if (error) {
-      console.error("[Reto] Registration error:", error);
-      return NextResponse.json({ error: "Error al registrarte. Inténtalo de nuevo." }, { status: 500 });
+      console.error("[Reto] Join error:", error);
+      return NextResponse.json({ error: "Error al apuntarte. Inténtalo de nuevo." }, { status: 500 });
     }
 
-    return NextResponse.json({ token: data.token, existing: false });
+    return NextResponse.json({ ok: true });
   }
 
   if (body.action === "checkin") {
-    const { token, dia, likes, comentarios, desbloqueador } = body;
+    const { dia, likes, comentarios, desbloqueador } = body;
 
-    if (!token || !dia) {
-      return NextResponse.json({ error: "Token y día requeridos" }, { status: 400 });
+    if (!dia) {
+      return NextResponse.json({ error: "Día requerido" }, { status: 400 });
     }
 
-    // Verify participant
+    // Get participant id
     const { data: participant } = await supabase
       .from("reto_participantes")
       .select("id")
-      .eq("token", token)
+      .eq("user_id", user.id)
       .single();
 
     if (!participant) {
-      return NextResponse.json({ error: "Participante no encontrado" }, { status: 404 });
+      return NextResponse.json({ error: "No estás apuntado al reto" }, { status: 400 });
     }
 
     const currentDay = getCurrentDay();
@@ -185,7 +204,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "No puedes hacer check-in de un día futuro" }, { status: 400 });
     }
 
-    // Upsert checkin
     const { error } = await supabase
       .from("reto_checkins")
       .upsert(
@@ -201,7 +219,7 @@ export async function POST(req: NextRequest) {
 
     if (error) {
       console.error("[Reto] Checkin error:", error);
-      return NextResponse.json({ error: "Error al guardar. Inténtalo de nuevo." }, { status: 500 });
+      return NextResponse.json({ error: "Error al guardar." }, { status: 500 });
     }
 
     return NextResponse.json({ ok: true });

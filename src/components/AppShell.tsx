@@ -223,6 +223,26 @@ export default function AppShell({
         )}
       </div>
 
+      {/* Reto 15 días — special highlight */}
+      <div className="mb-2">
+        <Link
+          href="/reto"
+          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all ${
+            pathname === "/reto"
+              ? "bg-amarillo/20 text-negro font-semibold border border-amarillo/30"
+              : "text-negro/70 hover:bg-amarillo/[0.08]"
+          }`}
+        >
+          <span className="text-base flex-shrink-0">🔥</span>
+          {!sidebarCollapsed && (
+            <div className="flex items-center gap-1.5">
+              <span className="text-sm">Reto 15 Días</span>
+              <span className="text-[9px] font-bold bg-amarillo/30 text-negro px-1.5 py-0.5 rounded-full leading-none">NUEVO</span>
+            </div>
+          )}
+        </Link>
+      </div>
+
       {/* Herramientas section header */}
       {!sidebarCollapsed && (
         <p className="text-[10px] font-bold text-denim/40 uppercase tracking-[0.12em] px-3 mt-4 mb-2">
