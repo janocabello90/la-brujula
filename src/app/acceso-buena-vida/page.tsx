@@ -94,8 +94,8 @@ export default function LoginPage() {
     <div className="min-h-screen bg-crema flex flex-col">
       <nav className="flex items-center px-6 sm:px-10 py-5 max-w-6xl mx-auto w-full">
         <Link href="/" className="flex items-center gap-2.5">
-          <span className="text-2xl">🎓</span>
-          <span className="font-heading text-xl text-negro">El Sistema de Buena Vida</span>
+          <span className="text-2xl">🦍</span>
+          <span className="font-heading text-xl text-negro">Sistema de Buena Vida</span>
         </Link>
       </nav>
 

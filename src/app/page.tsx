@@ -8,9 +8,9 @@ export default function Home() {
       {/* ─── Nav ─────────────────────────────────────────── */}
       <nav className="relative z-10 flex items-center justify-between px-6 sm:px-10 py-5 max-w-6xl mx-auto">
         <div className="flex items-center gap-2.5">
-          <span className="text-2xl">🎓</span>
+          <span className="text-2xl">🦍</span>
           <span className="font-heading text-xl font-semibold text-negro tracking-tight">
-            El Sistema de Buena Vida
+            Sistema de Buena Vida
           </span>
         </div>
         <a
@@ -25,7 +25,8 @@ export default function Home() {
 
       {/* ─── Hero: El gancho emocional ──────────────────── */}
       <section className="relative max-w-6xl mx-auto px-6 sm:px-10 pt-10 sm:pt-20 pb-16 sm:pb-24">
-        <div className="absolute top-0 right-0 w-72 h-72 sm:w-96 sm:h-96 bg-naranja/[0.06] rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+        <div className="absolute top-0 right-0 w-72 h-72 sm:w-96 sm:h-96 bg-denim/[0.06] rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-60 h-60 sm:w-80 sm:h-80 bg-amarillo/[0.08] rounded-full blur-3xl translate-y-1/3 -translate-x-1/4 pointer-events-none" />
 
         <div className="relative max-w-3xl mx-auto text-center">
           <p className="inline-block text-xs font-bold text-naranja uppercase tracking-widest bg-naranja/[0.08] px-3 py-1.5 rounded-full mb-6">
@@ -445,7 +446,7 @@ export default function Home() {
             <div key={i} className="bg-white rounded-2xl p-6 sm:p-7 border border-borde/40">
               <div className="flex gap-1 mb-4">
                 {[1, 2, 3, 4, 5].map((s) => (
-                  <span key={s} className="text-naranja text-sm">★</span>
+                  <span key={s} className="text-amarillo text-sm">★</span>
                 ))}
               </div>
               <p className="text-sm text-negro/70 leading-relaxed mb-5 italic">
@@ -523,8 +524,8 @@ export default function Home() {
         </div>
 
         <div className="max-w-3xl mx-auto">
-          <div className="bg-white rounded-3xl border-2 border-naranja/30 shadow-card p-8 sm:p-10 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-40 h-40 bg-naranja/[0.06] rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+          <div className="bg-white rounded-3xl border-2 border-denim/20 shadow-card p-8 sm:p-10 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-amarillo/[0.10] rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
 
             <div className="relative">
               <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8 pb-8 border-b border-borde/40">
@@ -533,7 +534,7 @@ export default function Home() {
                   <p className="text-sm text-muted">Método + herramientas + comunidad + acompañamiento</p>
                 </div>
                 <div className="flex items-baseline gap-1 flex-shrink-0">
-                  <span className="font-heading text-4xl sm:text-5xl text-naranja">39$</span>
+                  <span className="font-heading text-4xl sm:text-5xl text-denim">39$</span>
                   <span className="text-muted text-sm">/mes</span>
                 </div>
               </div>
@@ -611,8 +612,8 @@ export default function Home() {
       <footer className="bg-negro border-t border-white/[0.06] py-8">
         <div className="max-w-6xl mx-auto px-6 sm:px-10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <span className="text-lg">🎓</span>
-            <span className="font-heading text-sm text-white/60">El Sistema de Buena Vida</span>
+            <span className="text-lg">🦍</span>
+            <span className="font-heading text-sm text-white/60">Sistema de Buena Vida</span>
           </div>
           <p className="text-white/30 text-xs">
             Un proyecto de{" "}

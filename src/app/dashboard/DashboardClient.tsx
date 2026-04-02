@@ -77,16 +77,16 @@ export default function DashboardClient({ stats, tasks }: Props) {
       <div className="max-w-3xl mx-auto">
         {/* Greeting + Quote */}
         <div className="mb-8">
-          <h1 className="font-heading text-2xl sm:text-3xl text-negro mb-1">
-            {getGreeting()}{stats.userName ? `, ${stats.userName.split(" ")[0]}` : ""}
+          <h1 className="font-heading text-2xl sm:text-3xl text-negro mb-1.5">
+            {getGreeting()}{stats.userName ? `, ${stats.userName.split(" ")[0]}` : ""} 🦍
           </h1>
-          <p className="text-muted text-sm italic mt-1">&ldquo;{quote}&rdquo;</p>
+          <p className="text-muted text-sm italic mt-1 leading-relaxed">&ldquo;{quote}&rdquo;</p>
         </div>
 
         {/* ===== LAS RUTAS — Journey Banner ===== */}
         <Link
           href="/rutas"
-          className="block mb-6 rounded-2xl border border-naranja/20 bg-gradient-to-r from-naranja/[0.04] to-transparent hover:border-naranja/40 transition-all group"
+          className="block mb-6 rounded-2xl border border-denim/15 bg-gradient-to-r from-denim/[0.04] via-transparent to-amarillo/[0.04] hover:border-denim/30 transition-all group"
         >
           <div className="flex items-center gap-4 p-4 sm:p-5">
             {/* Phase progress dots */}
@@ -96,17 +96,17 @@ export default function DashboardClient({ stats, tasks }: Props) {
                   key={phase.number}
                   className={`w-2.5 h-2.5 rounded-full transition-all ${
                     stats.journeyPhase > phase.number
-                      ? "bg-naranja"
+                      ? "bg-denim"
                       : stats.journeyPhase === phase.number
-                      ? "bg-naranja/50 ring-2 ring-naranja/20"
-                      : "bg-borde/30"
+                      ? "bg-amarillo ring-2 ring-amarillo/30"
+                      : "bg-borde/40"
                   }`}
                 />
               ))}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm text-negro font-medium">
-                <span className="text-naranja">{PHASES[stats.journeyPhase - 1]?.icon}</span>{" "}
+                <span className="text-denim">{PHASES[stats.journeyPhase - 1]?.icon}</span>{" "}
                 Fase {stats.journeyPhase}: {PHASES[stats.journeyPhase - 1]?.name}
                 {stats.journeyRuta && (
                   <span
@@ -124,7 +124,7 @@ export default function DashboardClient({ stats, tasks }: Props) {
                 {PHASES[stats.journeyPhase - 1]?.tagline}
               </p>
             </div>
-            <svg className="w-4 h-4 text-muted/30 group-hover:text-naranja transition-colors flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-4 h-4 text-muted/30 group-hover:text-denim transition-colors flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
             </svg>
           </div>
@@ -133,114 +133,28 @@ export default function DashboardClient({ stats, tasks }: Props) {
         {/* ===== PROGRESS SECTION: 4-PHASE JOURNEY ===== */}
         <div className="mb-8">
           <div className="hidden sm:flex items-center justify-between gap-3">
-            {/* Phase 1: La Pirámide */}
-            <PhaseCard
-              phase={1}
-              name="La Pirámide"
-              icon="🔺"
-              completed={stats.piramideCompleted}
-              locked={false}
-              userPhase={stats.userPhase}
-              href="/piramide"
-            />
-
-            {/* Arrow */}
-            <div className="flex-shrink-0 text-muted/40 text-lg">→</div>
-
-            {/* Phase 2: El Árbol */}
-            <PhaseCard
-              phase={2}
-              name="El Árbol"
-              icon="🌳"
-              completed={stats.arbolCompleted === stats.arbolTotal}
-              locked={!stats.piramideCompleted}
-              userPhase={stats.userPhase}
-              href="/arbol"
-              progress={stats.piramideCompleted ? `${stats.arbolCompleted}/${stats.arbolTotal}` : undefined}
-            />
-
-            {/* Arrow */}
-            <div className="flex-shrink-0 text-muted/40 text-lg">→</div>
-
-            {/* Phase 3: Las Rutas */}
-            <PhaseCard
-              phase={3}
-              name="Las Rutas"
-              icon="🗺️"
-              completed={stats.rutasCompleted}
-              locked={stats.arbolCompleted !== stats.arbolTotal}
-              userPhase={stats.userPhase}
-              href="/rutas"
-            />
-
-            {/* Arrow */}
-            <div className="flex-shrink-0 text-muted/40 text-lg">→</div>
-
-            {/* Phase 4: La Brújula */}
-            <PhaseCard
-              phase={4}
-              name="La Brújula"
-              icon="🧭"
-              completed={false}
-              locked={!stats.rutasCompleted}
-              userPhase={stats.userPhase}
-              href="/onboarding"
-            />
+            <PhaseCard phase={1} name="La Pirámide" icon="🔺" completed={stats.piramideCompleted} locked={false} userPhase={stats.userPhase} href="/piramide" />
+            <PhaseArrow active={stats.piramideCompleted} />
+            <PhaseCard phase={2} name="El Árbol" icon="🌳" completed={stats.arbolCompleted === stats.arbolTotal} locked={!stats.piramideCompleted} userPhase={stats.userPhase} href="/arbol" progress={stats.piramideCompleted ? `${stats.arbolCompleted}/${stats.arbolTotal}` : undefined} />
+            <PhaseArrow active={stats.arbolCompleted === stats.arbolTotal} />
+            <PhaseCard phase={3} name="Las Rutas" icon="🗺️" completed={stats.rutasCompleted} locked={stats.arbolCompleted !== stats.arbolTotal} userPhase={stats.userPhase} href="/rutas" />
+            <PhaseArrow active={stats.rutasCompleted} />
+            <PhaseCard phase={4} name="La Brújula" icon="🧭" completed={false} locked={!stats.rutasCompleted} userPhase={stats.userPhase} href="/onboarding" />
           </div>
 
           {/* Mobile 2x2 grid */}
           <div className="sm:hidden grid grid-cols-2 gap-3">
-            {/* Phase 1: La Pirámide */}
-            <PhaseCard
-              phase={1}
-              name="La Pirámide"
-              icon="🔺"
-              completed={stats.piramideCompleted}
-              locked={false}
-              userPhase={stats.userPhase}
-              href="/piramide"
-            />
-
-            {/* Phase 2: El Árbol */}
-            <PhaseCard
-              phase={2}
-              name="El Árbol"
-              icon="🌳"
-              completed={stats.arbolCompleted === stats.arbolTotal}
-              locked={!stats.piramideCompleted}
-              userPhase={stats.userPhase}
-              href="/arbol"
-              progress={stats.piramideCompleted ? `${stats.arbolCompleted}/${stats.arbolTotal}` : undefined}
-            />
-
-            {/* Phase 3: Las Rutas */}
-            <PhaseCard
-              phase={3}
-              name="Las Rutas"
-              icon="🗺️"
-              completed={stats.rutasCompleted}
-              locked={stats.arbolCompleted !== stats.arbolTotal}
-              userPhase={stats.userPhase}
-              href="/rutas"
-            />
-
-            {/* Phase 4: La Brújula */}
-            <PhaseCard
-              phase={4}
-              name="La Brújula"
-              icon="🧭"
-              completed={false}
-              locked={!stats.rutasCompleted}
-              userPhase={stats.userPhase}
-              href="/onboarding"
-            />
+            <PhaseCard phase={1} name="La Pirámide" icon="🔺" completed={stats.piramideCompleted} locked={false} userPhase={stats.userPhase} href="/piramide" />
+            <PhaseCard phase={2} name="El Árbol" icon="🌳" completed={stats.arbolCompleted === stats.arbolTotal} locked={!stats.piramideCompleted} userPhase={stats.userPhase} href="/arbol" progress={stats.piramideCompleted ? `${stats.arbolCompleted}/${stats.arbolTotal}` : undefined} />
+            <PhaseCard phase={3} name="Las Rutas" icon="🗺️" completed={stats.rutasCompleted} locked={stats.arbolCompleted !== stats.arbolTotal} userPhase={stats.userPhase} href="/rutas" />
+            <PhaseCard phase={4} name="La Brújula" icon="🧭" completed={false} locked={!stats.rutasCompleted} userPhase={stats.userPhase} href="/onboarding" />
           </div>
         </div>
 
         {/* ===== TODAY'S PLAN ===== */}
         {stats.todayItems.length > 0 ? (
           <div className="mb-8">
-            <h2 className="text-xs font-semibold text-muted uppercase tracking-wide mb-3 px-1">
+            <h2 className="text-[10px] font-bold text-denim/40 uppercase tracking-[0.12em] mb-3 px-1">
               Hoy tienes {stats.todayItems.length} pieza{stats.todayItems.length !== 1 ? "s" : ""} planificada{stats.todayItems.length !== 1 ? "s" : ""}
             </h2>
             <div className="flex flex-col gap-2">
@@ -248,16 +162,16 @@ export default function DashboardClient({ stats, tasks }: Props) {
                 <Link
                   key={item.id}
                   href="/planner"
-                  className="flex items-center gap-3 rounded-xl border bg-naranja/5 border-naranja/20 hover:border-naranja/50 px-4 py-3 transition-all group"
+                  className="flex items-center gap-3 rounded-xl border bg-denim/[0.03] border-denim/15 hover:border-denim/30 px-4 py-3 transition-all group"
                 >
-                  <div className="flex-shrink-0 text-xs font-mono text-naranja/70 w-12">
+                  <div className="flex-shrink-0 text-xs font-mono text-denim/60 w-12">
                     {item.scheduled_time ? item.scheduled_time.slice(0, 5) : "--:--"}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-sm text-negro font-medium truncate">{item.title}</div>
                     <div className="flex gap-2 mt-0.5">
                       {item.pilar && (
-                        <span className="text-[10px] text-muted bg-gray-100 px-1.5 py-0.5 rounded">{item.pilar}</span>
+                        <span className="text-[10px] text-denim bg-denim/[0.06] px-1.5 py-0.5 rounded">{item.pilar}</span>
                       )}
                       {item.formato && (
                         <span className="text-[10px] text-muted">{item.formato}</span>
@@ -273,18 +187,18 @@ export default function DashboardClient({ stats, tasks }: Props) {
             </div>
           </div>
         ) : (
-          <div className="mb-8 rounded-xl border border-dashed border-borde/60 bg-gray-50/50 px-5 py-6 text-center">
-            <p className="text-sm text-muted mb-2">No tienes nada planificado para hoy</p>
+          <div className="mb-8 rounded-2xl border border-dashed border-borde/50 bg-white/50 px-5 py-7 text-center">
+            <p className="text-sm text-muted mb-3">No tienes nada planificado para hoy</p>
             <div className="flex justify-center gap-3">
               <Link
                 href="/maestro"
-                className="text-xs bg-naranja text-white px-4 py-2 rounded-lg hover:bg-naranja/90 transition-colors font-medium"
+                className="text-xs bg-denim text-white px-5 py-2.5 rounded-xl hover:bg-denim-dark transition-colors font-medium shadow-button"
               >
                 Generar contenido
               </Link>
               <Link
                 href="/planner"
-                className="text-xs bg-white text-negro border border-borde px-4 py-2 rounded-lg hover:border-naranja/40 transition-colors"
+                className="text-xs bg-white text-negro border border-borde px-5 py-2.5 rounded-xl hover:border-denim/30 transition-colors"
               >
                 Ir al planificador
               </Link>
@@ -303,14 +217,11 @@ export default function DashboardClient({ stats, tasks }: Props) {
         {/* ===== SMART TASKS ===== */}
         {tasks.length > 0 && (
           <div className="mb-8">
-            <h2 className="text-xs font-semibold text-muted uppercase tracking-wide mb-3 px-1">
+            <h2 className="text-[10px] font-bold text-denim/40 uppercase tracking-[0.12em] mb-3 px-1">
               Tu siguiente paso
             </h2>
             <div className="flex flex-col gap-2">
-              {/* Phase-specific primary task */}
               <PhaseTask userPhase={stats.userPhase} piramideCompleted={stats.piramideCompleted} arbolCompleted={stats.arbolCompleted === stats.arbolTotal} rutasCompleted={stats.rutasCompleted} />
-
-              {/* Other high priority tasks */}
               {highTasks.map((task) => (
                 <TaskRow key={task.id} task={task} urgent />
               ))}
@@ -322,11 +233,11 @@ export default function DashboardClient({ stats, tasks }: Props) {
         )}
 
         {/* Quick actions */}
-        <div className="flex justify-center gap-6 mt-2">
-          <Link href="/onboarding" className="text-sm text-muted hover:text-naranja transition-colors">
+        <div className="flex justify-center gap-6 mt-2 pb-4">
+          <Link href="/onboarding" className="text-sm text-muted hover:text-denim transition-colors">
             Editar mi briefing
           </Link>
-          <Link href="/settings" className="text-sm text-muted hover:text-naranja transition-colors">
+          <Link href="/settings" className="text-sm text-muted hover:text-denim transition-colors">
             Configuración
           </Link>
         </div>
@@ -337,39 +248,21 @@ export default function DashboardClient({ stats, tasks }: Props) {
 
 // --- Helper Components ---
 
-function ProgressBar({ value, max }: { value: number; max: number }) {
-  const pct = max > 0 ? Math.round((value / max) * 100) : 0;
+function PhaseArrow({ active }: { active: boolean }) {
   return (
-    <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-      <div
-        className={`h-full rounded-full transition-all duration-500 ${
-          pct === 100 ? "bg-green-500" : "bg-naranja"
-        }`}
-        style={{ width: `${pct}%` }}
-      />
+    <div className={`flex-shrink-0 transition-colors ${active ? "text-denim/40" : "text-borde/50"}`}>
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+      </svg>
     </div>
-  );
-}
-
-function SectionPill({ section }: { section: ArbolSection }) {
-  return (
-    <span
-      className={`text-[10px] px-2 py-0.5 rounded-full ${
-        section.completed
-          ? "bg-green-50 text-green-700 border border-green-200"
-          : "bg-gray-50 text-muted border border-borde/40"
-      }`}
-    >
-      {section.completed ? "✓ " : ""}{section.label}
-    </span>
   );
 }
 
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    draft: "bg-gray-100 text-gray-600",
-    scheduled: "bg-blue-50 text-blue-600",
-    published: "bg-green-50 text-green-600",
+    draft: "bg-borde/30 text-muted",
+    scheduled: "bg-denim/10 text-denim",
+    published: "bg-success/10 text-success",
   };
   const labels: Record<string, string> = {
     draft: "Borrador",
@@ -377,7 +270,7 @@ function StatusBadge({ status }: { status: string }) {
     published: "Publicada",
   };
   return (
-    <span className={`text-[10px] px-2 py-0.5 rounded-full flex-shrink-0 ${styles[status] || styles.draft}`}>
+    <span className={`text-[10px] px-2 py-0.5 rounded-full flex-shrink-0 font-medium ${styles[status] || styles.draft}`}>
       {labels[status] || status}
     </span>
   );
@@ -387,13 +280,13 @@ function StatCard({ label, value, sub, accent, href }: { label: string; value: n
   return (
     <Link
       href={href}
-      className={`rounded-xl border p-4 transition-all hover:shadow-card-hover ${
+      className={`rounded-2xl border p-4 transition-all hover:shadow-card-hover ${
         accent
-          ? "bg-naranja/10 border-naranja/30 hover:border-naranja/50"
-          : "bg-white border-borde/60 hover:border-naranja/40"
+          ? "bg-amarillo/10 border-amarillo/25 hover:border-amarillo/40"
+          : "bg-white border-borde/50 hover:border-denim/25"
       }`}
     >
-      <div className={`font-heading text-2xl sm:text-3xl ${accent ? "text-naranja" : "text-negro"}`}>
+      <div className={`font-heading text-2xl sm:text-3xl ${accent ? "text-denim" : "text-negro"}`}>
         {value}
       </div>
       <div className="text-xs text-muted mt-0.5">{label}</div>
@@ -409,8 +302,8 @@ function TaskRow({ task, urgent }: { task: SmartTask; urgent?: boolean }) {
       href={task.href}
       className={`flex items-center gap-3 rounded-xl border px-4 py-3 transition-all group ${
         urgent
-          ? "bg-naranja/5 border-naranja/25 hover:border-naranja/50"
-          : "bg-white border-borde/60 hover:border-naranja/40"
+          ? "bg-amarillo/[0.06] border-amarillo/20 hover:border-denim/30"
+          : "bg-white border-borde/50 hover:border-denim/25"
       }`}
     >
       <span className="text-base flex-shrink-0">{icon}</span>
@@ -418,7 +311,7 @@ function TaskRow({ task, urgent }: { task: SmartTask; urgent?: boolean }) {
         {task.text}
       </span>
       <svg
-        className="w-4 h-4 text-muted/40 group-hover:text-naranja group-hover:translate-x-0.5 transition-all flex-shrink-0"
+        className="w-4 h-4 text-muted/30 group-hover:text-denim group-hover:translate-x-0.5 transition-all flex-shrink-0"
         fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
       >
         <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
@@ -428,32 +321,18 @@ function TaskRow({ task, urgent }: { task: SmartTask; urgent?: boolean }) {
 }
 
 function PhaseCard({
-  phase,
-  name,
-  icon,
-  completed,
-  locked,
-  userPhase,
-  href,
-  progress,
+  phase, name, icon, completed, locked, userPhase, href, progress,
 }: {
-  phase: number;
-  name: string;
-  icon: string;
-  completed: boolean;
-  locked: boolean;
-  userPhase: number;
-  href: string;
-  progress?: string;
+  phase: number; name: string; icon: string; completed: boolean; locked: boolean; userPhase: number; href: string; progress?: string;
 }) {
   const isActive = userPhase === phase;
 
   if (locked) {
     return (
-      <div className="flex-1 rounded-xl border bg-gray-50 border-borde/40 p-4 text-center opacity-50">
+      <div className="flex-1 rounded-2xl border bg-crema-dark/50 border-borde/30 p-4 text-center opacity-50">
         <div className="text-2xl mb-2">{icon}</div>
         <div className="text-sm font-semibold text-muted mb-1">{name}</div>
-        <div className="text-[10px] text-muted/60">Bloqueado</div>
+        <div className="text-[10px] text-muted/50">Bloqueado</div>
       </div>
     );
   }
@@ -462,11 +341,11 @@ function PhaseCard({
     return (
       <Link
         href={href}
-        className="flex-1 rounded-xl border bg-green-50 border-green-200 hover:border-green-300 p-4 text-center transition-all hover:shadow-card-hover"
+        className="flex-1 rounded-2xl border bg-success/[0.06] border-success/20 hover:border-success/35 p-4 text-center transition-all hover:shadow-card-hover"
       >
         <div className="text-2xl mb-2">{icon}</div>
-        <div className="text-sm font-semibold text-green-700 mb-1">{name}</div>
-        <div className="text-[10px] text-green-600 font-medium">✓ Completada</div>
+        <div className="text-sm font-semibold text-success mb-1">{name}</div>
+        <div className="text-[10px] text-success font-medium">✓ Completada</div>
       </Link>
     );
   }
@@ -474,20 +353,20 @@ function PhaseCard({
   return (
     <Link
       href={href}
-      className={`flex-1 rounded-xl border p-4 text-center transition-all hover:shadow-card-hover ${
+      className={`flex-1 rounded-2xl border p-4 text-center transition-all hover:shadow-card-hover ${
         isActive
-          ? "bg-naranja/10 border-naranja/40 hover:border-naranja/60"
-          : "bg-white border-borde/60 hover:border-naranja/40"
+          ? "bg-denim/[0.05] border-denim/25 hover:border-denim/40 ring-1 ring-denim/10"
+          : "bg-white border-borde/50 hover:border-denim/25"
       }`}
     >
       <div className="text-2xl mb-2">{icon}</div>
-      <div className={`text-sm font-semibold mb-1 ${isActive ? "text-naranja" : "text-negro"}`}>
+      <div className={`text-sm font-semibold mb-1 ${isActive ? "text-denim" : "text-negro"}`}>
         {name}
       </div>
       {progress ? (
         <div className="text-[10px] text-muted mb-2">{progress}</div>
       ) : null}
-      <div className="text-[10px] text-muted">
+      <div className={`text-[10px] ${isActive ? "text-denim font-medium" : "text-muted"}`}>
         {isActive ? "Tu siguiente paso →" : "En progreso"}
       </div>
     </Link>
@@ -495,37 +374,15 @@ function PhaseCard({
 }
 
 function PhaseTask({
-  userPhase,
-  piramideCompleted,
-  arbolCompleted,
-  rutasCompleted,
+  userPhase, piramideCompleted, arbolCompleted, rutasCompleted,
 }: {
-  userPhase: number;
-  piramideCompleted: boolean;
-  arbolCompleted: boolean;
-  rutasCompleted?: boolean;
+  userPhase: number; piramideCompleted: boolean; arbolCompleted: boolean; rutasCompleted?: boolean;
 }) {
   const phaseMessages: Record<number, { text: string; href: string; icon: string }> = {
-    1: {
-      text: "Completa La Pirámide — es la base de todo",
-      href: "/piramide",
-      icon: "🔺",
-    },
-    2: {
-      text: "Completa El Árbol — diagnostica tu marca",
-      href: "/arbol",
-      icon: "🌳",
-    },
-    3: {
-      text: "Sigue Las Rutas — tu estrategia personalizada",
-      href: "/rutas",
-      icon: "🗺️",
-    },
-    4: {
-      text: "Configura La Brújula — tu sistema de contenido",
-      href: "/onboarding",
-      icon: "🧭",
-    },
+    1: { text: "Completa La Pirámide — es la base de todo", href: "/piramide", icon: "🔺" },
+    2: { text: "Completa El Árbol — diagnostica tu marca", href: "/arbol", icon: "🌳" },
+    3: { text: "Sigue Las Rutas — tu estrategia personalizada", href: "/rutas", icon: "🗺️" },
+    4: { text: "Configura La Brújula — tu sistema de contenido", href: "/onboarding", icon: "🧭" },
   };
 
   const task = phaseMessages[userPhase] || phaseMessages[1];
@@ -533,16 +390,13 @@ function PhaseTask({
   return (
     <Link
       href={task.href}
-      className="flex items-center gap-3 rounded-xl border px-4 py-3 transition-all group bg-naranja/5 border-naranja/25 hover:border-naranja/50"
+      className="flex items-center gap-3 rounded-xl border px-4 py-3 transition-all group bg-denim/[0.04] border-denim/15 hover:border-denim/30"
     >
       <span className="text-base flex-shrink-0">{task.icon}</span>
       <span className="text-sm flex-1 font-medium text-negro">{task.text}</span>
       <svg
-        className="w-4 h-4 text-muted/40 group-hover:text-naranja group-hover:translate-x-0.5 transition-all flex-shrink-0"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={2}
+        className="w-4 h-4 text-muted/30 group-hover:text-denim group-hover:translate-x-0.5 transition-all flex-shrink-0"
+        fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
       >
         <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
       </svg>

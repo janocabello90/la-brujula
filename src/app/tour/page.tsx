@@ -64,12 +64,12 @@ export default function TourPage() {
   return (
     <div className="min-h-screen bg-crema">
       {/* Navigation */}
-      <nav className="border-b border-borde bg-crema">
+      <nav className="border-b border-borde/40 bg-white/60 backdrop-blur-sm">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/dashboard" className="text-sm font-heading text-negro hover:text-naranja transition-colors">
-            La Brújula
+          <Link href="/dashboard" className="flex items-center gap-2 text-sm font-heading text-negro hover:text-denim transition-colors">
+            <span>🦍</span> Sistema Buena Vida
           </Link>
-          <div className="text-xs text-muted">
+          <div className="text-xs text-muted font-medium">
             {step + 1} de 7
           </div>
         </div>
@@ -81,8 +81,8 @@ export default function TourPage() {
           <button
             key={dot}
             onClick={() => setStep(dot)}
-            className={`w-2.5 h-2.5 rounded-full transition-all ${
-              dot === step ? 'bg-naranja w-8' : 'bg-borde hover:bg-naranja/30'
+            className={`h-2 rounded-full transition-all ${
+              dot === step ? 'bg-denim w-8' : dot < step ? 'bg-denim/40 w-2.5' : 'bg-borde w-2.5 hover:bg-denim/20'
             }`}
             aria-label={`Step ${dot + 1}`}
           />
@@ -96,7 +96,7 @@ export default function TourPage() {
           <div className="animate-fadeIn space-y-8">
             <div className="space-y-6">
               <h1 className="text-4xl md:text-5xl font-heading text-negro">
-                Bienvenido al Sistema
+                Bienvenido al Sistema 🦍
               </h1>
               <div className="space-y-4 text-lg text-negro">
                 <p>
@@ -109,7 +109,7 @@ export default function TourPage() {
             </div>
             <button
               onClick={nextStep}
-              className="bg-naranja text-crema px-6 py-3 rounded-lg font-heading hover:bg-naranja/90 transition-colors inline-flex items-center gap-2"
+              className="bg-denim text-white px-7 py-3.5 rounded-xl font-heading hover:bg-denim-dark transition-colors inline-flex items-center gap-2 shadow-button"
             >
               Empezar →
             </button>
@@ -124,7 +124,7 @@ export default function TourPage() {
               <h2 className="text-3xl md:text-4xl font-heading text-negro">
                 Fase 1 — La Pirámide
               </h2>
-              <p className="text-sm text-naranja font-heading uppercase tracking-wide">
+              <p className="text-sm text-denim font-heading uppercase tracking-wide">
                 (quién eres)
               </p>
               <div className="space-y-4 text-lg text-negro">
@@ -145,7 +145,7 @@ export default function TourPage() {
                   <div key={idx} className="flex flex-col items-center">
                     <div
                       style={{ width: `${width}%` }}
-                      className="bg-naranja/20 border-2 border-naranja text-negro text-center py-3 rounded-sm font-heading text-sm transition-all hover:bg-naranja/30"
+                      className="bg-denim/10 border-2 border-denim/30 text-negro text-center py-3 rounded-lg font-heading text-sm transition-all hover:bg-denim/15 hover:border-denim/50"
                     >
                       {level}
                     </div>
@@ -154,20 +154,7 @@ export default function TourPage() {
               })}
             </div>
 
-            <div className="flex gap-3">
-              <button
-                onClick={prevStep}
-                className="text-naranja hover:text-naranja/70 font-heading transition-colors"
-              >
-                ← Atrás
-              </button>
-              <button
-                onClick={nextStep}
-                className="bg-naranja text-crema px-6 py-3 rounded-lg font-heading hover:bg-naranja/90 transition-colors ml-auto"
-              >
-                Siguiente →
-              </button>
-            </div>
+            <NavButtons onPrev={prevStep} onNext={nextStep} />
           </div>
         )}
 
@@ -179,7 +166,7 @@ export default function TourPage() {
               <h2 className="text-3xl md:text-4xl font-heading text-negro">
                 Fase 2 — El Árbol
               </h2>
-              <p className="text-sm text-naranja font-heading uppercase tracking-wide">
+              <p className="text-sm text-denim font-heading uppercase tracking-wide">
                 (tu marca visible)
               </p>
               <div className="space-y-4 text-lg text-negro">
@@ -192,31 +179,12 @@ export default function TourPage() {
               </div>
             </div>
 
-            {/* Locked State */}
-            <div className="bg-naranja/10 border-2 border-naranja/30 rounded-lg p-8 text-center space-y-3">
-              <div className="text-3xl">🔒</div>
-              <p className="text-negro font-heading">Se desbloquea al completar</p>
-              <p className="text-naranja font-heading">La Pirámide</p>
-            </div>
-
-            <div className="flex gap-3">
-              <button
-                onClick={prevStep}
-                className="text-naranja hover:text-naranja/70 font-heading transition-colors"
-              >
-                ← Atrás
-              </button>
-              <button
-                onClick={nextStep}
-                className="bg-naranja text-crema px-6 py-3 rounded-lg font-heading hover:bg-naranja/90 transition-colors ml-auto"
-              >
-                Siguiente →
-              </button>
-            </div>
+            <LockedBanner text="La Pirámide" />
+            <NavButtons onPrev={prevStep} onNext={nextStep} />
           </div>
         )}
 
-        {/* Step 3: Las Rutas */}
+        {/* Step 4: Las Rutas */}
         {step === 3 && (
           <div className="animate-fadeIn space-y-8">
             <div className="space-y-6">
@@ -224,7 +192,7 @@ export default function TourPage() {
               <h2 className="text-3xl md:text-4xl font-heading text-negro">
                 Fase 3 — Las Rutas
               </h2>
-              <p className="text-sm text-naranja font-heading uppercase tracking-wide">
+              <p className="text-sm text-denim font-heading uppercase tracking-wide">
                 (tu estrategia)
               </p>
               <div className="space-y-4 text-lg text-negro">
@@ -237,31 +205,12 @@ export default function TourPage() {
               </div>
             </div>
 
-            {/* Locked State */}
-            <div className="bg-naranja/10 border-2 border-naranja/30 rounded-lg p-8 text-center space-y-3">
-              <div className="text-3xl">🔒</div>
-              <p className="text-negro font-heading">Se desbloquea al completar</p>
-              <p className="text-naranja font-heading">El Árbol</p>
-            </div>
-
-            <div className="flex gap-3">
-              <button
-                onClick={prevStep}
-                className="text-naranja hover:text-naranja/70 font-heading transition-colors"
-              >
-                ← Atrás
-              </button>
-              <button
-                onClick={nextStep}
-                className="bg-naranja text-crema px-6 py-3 rounded-lg font-heading hover:bg-naranja/90 transition-colors ml-auto"
-              >
-                Siguiente →
-              </button>
-            </div>
+            <LockedBanner text="El Árbol" />
+            <NavButtons onPrev={prevStep} onNext={nextStep} />
           </div>
         )}
 
-        {/* Step 4: La Brújula */}
+        {/* Step 5: La Brújula */}
         {step === 4 && (
           <div className="animate-fadeIn space-y-8">
             <div className="space-y-6">
@@ -269,7 +218,7 @@ export default function TourPage() {
               <h2 className="text-3xl md:text-4xl font-heading text-negro">
                 Fase 4 — La Brújula
               </h2>
-              <p className="text-sm text-naranja font-heading uppercase tracking-wide">
+              <p className="text-sm text-denim font-heading uppercase tracking-wide">
                 (tu contenido)
               </p>
               <div className="space-y-4 text-lg text-negro">
@@ -282,31 +231,12 @@ export default function TourPage() {
               </div>
             </div>
 
-            {/* Locked State */}
-            <div className="bg-naranja/10 border-2 border-naranja/30 rounded-lg p-8 text-center space-y-3">
-              <div className="text-3xl">🔒</div>
-              <p className="text-negro font-heading">Se desbloquea al completar</p>
-              <p className="text-naranja font-heading">Las Rutas</p>
-            </div>
-
-            <div className="flex gap-3">
-              <button
-                onClick={prevStep}
-                className="text-naranja hover:text-naranja/70 font-heading transition-colors"
-              >
-                ← Atrás
-              </button>
-              <button
-                onClick={nextStep}
-                className="bg-naranja text-crema px-6 py-3 rounded-lg font-heading hover:bg-naranja/90 transition-colors ml-auto"
-              >
-                Siguiente →
-              </button>
-            </div>
+            <LockedBanner text="Las Rutas" />
+            <NavButtons onPrev={prevStep} onNext={nextStep} />
           </div>
         )}
 
-        {/* Step 5: Herramientas libres */}
+        {/* Step 6: Herramientas libres */}
         {step === 5 && (
           <div className="animate-fadeIn space-y-8">
             <div className="space-y-6">
@@ -319,14 +249,14 @@ export default function TourPage() {
             </div>
 
             {/* Tools Grid */}
-            <div className="space-y-4">
+            <div className="space-y-3">
               {freeTools.map((tool, idx) => (
-                <div key={idx} className="border-l-4 border-naranja pl-4 py-2">
+                <div key={idx} className="border-l-3 border-l-4 border-denim/40 bg-white rounded-xl pl-5 pr-4 py-4 hover:border-denim transition-colors">
                   <div className="flex items-start gap-3">
                     <span className="text-2xl flex-shrink-0">{tool.icon}</span>
                     <div>
-                      <p className="font-heading text-negro text-lg">{tool.name}</p>
-                      <p className="text-muted text-sm mt-1">{tool.desc}</p>
+                      <p className="font-heading text-negro text-base">{tool.name}</p>
+                      <p className="text-muted text-sm mt-0.5">{tool.desc}</p>
                     </div>
                   </div>
                 </div>
@@ -334,10 +264,10 @@ export default function TourPage() {
             </div>
 
             {/* API Key Section */}
-            <div className="bg-naranja/5 border border-naranja/20 rounded-lg p-6 space-y-4 my-8">
+            <div className="bg-amarillo/10 border border-amarillo/25 rounded-2xl p-6 space-y-3 my-8">
               <p className="text-negro text-sm leading-relaxed">
                 <span className="font-heading block mb-2">Para que el Maestro y otras herramientas con IA funcionen</span>
-                necesitarás una <span className="font-heading text-naranja">API Key de Anthropic</span>. Es como la llave que activa la inteligencia del sistema.
+                necesitarás una <span className="font-heading text-denim">API Key de Anthropic</span>. Es como la llave que activa la inteligencia del sistema.
               </p>
               <p className="text-muted text-sm leading-relaxed">
                 La configuras en <span className="font-heading text-negro">Ajustes → API Key</span>. Si no la tienes, te explicamos cómo conseguirla allí.
@@ -345,33 +275,20 @@ export default function TourPage() {
             </div>
 
             {/* Tools Note */}
-            <div className="bg-borde/20 rounded-lg p-4 text-sm text-muted italic">
+            <div className="bg-denim/[0.04] rounded-xl p-4 text-sm text-muted italic">
               Estas herramientas funcionan mejor cuando has completado las fases anteriores — pero puedes explorarlas cuando quieras.
             </div>
 
-            <div className="flex gap-3">
-              <button
-                onClick={prevStep}
-                className="text-naranja hover:text-naranja/70 font-heading transition-colors"
-              >
-                ← Atrás
-              </button>
-              <button
-                onClick={nextStep}
-                className="bg-naranja text-crema px-6 py-3 rounded-lg font-heading hover:bg-naranja/90 transition-colors ml-auto"
-              >
-                Siguiente →
-              </button>
-            </div>
+            <NavButtons onPrev={prevStep} onNext={nextStep} />
           </div>
         )}
 
-        {/* Step 6: Ready to Start */}
+        {/* Step 7: Ready to Start */}
         {step === 6 && (
           <div className="animate-fadeIn space-y-8">
             <div className="space-y-6">
               <h2 className="text-3xl md:text-4xl font-heading text-negro">
-                ¿Listo para empezar?
+                ¿Listo para empezar? 🦍
               </h2>
               <div className="space-y-4 text-lg text-negro">
                 <p>
@@ -385,21 +302,17 @@ export default function TourPage() {
 
             {/* Process Summary */}
             <div className="my-12 space-y-3">
-              <div className="flex items-center gap-3">
-                <div className="text-3xl">🔺</div>
-                <div className="flex-1 h-1 bg-naranja"></div>
-              </div>
-              <div className="flex items-center gap-3 ml-12">
-                <div className="text-3xl">🌳</div>
-                <div className="flex-1 h-1 bg-naranja"></div>
-              </div>
-              <div className="flex items-center gap-3 ml-12">
-                <div className="text-3xl">🗺️</div>
-                <div className="flex-1 h-1 bg-naranja"></div>
-              </div>
-              <div className="flex items-center gap-3 ml-12">
-                <div className="text-3xl">🧭</div>
-              </div>
+              {[
+                { icon: '🔺', offset: '' },
+                { icon: '🌳', offset: 'ml-8' },
+                { icon: '🗺️', offset: 'ml-16' },
+                { icon: '🧭', offset: 'ml-24' },
+              ].map((item, i) => (
+                <div key={i} className={`flex items-center gap-3 ${item.offset}`}>
+                  <div className="text-3xl">{item.icon}</div>
+                  {i < 3 && <div className="flex-1 h-1 bg-gradient-to-r from-denim/40 to-denim/10 rounded-full" />}
+                </div>
+              ))}
             </div>
 
             {/* Call to Action */}
@@ -407,13 +320,13 @@ export default function TourPage() {
               <button
                 onClick={handleStartPiramide}
                 disabled={isLoading}
-                className="w-full bg-naranja text-crema px-6 py-4 rounded-lg font-heading hover:bg-naranja/90 transition-colors disabled:opacity-50 text-lg"
+                className="w-full bg-denim text-white px-6 py-4 rounded-xl font-heading hover:bg-denim-dark transition-colors disabled:opacity-50 text-lg shadow-button"
               >
                 {isLoading ? 'Iniciando...' : 'Empezar con La Pirámide →'}
               </button>
               <button
                 onClick={goToDashboard}
-                className="w-full text-naranja hover:text-naranja/70 font-heading transition-colors text-sm py-2"
+                className="w-full text-denim hover:text-denim-dark font-heading transition-colors text-sm py-2"
               >
                 Ir al Panel
               </button>
@@ -423,7 +336,7 @@ export default function TourPage() {
             <div className="mt-8">
               <button
                 onClick={prevStep}
-                className="text-naranja hover:text-naranja/70 font-heading transition-colors"
+                className="text-denim hover:text-denim-dark font-heading transition-colors"
               >
                 ← Atrás
               </button>
@@ -448,6 +361,35 @@ export default function TourPage() {
           animation: fadeIn 0.3s ease-out;
         }
       `}</style>
+    </div>
+  );
+}
+
+function NavButtons({ onPrev, onNext }: { onPrev: () => void; onNext: () => void }) {
+  return (
+    <div className="flex gap-3">
+      <button
+        onClick={onPrev}
+        className="text-denim hover:text-denim-dark font-heading transition-colors"
+      >
+        ← Atrás
+      </button>
+      <button
+        onClick={onNext}
+        className="bg-denim text-white px-7 py-3 rounded-xl font-heading hover:bg-denim-dark transition-colors ml-auto shadow-button"
+      >
+        Siguiente →
+      </button>
+    </div>
+  );
+}
+
+function LockedBanner({ text }: { text: string }) {
+  return (
+    <div className="bg-denim/[0.05] border-2 border-denim/15 rounded-2xl p-8 text-center space-y-3">
+      <div className="text-3xl">🔒</div>
+      <p className="text-negro font-heading">Se desbloquea al completar</p>
+      <p className="text-denim font-heading">{text}</p>
     </div>
   );
 }
