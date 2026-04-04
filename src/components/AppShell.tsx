@@ -298,10 +298,10 @@ export default function AppShell({
             {!sidebarCollapsed && (
               <div className="flex flex-col min-w-0">
                 <span className="font-headline text-lg font-bold text-on-surface leading-tight truncate">
-                  Sistema Buena Vida
+                  El Sistema
                 </span>
-                <span className="text-[10px] tracking-widest text-primary/60 font-bold uppercase">
-                  Elite Performance
+                <span className="text-[10px] tracking-widest text-primary/60 font-medium">
+                  Una Buena Vida
                 </span>
               </div>
             )}
