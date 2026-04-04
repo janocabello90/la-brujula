@@ -155,30 +155,30 @@ export default function RutasClient({
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="font-heading text-2xl sm:text-3xl text-negro tracking-tight">
+        <h1 className="font-headline text-2xl sm:text-3xl text-on-surface tracking-tight">
           Las Rutas
         </h1>
-        <p className="text-muted text-sm mt-1 max-w-xl">
+        <p className="text-on-surface-variant text-sm mt-1 max-w-xl">
           Tu camino personalizado de marca personal. De lo que no se ve a lo que el mundo percibe. De pensar a hacer.
         </p>
       </div>
 
       {/* Current phase indicator */}
-      <div className="bg-white border border-borde rounded-2xl p-5">
+      <div className="bg-white border border-outline rounded-2xl p-5">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-naranja/10 flex items-center justify-center text-lg">
+          <div className="w-10 h-10 rounded-xl bg-primary-container/10 flex items-center justify-center text-lg">
             {PHASES[currentPhase - 1]?.icon}
           </div>
           <div>
-            <p className="text-[10px] font-semibold text-naranja uppercase tracking-widest">
+            <p className="text-[10px] font-semibold text-primary uppercase tracking-widest">
               Fase actual
             </p>
-            <h2 className="font-heading text-lg text-negro">
+            <h2 className="font-headline text-lg text-on-surface">
               Fase {currentPhase}: {PHASES[currentPhase - 1]?.name}
             </h2>
           </div>
         </div>
-        <p className="text-sm text-muted italic">
+        <p className="text-sm text-on-surface-variant italic">
           &ldquo;{PHASES[currentPhase - 1]?.tagline}&rdquo;
         </p>
 
@@ -200,7 +200,7 @@ export default function RutasClient({
       </div>
 
       {/* Phase progress bar */}
-      <div className="bg-white border border-borde rounded-2xl p-5">
+      <div className="bg-white border border-outline rounded-2xl p-5">
         <div className="flex items-center justify-between gap-2">
           {PHASES.map((phase, i) => {
             const isCompleted = currentPhase > phase.number;
@@ -213,10 +213,10 @@ export default function RutasClient({
                   <div
                     className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
                       isCompleted
-                        ? "bg-naranja text-white"
+                        ? "bg-primary-container text-white"
                         : isCurrent
-                        ? "bg-naranja/10 text-naranja border-2 border-naranja"
-                        : "bg-borde/30 text-muted/40 border-2 border-borde/50"
+                        ? "bg-primary-container/10 text-primary border-2 border-naranja"
+                        : "bg-borde/30 text-on-surface-variant/40 border-2 border-outline/50"
                     }`}
                   >
                     {isCompleted ? (
@@ -229,7 +229,7 @@ export default function RutasClient({
                   </div>
                   <span
                     className={`text-[10px] font-medium text-center leading-tight ${
-                      isCompleted || isCurrent ? "text-negro" : "text-muted/40"
+                      isCompleted || isCurrent ? "text-on-surface" : "text-on-surface-variant/40"
                     }`}
                   >
                     {phase.name}
@@ -240,9 +240,9 @@ export default function RutasClient({
                   <div
                     className={`flex-1 h-0.5 mx-1 rounded ${
                       currentPhase > phase.number + 1
-                        ? "bg-naranja"
+                        ? "bg-primary-container"
                         : currentPhase > phase.number
-                        ? "bg-naranja/30"
+                        ? "bg-primary-container/30"
                         : "bg-borde/30"
                     }`}
                   />
@@ -281,8 +281,8 @@ export default function RutasClient({
       </div>
 
       {/* Philosophy note */}
-      <div className="bg-naranja/[0.04] border border-naranja/10 rounded-2xl p-5">
-        <p className="text-sm text-negro/80 leading-relaxed italic">
+      <div className="bg-primary-container/[0.04] border border-naranja/10 rounded-2xl p-5">
+        <p className="text-sm text-on-surface/80 leading-relaxed italic">
           &ldquo;La mayoría empieza por la estrategia y luego se pregunta por qué no funciona.
           La Pirámide se construye de abajo arriba. Las Rutas son el camino completo:
           primero quién eres, luego cómo te ve el mundo, después tu camino, y solo entonces ejecutas.&rdquo;
@@ -386,10 +386,10 @@ function PhaseCard({
     <div
       className={`bg-white border rounded-2xl overflow-hidden transition-all ${
         isLocked
-          ? "border-borde/40 opacity-60"
+          ? "border-outline/40 opacity-60"
           : isCurrent
           ? "border-naranja/30 shadow-sm"
-          : "border-borde"
+          : "border-outline"
       }`}
     >
       {/* Header — always visible */}
@@ -401,10 +401,10 @@ function PhaseCard({
         <div
           className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 ${
             isCompleted
-              ? "bg-naranja text-white"
+              ? "bg-primary-container text-white"
               : isCurrent
-              ? "bg-naranja/10 text-naranja border-2 border-naranja"
-              : "bg-borde/20 text-muted/40 border-2 border-borde/40"
+              ? "bg-primary-container/10 text-primary border-2 border-naranja"
+              : "bg-borde/20 text-on-surface-variant/40 border-2 border-outline/40"
           }`}
         >
           {isCompleted ? (
@@ -421,29 +421,29 @@ function PhaseCard({
           <div className="flex items-center gap-2">
             <span className="text-base">{phase.icon}</span>
             <h3
-              className={`font-heading text-base sm:text-lg ${
-                isLocked ? "text-muted/50" : "text-negro"
+              className={`font-headline text-base sm:text-lg ${
+                isLocked ? "text-on-surface-variant/50" : "text-on-surface"
               }`}
             >
               Fase {phase.number}: {phase.name}
             </h3>
             {isCompleted && (
-              <span className="text-[10px] bg-naranja/10 text-naranja px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">
+              <span className="text-[10px] bg-primary-container/10 text-primary px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">
                 Completada
               </span>
             )}
             {isCurrent && (
-              <span className="text-[10px] bg-naranja text-white px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">
+              <span className="text-[10px] bg-primary-container text-white px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">
                 Ahora
               </span>
             )}
             {isLocked && (
-              <span className="text-[10px] bg-borde/20 text-muted/50 px-2 py-0.5 rounded-full font-semibold">
+              <span className="text-[10px] bg-borde/20 text-on-surface-variant/50 px-2 py-0.5 rounded-full font-semibold">
                 🔒
               </span>
             )}
           </div>
-          <p className={`text-xs mt-0.5 ${isLocked ? "text-muted/30" : "text-muted"}`}>
+          <p className={`text-xs mt-0.5 ${isLocked ? "text-on-surface-variant/30" : "text-on-surface-variant"}`}>
             {phase.tagline}
           </p>
         </div>
@@ -453,11 +453,11 @@ function PhaseCard({
           <div className="hidden sm:flex items-center gap-2 flex-shrink-0">
             <div className="w-20 h-1.5 bg-borde/20 rounded-full overflow-hidden">
               <div
-                className="h-full bg-naranja rounded-full transition-all"
+                className="h-full bg-primary-container rounded-full transition-all"
                 style={{ width: `${isCompleted ? 100 : progressPct}%` }}
               />
             </div>
-            <span className="text-[10px] text-muted font-medium w-8 text-right">
+            <span className="text-[10px] text-on-surface-variant font-medium w-8 text-right">
               {isCompleted ? "100" : progressPct}%
             </span>
           </div>
@@ -465,7 +465,7 @@ function PhaseCard({
 
         {/* Expand arrow */}
         <svg
-          className={`w-4 h-4 text-muted/40 transition-transform flex-shrink-0 ${
+          className={`w-4 h-4 text-on-surface-variant/40 transition-transform flex-shrink-0 ${
             expanded ? "rotate-180" : ""
           }`}
           fill="none"
@@ -479,16 +479,16 @@ function PhaseCard({
 
       {/* Expanded content */}
       {expanded && (
-        <div className="px-4 sm:px-5 pb-5 space-y-4 border-t border-borde/30">
+        <div className="px-4 sm:px-5 pb-5 space-y-4 border-t border-outline/30">
           <div className="pt-4">
-            <p className={`text-sm leading-relaxed ${isLocked ? "text-muted/40" : "text-negro/70"}`}>
+            <p className={`text-sm leading-relaxed ${isLocked ? "text-on-surface-variant/40" : "text-on-surface/70"}`}>
               {phase.description}
             </p>
           </div>
 
           {/* Tools in this phase */}
           <div>
-            <p className="text-[10px] font-semibold text-muted/60 uppercase tracking-widest mb-2">
+            <p className="text-[10px] font-semibold text-on-surface-variant/60 uppercase tracking-widest mb-2">
               Herramientas
             </p>
             <div className="flex flex-wrap gap-2">
@@ -497,8 +497,8 @@ function PhaseCard({
                   key={tool}
                   className={`text-xs px-2.5 py-1 rounded-lg ${
                     isLocked
-                      ? "bg-borde/10 text-muted/30"
-                      : "bg-crema text-negro/70 border border-borde/40"
+                      ? "bg-borde/10 text-on-surface-variant/30"
+                      : "bg-surface text-on-surface/70 border border-outline/40"
                   }`}
                 >
                   {tool}
@@ -511,16 +511,16 @@ function PhaseCard({
           {(isCompleted || isCurrent) && progress.total > 0 && (
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <p className="text-[10px] font-semibold text-muted/60 uppercase tracking-widest">
+                <p className="text-[10px] font-semibold text-on-surface-variant/60 uppercase tracking-widest">
                   Progreso
                 </p>
-                <span className="text-xs text-muted">
+                <span className="text-xs text-on-surface-variant">
                   {progress.current}/{progress.total} {progress.label}
                 </span>
               </div>
               <div className="w-full h-2 bg-borde/20 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-naranja rounded-full transition-all duration-500"
+                  className="h-full bg-primary-container rounded-full transition-all duration-500"
                   style={{ width: `${isCompleted ? 100 : progressPct}%` }}
                 />
               </div>
@@ -529,8 +529,8 @@ function PhaseCard({
 
           {/* Unlock condition (for locked phases) */}
           {isLocked && (
-            <div className="bg-crema/50 border border-borde/30 rounded-xl p-3">
-              <p className="text-xs text-muted/60">
+            <div className="bg-surface/50 border border-outline/30 rounded-xl p-3">
+              <p className="text-xs text-on-surface-variant/60">
                 <span className="font-semibold">Para desbloquear:</span>{" "}
                 {phase.unlockCondition}
               </p>
@@ -564,14 +564,14 @@ function PhaseCard({
             >
               <div className="text-4xl">🔒</div>
               <div>
-                <p className="font-heading text-lg text-negro mb-2">Próximamente</p>
-                <p className="text-sm text-muted">
+                <p className="font-headline text-lg text-on-surface mb-2">Próximamente</p>
+                <p className="text-sm text-on-surface-variant">
                   {phase.number === 4
                     ? "Ejecución — Pon tu estrategia en marcha con El Maestro y El Planificador"
                     : "Evolución — Mide tu progreso y ajusta tu marca con El Espejo"}
                 </p>
               </div>
-              <p className="text-xs text-muted/60 italic">
+              <p className="text-xs text-on-surface-variant/60 italic">
                 Desbloquea completando la Fase {phase.number - 1}
               </p>
             </div>
@@ -648,13 +648,13 @@ function RutaModulesSection({
         <div className="flex items-center gap-2 mb-2">
           <span className="text-lg">{ruta.icon}</span>
           <span
-            className="font-heading text-base font-semibold"
+            className="font-headline text-base font-semibold"
             style={{ color: ruta.color }}
           >
             {ruta.name}
           </span>
         </div>
-        <p className="text-xs text-muted">
+        <p className="text-xs text-on-surface-variant">
           {ruta.tagline}
         </p>
       </div>
@@ -663,10 +663,10 @@ function RutaModulesSection({
       {journey.ruta_modulos && journey.ruta_modulos.length > 0 && (
         <div>
           <div className="flex items-center justify-between mb-1.5">
-            <p className="text-[10px] font-semibold text-muted/60 uppercase tracking-widest">
+            <p className="text-[10px] font-semibold text-on-surface-variant/60 uppercase tracking-widest">
               Progreso
             </p>
-            <span className="text-xs text-muted font-medium">
+            <span className="text-xs text-on-surface-variant font-medium">
               {journey.ruta_modulos.filter((m) => m.completado).length}/{journey.ruta_modulos.length}
             </span>
           </div>
@@ -711,16 +711,16 @@ function RutaModulesSection({
                     mod.completado
                       ? "bg-green-50/50 border-green-200/40 cursor-default"
                       : isNextModule
-                      ? "bg-naranja/5 border-naranja/30 hover:bg-naranja/10 ring-1 ring-naranja/20"
-                      : "bg-white/50 border-borde/20 hover:bg-white/70"
+                      ? "bg-primary-container/5 border-naranja/30 hover:bg-primary-container/10 ring-1 ring-naranja/20"
+                      : "bg-white/50 border-outline/20 hover:bg-white/70"
                   } disabled:opacity-50`}
                 >
                   <span className={`w-5 h-5 flex items-center justify-center rounded-full text-[10px] font-bold flex-shrink-0 mt-0.5 transition-all ${
                     mod.completado
                       ? "bg-green-500 text-white"
                       : isNextModule
-                      ? "bg-naranja text-white"
-                      : "bg-borde/30 text-muted"
+                      ? "bg-primary-container text-white"
+                      : "bg-borde/30 text-on-surface-variant"
                   }`}>
                     {isGenerating ? "⟳" : mod.completado ? "✓" : i + 1}
                   </span>
@@ -729,12 +729,12 @@ function RutaModulesSection({
                       mod.completado
                         ? "text-green-800 line-through"
                         : isNextModule
-                        ? "text-naranja font-semibold"
-                        : "text-negro"
+                        ? "text-primary font-semibold"
+                        : "text-on-surface"
                     }`}>
                       {mod.nombre}
                     </p>
-                    <p className="text-[11px] text-muted mt-0.5 leading-relaxed">
+                    <p className="text-[11px] text-on-surface-variant mt-0.5 leading-relaxed">
                       {mod.descripcion}
                     </p>
                     {mod.completado && mod.fecha_completado && (
@@ -750,36 +750,36 @@ function RutaModulesSection({
 
                 {/* Strategy display */}
                 {isExpanded && strategy && !mod.completado && (
-                  <div className="bg-white border border-borde/50 rounded-lg p-4 space-y-4">
+                  <div className="bg-white border border-outline/50 rounded-lg p-4 space-y-4">
                     {/* Insight */}
                     <div className="space-y-1">
-                      <p className="text-[10px] font-semibold text-naranja uppercase tracking-widest">
+                      <p className="text-[10px] font-semibold text-primary uppercase tracking-widest">
                         Insight Estratégico
                       </p>
-                      <p className="text-sm text-negro/80 leading-relaxed">
+                      <p className="text-sm text-on-surface/80 leading-relaxed">
                         {strategy.insight}
                       </p>
                     </div>
 
                     {/* Tasks */}
                     <div className="space-y-3">
-                      <p className="text-[10px] font-semibold text-negro/60 uppercase tracking-widest">
+                      <p className="text-[10px] font-semibold text-on-surface/60 uppercase tracking-widest">
                         Tus 3 Tareas
                       </p>
                       {strategy.tareas.map((tarea, idx) => (
                         <div
                           key={idx}
-                          className="bg-crema/50 border border-borde/30 rounded-lg p-3 space-y-2"
+                          className="bg-surface/50 border border-outline/30 rounded-lg p-3 space-y-2"
                         >
                           <div className="flex items-start gap-2">
                             <span className="text-xl flex-shrink-0">
                               {idx === 0 ? "1️⃣" : idx === 1 ? "2️⃣" : "3️⃣"}
                             </span>
                             <div className="flex-1 min-w-0">
-                              <p className="font-semibold text-sm text-negro">
+                              <p className="font-semibold text-sm text-on-surface">
                                 {tarea.titulo}
                               </p>
-                              <p className="text-xs text-negro/70 mt-1">
+                              <p className="text-xs text-on-surface/70 mt-1">
                                 {tarea.descripcion}
                               </p>
                             </div>
@@ -795,7 +795,7 @@ function RutaModulesSection({
                               </svg>
                             </Link>
                           </div>
-                          <p className="text-[10px] text-muted italic pt-1">
+                          <p className="text-[10px] text-on-surface-variant italic pt-1">
                             {tarea.accion}
                           </p>
                         </div>
@@ -803,11 +803,11 @@ function RutaModulesSection({
                     </div>
 
                     {/* Reflexion */}
-                    <div className="bg-naranja/5 border border-naranja/20 rounded-lg p-3 space-y-1">
-                      <p className="text-[10px] font-semibold text-naranja uppercase tracking-widest">
+                    <div className="bg-primary-container/5 border border-naranja/20 rounded-lg p-3 space-y-1">
+                      <p className="text-[10px] font-semibold text-primary uppercase tracking-widest">
                         Para Reflexionar
                       </p>
-                      <p className="text-sm text-negro/70 italic">
+                      <p className="text-sm text-on-surface/70 italic">
                         {strategy.reflexion}
                       </p>
                     </div>
@@ -823,7 +823,7 @@ function RutaModulesSection({
                       </button>
                       <button
                         onClick={() => onGenerateStrategy(mod.id)}
-                        className="flex-1 px-4 py-2 bg-borde/20 text-negro text-sm font-medium rounded-lg hover:bg-borde/30 transition-colors"
+                        className="flex-1 px-4 py-2 bg-borde/20 text-on-surface text-sm font-medium rounded-lg hover:bg-borde/30 transition-colors"
                       >
                         Regenerar
                       </button>
@@ -852,7 +852,7 @@ function RutaModulesSection({
       <button
         onClick={onRediagnose}
         disabled={rediagnoseLoading}
-        className="w-full px-3 py-2 text-xs font-medium bg-naranja/10 text-naranja rounded-lg hover:bg-naranja/20 disabled:opacity-50 transition-colors border border-naranja/20"
+        className="w-full px-3 py-2 text-xs font-medium bg-primary-container/10 text-primary rounded-lg hover:bg-primary-container/20 disabled:opacity-50 transition-colors border border-naranja/20"
       >
         {rediagnoseLoading ? "Re-diagnosticando..." : "Re-diagnosticar"}
       </button>
@@ -874,15 +874,15 @@ function DiagnosticSection({
   rediagnoseLoading,
 }: DiagnosticSectionProps) {
   return (
-    <div className="bg-crema border border-borde/40 rounded-xl p-4 space-y-3">
+    <div className="bg-surface border border-outline/40 rounded-xl p-4 space-y-3">
       <div>
-        <p className="text-[10px] font-semibold text-naranja uppercase tracking-widest mb-2">
+        <p className="text-[10px] font-semibold text-primary uppercase tracking-widest mb-2">
           Tu diagnóstico
         </p>
-        <p className="text-sm text-negro font-medium">
+        <p className="text-sm text-on-surface font-medium">
           Perfil {journey.perfil_diagnostico}
           {journey.diagnostico_coherencia?.score != null && (
-            <span className="text-muted ml-2">
+            <span className="text-on-surface-variant ml-2">
               — Score: {journey.diagnostico_coherencia.score}/100
             </span>
           )}
@@ -898,7 +898,7 @@ function DiagnosticSection({
             </p>
             <div className="space-y-1">
               {journey.diagnostico_coherencia.fortalezas.map((f, i) => (
-                <p key={i} className="text-xs text-negro/70">
+                <p key={i} className="text-xs text-on-surface/70">
                   ✓ {f}
                 </p>
               ))}
@@ -915,7 +915,7 @@ function DiagnosticSection({
             </p>
             <div className="space-y-1">
               {journey.diagnostico_coherencia.grietas.map((g, i) => (
-                <p key={i} className="text-xs text-negro/70">
+                <p key={i} className="text-xs text-on-surface/70">
                   ⚠ {g}
                 </p>
               ))}
@@ -927,7 +927,7 @@ function DiagnosticSection({
       <button
         onClick={onRediagnose}
         disabled={rediagnoseLoading}
-        className="w-full mt-2 px-3 py-2 text-xs font-medium bg-naranja text-white rounded-lg hover:bg-naranja/90 disabled:opacity-50 transition-colors"
+        className="w-full mt-2 px-3 py-2 text-xs font-medium bg-primary-container text-white rounded-lg hover:bg-primary-container/90 disabled:opacity-50 transition-colors"
       >
         {rediagnoseLoading ? "Re-diagnosticando..." : "Re-diagnosticar"}
       </button>

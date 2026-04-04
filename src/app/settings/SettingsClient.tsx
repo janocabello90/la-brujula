@@ -40,25 +40,25 @@ export default function SettingsClient({ userId, email, displayName: initialName
   return (
     <AppShell>
       <div className="max-w-xl mx-auto">
-        <h1 className="font-heading text-3xl text-negro mb-6">Ajustes</h1>
+        <h1 className="font-headline text-3xl text-on-surface mb-6">Ajustes</h1>
 
         {/* Account */}
-        <div className="bg-white rounded-2xl border border-borde/60 p-6 mb-4">
-          <h2 className="text-xs font-bold text-muted uppercase tracking-wider mb-4">Cuenta</h2>
+        <div className="bg-white rounded-2xl border border-outline/60 p-6 mb-4">
+          <h2 className="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-4">Cuenta</h2>
 
           <div className="text-sm mb-4">
-            <span className="text-muted text-xs">Email</span>
-            <div className="text-negro font-medium">{email}</div>
+            <span className="text-on-surface-variant text-xs">Email</span>
+            <div className="text-on-surface font-medium">{email}</div>
           </div>
 
-          <label className="block text-xs text-muted mb-1">Tu nombre</label>
+          <label className="block text-xs text-on-surface-variant mb-1">Tu nombre</label>
           <div className="flex gap-2">
             <input
               type="text"
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               placeholder="¿Cómo te llamas?"
-              className="flex-1 px-4 py-2.5 border border-borde rounded-xl bg-crema text-negro placeholder:text-muted-light focus:outline-none focus:border-naranja transition-colors text-sm"
+              className="flex-1 px-4 py-2.5 border border-outline rounded-xl bg-surface text-on-surface placeholder:text-on-surface-variant-light focus:outline-none focus:border-naranja transition-colors text-sm"
             />
             <button
               onClick={saveName}
@@ -66,7 +66,7 @@ export default function SettingsClient({ userId, email, displayName: initialName
               className={`text-sm font-semibold px-4 py-2.5 rounded-xl transition-all flex-shrink-0 ${
                 savedName
                   ? "bg-success/10 text-success border border-success/30"
-                  : "bg-naranja text-white hover:bg-naranja-hover disabled:opacity-30"
+                  : "bg-primary-container text-white hover:bg-primary-container-hover disabled:opacity-30"
               }`}
             >
               {savingName ? "..." : savedName ? "✓" : "Guardar"}
@@ -75,15 +75,15 @@ export default function SettingsClient({ userId, email, displayName: initialName
         </div>
 
         {/* API Key */}
-        <div className="bg-white rounded-2xl border border-borde/60 p-6 mb-4">
-          <h2 className="text-xs font-bold text-muted uppercase tracking-wider mb-1">API Key de Anthropic</h2>
-          <p className="text-xs text-muted mb-4">
+        <div className="bg-white rounded-2xl border border-outline/60 p-6 mb-4">
+          <h2 className="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-1">API Key de Anthropic</h2>
+          <p className="text-xs text-on-surface-variant mb-4">
             Necesaria para que el Maestro funcione. Consíguela en{" "}
             <a
               href="https://console.anthropic.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-naranja hover:underline"
+              className="text-primary hover:underline"
             >
               console.anthropic.com
             </a>
@@ -93,7 +93,7 @@ export default function SettingsClient({ userId, email, displayName: initialName
             value={apiKey}
             onChange={(e) => setApiKey(e.target.value)}
             placeholder="sk-ant-..."
-            className="w-full px-4 py-3 border border-borde rounded-xl bg-crema text-negro placeholder:text-muted-light focus:outline-none focus:border-naranja transition-colors font-mono text-sm mb-3"
+            className="w-full px-4 py-3 border border-outline rounded-xl bg-surface text-on-surface placeholder:text-on-surface-variant-light focus:outline-none focus:border-naranja transition-colors font-mono text-sm mb-3"
           />
           <button
             onClick={saveKey}
@@ -101,7 +101,7 @@ export default function SettingsClient({ userId, email, displayName: initialName
             className={`text-sm font-semibold px-5 py-2.5 rounded-xl transition-all ${
               savedKey
                 ? "bg-success/10 text-success border border-success/30"
-                : "bg-naranja text-white hover:bg-naranja-hover"
+                : "bg-primary-container text-white hover:bg-primary-container-hover"
             } disabled:opacity-50`}
           >
             {savingKey ? "Guardando..." : savedKey ? "✓ Guardada" : "Guardar API Key"}
@@ -111,7 +111,7 @@ export default function SettingsClient({ userId, email, displayName: initialName
         {/* Danger zone */}
         <div className="bg-white rounded-2xl border border-danger/20 p-6">
           <h2 className="text-xs font-bold text-danger uppercase tracking-wider mb-2">Zona de peligro</h2>
-          <p className="text-xs text-muted mb-4">
+          <p className="text-xs text-on-surface-variant mb-4">
             Resetear eliminará todos tus datos de La Brújula. Esta acción no se puede deshacer.
           </p>
           <button

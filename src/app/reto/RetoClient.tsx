@@ -186,21 +186,21 @@ export default function RetoClient({ userName, isRegistered: initialRegistered, 
         {/* Header */}
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-1">
-            <h1 className="font-heading text-2xl sm:text-3xl text-negro">Reto 15 Días 🔥</h1>
-            <span className="text-xs bg-amarillo/20 text-negro px-2.5 py-1 rounded-full font-heading">
+            <h1 className="font-headline text-2xl sm:text-3xl text-on-surface">Reto 15 Días 🔥</h1>
+            <span className="text-xs bg-yellow-500/20 text-on-surface px-2.5 py-1 rounded-full font-medium">
               Día {currentDay}/15
             </span>
           </div>
-          <p className="text-sm text-muted">15 publicaciones. 15 días. 1 resultado.</p>
+          <p className="text-sm text-on-surface-variant">15 publicaciones. 15 días. 1 resultado.</p>
         </div>
 
         {/* Tabs */}
         {isRegistered && (
-          <div className="flex gap-1 bg-white rounded-xl border border-borde/40 p-1 mb-6 max-w-xs">
+          <div className="flex gap-1 surface-card rounded-xl p-1 mb-6 max-w-xs signature-shadow">
             <button
               onClick={() => setTab("panel")}
               className={`flex-1 text-sm font-medium py-2 rounded-lg transition-all ${
-                tab === "panel" ? "bg-denim text-white shadow-button" : "text-muted hover:text-negro"
+                tab === "panel" ? "gradient-denim text-white shadow-button" : "text-on-surface-variant hover:text-on-surface"
               }`}
             >
               Mi Panel
@@ -208,7 +208,7 @@ export default function RetoClient({ userName, isRegistered: initialRegistered, 
             <button
               onClick={() => { setTab("ranking"); fetchRanking(); }}
               className={`flex-1 text-sm font-medium py-2 rounded-lg transition-all ${
-                tab === "ranking" ? "bg-denim text-white shadow-button" : "text-muted hover:text-negro"
+                tab === "ranking" ? "gradient-denim text-white shadow-button" : "text-on-surface-variant hover:text-on-surface"
               }`}
             >
               Ranking
@@ -221,39 +221,39 @@ export default function RetoClient({ userName, isRegistered: initialRegistered, 
           <div className="grid md:grid-cols-5 gap-8 mb-8">
             {/* Join form */}
             <div className="md:col-span-2">
-              <div className="bg-white rounded-2xl border border-borde/40 p-6 shadow-card">
-                <h2 className="font-heading text-lg text-negro mb-1">Apuntarme al reto</h2>
-                <p className="text-xs text-muted mb-5">Tu nombre ({userName}) y email ya los tenemos.</p>
+              <div className="surface-card rounded-2xl p-6 signature-shadow">
+                <h2 className="font-headline text-lg text-on-surface mb-1">Apuntarme al reto</h2>
+                <p className="text-xs text-on-surface-variant mb-5">Tu nombre ({userName}) y email ya los tenemos.</p>
 
                 <form onSubmit={handleJoin} className="space-y-4">
                   <div>
-                    <label className="block text-xs font-semibold text-negro mb-1.5">Usuario de Instagram</label>
+                    <label className="block text-xs font-semibold text-on-surface mb-1.5">Usuario de Instagram</label>
                     <div className="relative">
-                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-light text-sm">@</span>
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">@</span>
                       <input
                         type="text"
                         required
                         value={instagram}
                         onChange={(e) => setInstagram(e.target.value.replace(/^@/, ""))}
                         placeholder="tu_usuario"
-                        className="w-full pl-9 pr-4 py-3 border border-borde rounded-xl bg-crema text-negro placeholder:text-muted-light focus:outline-none focus:border-denim transition-colors text-sm"
+                        className="w-full pl-9 pr-4 py-3 bg-surface-container-low border-none rounded-xl text-on-surface placeholder:text-on-surface-variant/70 focus:ring-2 focus:ring-primary/10 transition-colors text-sm"
                       />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-negro mb-1.5">
-                      Tu objetivo <span className="font-normal text-muted">(opcional)</span>
+                    <label className="block text-xs font-semibold text-on-surface mb-1.5">
+                      Tu objetivo <span className="font-normal text-on-surface-variant">(opcional)</span>
                     </label>
                     <textarea
                       value={objetivo}
                       onChange={(e) => setObjetivo(e.target.value)}
                       placeholder="¿Qué quieres conseguir en estos 15 días?"
                       rows={3}
-                      className="w-full px-4 py-3 border border-borde rounded-xl bg-crema text-negro placeholder:text-muted-light focus:outline-none focus:border-denim transition-colors text-sm resize-none"
+                      className="w-full px-4 py-3 bg-surface-container-low border-none rounded-xl text-on-surface placeholder:text-on-surface-variant/70 focus:ring-2 focus:ring-primary/10 transition-colors text-sm resize-none"
                     />
                   </div>
                   {joinError && <p className="text-danger text-sm">{joinError}</p>}
-                  <button type="submit" disabled={joining} className="w-full bg-denim text-white font-semibold py-3 rounded-xl hover:bg-denim-dark transition-colors disabled:opacity-50 shadow-button text-sm">
+                  <button type="submit" disabled={joining} className="w-full gradient-denim text-white font-semibold py-3 rounded-xl shadow-button hover:opacity-90 transition-opacity disabled:opacity-50 text-sm">
                     {joining ? "Apuntando..." : "¡Me apunto! 🔥"}
                   </button>
                 </form>
@@ -266,11 +266,11 @@ export default function RetoClient({ userName, isRegistered: initialRegistered, 
                   { emoji: "📊", title: "Engagement", desc: "Mayor likes + comentarios" },
                   { emoji: "💎", title: "Desbloqueo", desc: "Mejor reflexión (elegida por Jano)" },
                 ].map((p) => (
-                  <div key={p.title} className="bg-white rounded-xl border border-borde/40 p-3 flex items-center gap-3">
+                  <div key={p.title} className="surface-card rounded-xl p-3 flex items-center gap-3 signature-shadow">
                     <span className="text-lg">{p.emoji}</span>
                     <div>
-                      <p className="text-xs font-heading text-negro">{p.title}</p>
-                      <p className="text-[10px] text-muted">{p.desc} → <span className="text-amarillo-hover font-semibold">1 mentoría (150€)</span></p>
+                      <p className="text-xs font-headline text-on-surface">{p.title}</p>
+                      <p className="text-[10px] text-on-surface-variant">{p.desc} → <span className="text-secondary-container font-semibold">1 mentoría (150€)</span></p>
                     </div>
                   </div>
                 ))}
@@ -297,15 +297,15 @@ export default function RetoClient({ userName, isRegistered: initialRegistered, 
 
             {/* Objective */}
             {objetivo && (
-              <div className="bg-amarillo/10 border border-amarillo/25 rounded-xl px-4 py-3 mb-6">
-                <p className="text-[10px] text-muted font-bold uppercase tracking-widest mb-0.5">Tu objetivo</p>
-                <p className="text-sm text-negro">{objetivo}</p>
+              <div className="surface-low rounded-xl px-4 py-3 mb-6">
+                <p className="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest mb-0.5">Tu objetivo</p>
+                <p className="text-sm text-on-surface">{objetivo}</p>
               </div>
             )}
 
             {/* 15-Day Grid */}
             <div className="mb-6">
-              <p className="text-[10px] font-bold text-denim/40 uppercase tracking-[0.12em] mb-2">Tus 15 días</p>
+              <p className="text-[10px] font-bold text-primary/40 uppercase tracking-[0.12em] mb-2">Tus 15 días</p>
               <div className="grid grid-cols-5 gap-2">
                 {Array.from({ length: 15 }, (_, i) => {
                   const day = i + 1;
@@ -321,21 +321,21 @@ export default function RetoClient({ userName, isRegistered: initialRegistered, 
                       key={day}
                       onClick={() => !isFuture && setSelectedDay(day)}
                       disabled={isFuture}
-                      className={`aspect-square rounded-xl flex flex-col items-center justify-center gap-0.5 font-heading transition-all border-2 ${
+                      className={`aspect-square rounded-xl flex flex-col items-center justify-center gap-0.5 font-headline transition-all border-2 ${
                         isSelected
-                          ? "border-denim bg-denim/10 text-denim ring-2 ring-denim/20"
+                          ? "border-primary bg-primary/10 text-primary ring-2 ring-primary/20"
                           : isDone
                           ? "border-success/30 bg-success/[0.07] text-success"
                           : isToday
-                          ? "border-amarillo bg-amarillo/10 text-negro"
+                          ? "gradient-yellow text-on-surface border-secondary-container"
                           : isMissed
                           ? "border-danger/20 bg-danger/[0.04] text-danger/50"
-                          : "border-borde/20 bg-white text-muted/30 cursor-not-allowed"
+                          : "border-surface-mid surface-low text-on-surface-variant/30 cursor-not-allowed"
                       }`}
                     >
                       <span className="text-sm">{isDone ? "✓" : day}</span>
                       {isDone && (
-                        <span className="text-[8px] font-normal text-muted">
+                        <span className="text-[8px] font-normal text-on-surface-variant">
                           {(checkin.likes || 0) + (checkin.comentarios || 0)}
                         </span>
                       )}
@@ -343,18 +343,18 @@ export default function RetoClient({ userName, isRegistered: initialRegistered, 
                   );
                 })}
               </div>
-              <div className="flex gap-4 mt-2 text-[10px] text-muted">
+              <div className="flex gap-4 mt-2 text-[10px] text-on-surface-variant">
                 <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-success/40" /> Publicado</span>
-                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-amarillo/50" /> Hoy</span>
+                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-secondary-container/50" /> Hoy</span>
                 <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-danger/30" /> Faltó</span>
               </div>
             </div>
 
             {/* Check-in Form */}
             {selectedDay && (
-              <div className="bg-white rounded-2xl border border-borde/40 p-6 shadow-card mb-6">
+              <div className="surface-card rounded-2xl p-6 signature-shadow mb-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-heading text-lg text-negro">
+                  <h2 className="font-headline text-lg text-on-surface">
                     {checkins.find((c) => c.dia === selectedDay)
                       ? `Editar día ${selectedDay}`
                       : selectedDay === currentDay
@@ -362,41 +362,41 @@ export default function RetoClient({ userName, isRegistered: initialRegistered, 
                       : `Check-in día ${selectedDay}`}
                   </h2>
                   {selectedDay === currentDay && !checkins.find((c) => c.dia === selectedDay) && (
-                    <span className="text-xs bg-amarillo/20 text-negro px-2.5 py-1 rounded-full font-medium">Hoy</span>
+                    <span className="text-xs bg-secondary-container/20 text-on-surface px-2.5 py-1 rounded-full font-medium">Hoy</span>
                   )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div>
-                    <label className="block text-xs font-semibold text-negro mb-1.5">Likes ❤️</label>
+                    <label className="block text-xs font-semibold text-on-surface mb-1.5">Likes ❤️</label>
                     <input
                       type="number" min="0" value={likes}
                       onChange={(e) => setLikes(e.target.value)}
                       placeholder="0"
-                      className="w-full px-4 py-3 border border-borde rounded-xl bg-crema text-negro placeholder:text-muted-light focus:outline-none focus:border-denim transition-colors text-center font-heading text-lg"
+                      className="w-full px-4 py-3 bg-surface-container-low border-none rounded-xl text-on-surface placeholder:text-on-surface-variant/70 focus:ring-2 focus:ring-primary/10 transition-colors text-center font-headline text-lg"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-negro mb-1.5">Comentarios 💬</label>
+                    <label className="block text-xs font-semibold text-on-surface mb-1.5">Comentarios 💬</label>
                     <input
                       type="number" min="0" value={comentarios}
                       onChange={(e) => setComentarios(e.target.value)}
                       placeholder="0"
-                      className="w-full px-4 py-3 border border-borde rounded-xl bg-crema text-negro placeholder:text-muted-light focus:outline-none focus:border-denim transition-colors text-center font-heading text-lg"
+                      className="w-full px-4 py-3 bg-surface-container-low border-none rounded-xl text-on-surface placeholder:text-on-surface-variant/70 focus:ring-2 focus:ring-primary/10 transition-colors text-center font-headline text-lg"
                     />
                   </div>
                 </div>
 
                 <div className="mb-5">
-                  <label className="block text-xs font-semibold text-negro mb-1.5">
-                    ¿Has desbloqueado algo hoy? 💎 <span className="font-normal text-muted">(opcional — 3er premio)</span>
+                  <label className="block text-xs font-semibold text-on-surface mb-1.5">
+                    ¿Has desbloqueado algo hoy? 💎 <span className="font-normal text-on-surface-variant">(opcional — 3er premio)</span>
                   </label>
                   <textarea
                     value={desbloqueador}
                     onChange={(e) => setDesbloqueador(e.target.value)}
                     placeholder="¿Qué ha cambiado en ti? ¿Qué has descubierto al publicar hoy?"
                     rows={3}
-                    className="w-full px-4 py-3 border border-borde rounded-xl bg-crema text-negro placeholder:text-muted-light focus:outline-none focus:border-denim transition-colors text-sm resize-none"
+                    className="w-full px-4 py-3 bg-surface-container-low border-none rounded-xl text-on-surface placeholder:text-on-surface-variant/70 focus:ring-2 focus:ring-primary/10 transition-colors text-sm resize-none"
                   />
                 </div>
 
@@ -406,7 +406,7 @@ export default function RetoClient({ userName, isRegistered: initialRegistered, 
                   className={`w-full font-semibold py-3.5 rounded-xl transition-all shadow-button text-sm ${
                     saved
                       ? "bg-success text-white"
-                      : "bg-denim text-white hover:bg-denim-dark disabled:opacity-50"
+                      : "gradient-denim text-white hover:opacity-90 disabled:opacity-50"
                   }`}
                 >
                   {saving ? "Guardando..." : saved ? "✓ ¡Guardado!" : checkins.find((c) => c.dia === selectedDay) ? "Actualizar" : "¡Hoy he publicado! 🔥"}
@@ -417,12 +417,12 @@ export default function RetoClient({ userName, isRegistered: initialRegistered, 
             {/* Desbloqueadores */}
             {checkins.some((c) => c.desbloqueador) && (
               <div className="mb-6">
-                <p className="text-[10px] font-bold text-denim/40 uppercase tracking-[0.12em] mb-2">Tus desbloqueos</p>
+                <p className="text-[10px] font-bold text-primary/40 uppercase tracking-[0.12em] mb-2">Tus desbloqueos</p>
                 <div className="space-y-2">
                   {checkins.filter((c) => c.desbloqueador).map((c) => (
-                    <div key={c.dia} className="bg-white rounded-xl border border-borde/40 p-4">
-                      <span className="text-xs font-heading text-denim">Día {c.dia} 💎</span>
-                      <p className="text-sm text-negro/80 leading-relaxed mt-1">{c.desbloqueador}</p>
+                    <div key={c.dia} className="surface-card rounded-xl p-4 signature-shadow">
+                      <span className="text-xs font-headline text-primary">Día {c.dia} 💎</span>
+                      <p className="text-sm text-on-surface/80 leading-relaxed mt-1">{c.desbloqueador}</p>
                     </div>
                   ))}
                 </div>
@@ -444,12 +444,12 @@ export default function RetoClient({ userName, isRegistered: initialRegistered, 
 
 function StatBox({ label, value, icon, highlight }: { label: string; value: number | string; icon?: string; highlight?: boolean }) {
   return (
-    <div className="bg-white rounded-xl border border-borde/40 p-3 text-center">
-      <div className={`font-heading text-xl sm:text-2xl flex items-center justify-center gap-1 ${highlight ? "text-denim" : "text-negro"}`}>
+    <div className="surface-card rounded-xl p-3 text-center signature-shadow">
+      <div className={`font-headline text-xl sm:text-2xl flex items-center justify-center gap-1 ${highlight ? "text-primary" : "text-on-surface"}`}>
         {icon && <span className="text-sm">{icon}</span>}
         {value}
       </div>
-      <div className="text-[10px] text-muted">{label}</div>
+      <div className="text-[10px] text-on-surface-variant">{label}</div>
     </div>
   );
 }
@@ -469,12 +469,12 @@ function RankingView({ ranking, currentDay, loading, totalParticipantes, getMeda
         <div className="flex-1">
           <div className="flex gap-0.5">
             {Array.from({ length: 15 }, (_, i) => (
-              <div key={i} className={`flex-1 h-2 rounded-full ${i < currentDay ? "bg-denim" : "bg-borde/30"}`} />
+              <div key={i} className={`flex-1 h-2 rounded-full ${i < currentDay ? "bg-primary" : "bg-surface-mid"}`} />
             ))}
           </div>
           <div className="flex justify-between mt-1">
-            <span className="text-[10px] text-muted">Día {currentDay}/15</span>
-            <span className="text-[10px] text-muted">{totalParticipantes} participantes</span>
+            <span className="text-[10px] text-on-surface-variant">Día {currentDay}/15</span>
+            <span className="text-[10px] text-on-surface-variant">{totalParticipantes} participantes</span>
           </div>
         </div>
       </div>
@@ -482,32 +482,32 @@ function RankingView({ ranking, currentDay, loading, totalParticipantes, getMeda
       {loading ? (
         <div className="text-center py-10">
           <div className="loader mx-auto" />
-          <p className="text-sm text-muted mt-3">Cargando ranking...</p>
+          <p className="text-sm text-on-surface-variant mt-3">Cargando ranking...</p>
         </div>
       ) : ranking.length === 0 ? (
-        <div className="text-center py-10 bg-white rounded-2xl border border-borde/40">
+        <div className="text-center py-10 surface-card rounded-2xl signature-shadow">
           <div className="text-4xl mb-3">🦍</div>
-          <p className="text-muted text-sm">Aún no hay participantes. ¡Sé el primero!</p>
+          <p className="text-on-surface-variant text-sm">Aún no hay participantes. ¡Sé el primero!</p>
         </div>
       ) : (
         <div className="space-y-2">
           {ranking.map((entry, i) => (
             <div
               key={entry.id}
-              className={`bg-white rounded-xl border p-4 transition-all ${
-                i === 0 ? "border-amarillo/40 shadow-glow" : i < 3 ? "border-denim/15" : "border-borde/40"
+              className={`surface-card rounded-xl p-4 transition-all signature-shadow ${
+                i === 0 ? "ring-2 ring-secondary-container" : i < 3 ? "ring-1 ring-primary/15" : ""
               }`}
             >
               <div className="flex items-center gap-3">
                 {/* Medal */}
-                <span className={`font-heading text-lg w-8 text-center ${i < 3 ? "" : "text-muted"}`}>
+                <span className={`font-headline text-lg w-8 text-center ${i < 3 ? "" : "text-on-surface-variant"}`}>
                   {getMedal(i)}
                 </span>
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <p className="font-heading text-sm text-negro truncate">{entry.nombre}</p>
-                  <a href={`https://instagram.com/${entry.instagram}`} target="_blank" rel="noopener noreferrer" className="text-xs text-denim hover:text-denim-dark">
+                  <p className="font-headline text-sm text-on-surface truncate">{entry.nombre}</p>
+                  <a href={`https://instagram.com/${entry.instagram}`} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:opacity-80">
                     @{entry.instagram}
                   </a>
                 </div>
@@ -516,24 +516,24 @@ function RankingView({ ranking, currentDay, loading, totalParticipantes, getMeda
                 <div className="text-center px-2">
                   <div className="flex items-center gap-0.5">
                     <span className="text-xs">🔥</span>
-                    <span className={`font-heading text-lg ${entry.racha >= 15 ? "text-amarillo-hover" : "text-negro"}`}>{entry.racha}</span>
+                    <span className={`font-headline text-lg ${entry.racha >= 15 ? "text-secondary-container" : "text-on-surface"}`}>{entry.racha}</span>
                   </div>
-                  <p className="text-[9px] text-muted">racha</p>
+                  <p className="text-[9px] text-on-surface-variant">racha</p>
                 </div>
 
                 {/* Days */}
                 <div className="text-center px-2 hidden sm:block">
-                  <span className="font-heading text-lg text-negro">{entry.diasPublicados}</span>
-                  <span className="text-xs text-muted">/15</span>
-                  <p className="text-[9px] text-muted">días</p>
+                  <span className="font-headline text-lg text-on-surface">{entry.diasPublicados}</span>
+                  <span className="text-xs text-on-surface-variant">/15</span>
+                  <p className="text-[9px] text-on-surface-variant">días</p>
                 </div>
 
                 {/* Engagement */}
                 <div className="text-center px-2">
-                  <span className={`font-heading text-lg ${i === 0 ? "text-denim" : "text-negro"}`}>
+                  <span className={`font-headline text-lg ${i === 0 ? "text-primary" : "text-on-surface"}`}>
                     {entry.totalEngagement.toLocaleString()}
                   </span>
-                  <p className="text-[9px] text-muted">
+                  <p className="text-[9px] text-on-surface-variant">
                     {entry.totalLikes}❤️ {entry.totalComentarios}💬
                   </p>
                 </div>
@@ -545,7 +545,7 @@ function RankingView({ ranking, currentDay, loading, totalParticipantes, getMeda
                   <div
                     key={d}
                     className={`flex-1 h-1 rounded-full ${
-                      d < entry.diasPublicados ? "bg-denim" : d < currentDay ? "bg-danger/20" : "bg-borde/20"
+                      d < entry.diasPublicados ? "bg-primary" : d < currentDay ? "bg-danger/20" : "bg-surface-mid"
                     }`}
                   />
                 ))}

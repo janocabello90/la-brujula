@@ -272,23 +272,23 @@ export default function EspejoClient({ userId, userName, arbol, brujula }: Props
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="font-heading text-2xl sm:text-3xl text-negro mb-1">
+          <h1 className="font-headline text-2xl sm:text-3xl text-on-surface mb-1">
             El Espejo
           </h1>
-          <p className="text-muted text-sm">
+          <p className="text-on-surface-variant text-sm">
             Quién eres, qué haces y para quién. Todo en una vista.
           </p>
         </div>
 
         {/* Progress */}
         <div className="mb-8">
-          <div className="flex items-center justify-between text-xs text-muted mb-2">
+          <div className="flex items-center justify-between text-xs text-on-surface-variant mb-2">
             <span>{filledBlocks.length} de {blocks.length} campos completados</span>
             <span className="font-medium">{completion}%</span>
           </div>
           <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
             <div
-              className={`h-full rounded-full transition-all duration-700 ${completion === 100 ? "bg-green-500" : "bg-naranja"}`}
+              className={`h-full rounded-full transition-all duration-700 ${completion === 100 ? "bg-green-500" : "bg-primary-container"}`}
               style={{ width: `${completion}%` }}
             />
           </div>
@@ -297,7 +297,7 @@ export default function EspejoClient({ userId, userName, arbol, brujula }: Props
         {/* Name card */}
         <div className="rounded-2xl bg-gradient-to-br from-negro to-negro/90 text-white p-6 sm:p-8 mb-6">
           <p className="text-xs text-white/50 uppercase tracking-widest mb-2">Marca Personal</p>
-          <h2 className="font-heading text-2xl sm:text-3xl mb-2">{userName || "Tu nombre"}</h2>
+          <h2 className="font-headline text-2xl sm:text-3xl mb-2">{userName || "Tu nombre"}</h2>
           {(arbol?.tronco?.temaPrincipal || brujula?.briefing?.temaRaiz) && (
             <p className="text-white/80 text-sm">{arbol?.tronco?.temaPrincipal || brujula?.briefing?.temaRaiz}</p>
           )}
@@ -329,7 +329,7 @@ export default function EspejoClient({ userId, userName, arbol, brujula }: Props
         {/* Pending blocks */}
         {emptyBlocks.length > 0 && (
           <div className="mb-8">
-            <h2 className="text-xs font-semibold text-muted uppercase tracking-wide mb-3 px-1">
+            <h2 className="text-xs font-semibold text-on-surface-variant uppercase tracking-wide mb-3 px-1">
               Pendiente de completar ({emptyBlocks.length})
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -337,12 +337,12 @@ export default function EspejoClient({ userId, userName, arbol, brujula }: Props
                 <Link
                   key={block.id}
                   href={block.editHref}
-                  className="flex items-center gap-3 rounded-xl border border-dashed border-borde/60 bg-gray-50/50 px-4 py-3 hover:border-naranja/40 hover:bg-white transition-all group"
+                  className="flex items-center gap-3 rounded-xl border border-dashed border-outline/60 bg-gray-50/50 px-4 py-3 hover:border-naranja/40 hover:bg-white transition-all group"
                 >
                   <span className="text-lg opacity-40 group-hover:opacity-70 transition-opacity">{block.icon}</span>
                   <div className="flex-1 min-w-0">
-                    <span className="text-sm text-muted group-hover:text-negro transition-colors">{block.label}</span>
-                    <span className="text-[10px] text-muted/50 block">→ {block.editLabel}</span>
+                    <span className="text-sm text-on-surface-variant group-hover:text-on-surface transition-colors">{block.label}</span>
+                    <span className="text-[10px] text-on-surface-variant/50 block">→ {block.editLabel}</span>
                   </div>
                 </Link>
               ))}
@@ -357,12 +357,12 @@ export default function EspejoClient({ userId, userName, arbol, brujula }: Props
 // ===== MIRROR CARD =====
 function MirrorCard({ block }: { block: MirrorBlock }) {
   return (
-    <div className="rounded-xl border border-borde/60 bg-white px-5 py-4 hover:border-naranja/20 transition-all group">
+    <div className="rounded-xl border border-outline/60 bg-white px-5 py-4 hover:border-naranja/20 transition-all group">
       <div className="flex items-start gap-3">
         <span className="text-lg flex-shrink-0 mt-0.5">{block.icon}</span>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] font-semibold text-muted uppercase tracking-wide">{block.label}</span>
+            <span className="text-[10px] font-semibold text-on-surface-variant uppercase tracking-wide">{block.label}</span>
             <span className={`text-[9px] px-1.5 py-0.5 rounded-full ${
               block.source === "arbol"
                 ? "bg-green-50 text-green-600 border border-green-200/50"
@@ -373,17 +373,17 @@ function MirrorCard({ block }: { block: MirrorBlock }) {
           </div>
 
           {block.type === "text" && (
-            <p className="text-sm text-negro/80 leading-relaxed">{block.value as string}</p>
+            <p className="text-sm text-on-surface/80 leading-relaxed">{block.value as string}</p>
           )}
 
           {block.type === "quote" && (
-            <p className="text-sm text-negro/80 leading-relaxed italic">&ldquo;{block.value as string}&rdquo;</p>
+            <p className="text-sm text-on-surface/80 leading-relaxed italic">&ldquo;{block.value as string}&rdquo;</p>
           )}
 
           {block.type === "tags" && (
             <div className="flex flex-wrap gap-1.5">
               {(block.value as string[]).map((tag, i) => (
-                <span key={i} className="text-xs bg-crema text-negro/70 px-2.5 py-0.5 rounded-full border border-borde/40">
+                <span key={i} className="text-xs bg-surface text-on-surface/70 px-2.5 py-0.5 rounded-full border border-outline/40">
                   {tag}
                 </span>
               ))}
@@ -393,14 +393,14 @@ function MirrorCard({ block }: { block: MirrorBlock }) {
           {block.type === "list" && (
             <ul className="space-y-1">
               {(block.value as string[]).map((item, i) => (
-                <li key={i} className="text-sm text-negro/80">{item}</li>
+                <li key={i} className="text-sm text-on-surface/80">{item}</li>
               ))}
             </ul>
           )}
         </div>
         <Link
           href={block.editHref}
-          className="text-[10px] text-muted/40 hover:text-naranja transition-colors flex-shrink-0 sm:opacity-0 sm:group-hover:opacity-100"
+          className="text-[10px] text-on-surface-variant/40 hover:text-primary transition-colors flex-shrink-0 sm:opacity-0 sm:group-hover:opacity-100"
           title={`Editar en ${block.editLabel}`}
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

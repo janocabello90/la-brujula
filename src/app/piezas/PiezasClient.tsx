@@ -137,10 +137,10 @@ export default function PiezasClient({ userId }: Props) {
 
   const statusColor = (s: string) => {
     switch (s) {
-      case "saved": return "bg-negro/[0.06] text-muted";
-      case "editing": return "bg-naranja/10 text-naranja";
+      case "saved": return "bg-negro/[0.06] text-on-surface-variant";
+      case "editing": return "bg-primary-container/10 text-primary";
       case "planned": return "bg-success/10 text-success";
-      default: return "bg-negro/[0.06] text-muted";
+      default: return "bg-negro/[0.06] text-on-surface-variant";
     }
   };
 
@@ -148,16 +148,16 @@ export default function PiezasClient({ userId }: Props) {
     <AppShell>
       <div className="max-w-3xl mx-auto">
         <div className="mb-8">
-          <h1 className="font-heading text-3xl text-negro mb-1">Mis Piezas</h1>
-          <p className="text-muted text-sm">
+          <h1 className="font-headline text-3xl text-on-surface mb-1">Mis Piezas</h1>
+          <p className="text-on-surface-variant text-sm">
             Piezas del Maestro guardadas para trabajar cuando quieras.
           </p>
         </div>
 
         {pieces.length === 0 && (
           <div className="text-center py-16">
-            <p className="text-muted text-sm mb-3">No tienes piezas guardadas todavía.</p>
-            <Link href="/maestro" className="text-naranja text-sm font-medium hover:underline">
+            <p className="text-on-surface-variant text-sm mb-3">No tienes piezas guardadas todavía.</p>
+            <Link href="/maestro" className="text-primary text-sm font-medium hover:underline">
               Ir al Maestro →
             </Link>
           </div>
@@ -173,7 +173,7 @@ export default function PiezasClient({ userId }: Props) {
             return (
               <div
                 key={piece.id}
-                className="bg-white rounded-2xl border border-borde/60 overflow-hidden hover:border-naranja/30 transition-colors"
+                className="bg-white rounded-2xl border border-outline/60 overflow-hidden hover:border-primary/30 transition-colors"
               >
                 {/* Header — always visible */}
                 <div
@@ -184,11 +184,11 @@ export default function PiezasClient({ userId }: Props) {
                 >
                   <div className="flex items-start justify-between gap-3 mb-2">
                     <div className="flex-1">
-                      <p className="text-sm text-negro font-medium leading-snug">
+                      <p className="text-sm text-on-surface font-medium leading-snug">
                         {s.titulares?.[0] || s.subtema}
                       </p>
                       {piece.notes && (
-                        <p className="text-xs text-naranja mt-1 italic">{piece.notes}</p>
+                        <p className="text-xs text-primary mt-1 italic">{piece.notes}</p>
                       )}
                     </div>
                     <span
@@ -209,11 +209,11 @@ export default function PiezasClient({ userId }: Props) {
 
                 {/* Expanded content */}
                 {isExpanded && (
-                  <div className="border-t border-borde/40 px-5 pb-5 pt-4">
+                  <div className="border-t border-outline/40 px-5 pb-5 pt-4">
                     {/* Titulares */}
                     {isEditing ? (
                       <div className="mb-4">
-                        <label className="text-xs font-bold text-negro uppercase tracking-wider mb-2 block">Titulares</label>
+                        <label className="text-xs font-bold text-on-surface uppercase tracking-wider mb-2 block">Titulares</label>
                         {editData?.titulares?.map((t, i) => (
                           <input
                             key={i}
@@ -223,18 +223,18 @@ export default function PiezasClient({ userId }: Props) {
                               newTitulares[i] = e.target.value;
                               setEditData({ ...editData, titulares: newTitulares });
                             }}
-                            className="w-full px-3 py-2 border border-borde rounded-lg bg-white text-negro text-sm mb-2 focus:outline-none focus:border-naranja"
+                            className="w-full px-3 py-2 border border-outline rounded-lg bg-white text-on-surface text-sm mb-2 focus:outline-none focus:border-primary"
                           />
                         ))}
                       </div>
                     ) : (
                       s.titulares?.length > 0 && (
                         <div className="mb-4">
-                          <h4 className="text-xs font-bold text-naranja uppercase tracking-wider mb-2">Titulares</h4>
+                          <h4 className="text-xs font-bold text-primary uppercase tracking-wider mb-2">Titulares</h4>
                           {s.titulares.map((t, i) => (
                             <div key={i} className="flex items-start gap-2 mb-1.5">
-                              <span className="flex-shrink-0 w-5 h-5 rounded-full bg-naranja/15 text-naranja text-[10px] font-bold flex items-center justify-center mt-0.5">{i + 1}</span>
-                              <p className="text-sm text-negro leading-snug">{t}</p>
+                              <span className="flex-shrink-0 w-5 h-5 rounded-full bg-primary-container/15 text-primary text-[10px] font-bold flex items-center justify-center mt-0.5">{i + 1}</span>
+                              <p className="text-sm text-on-surface leading-snug">{t}</p>
                             </div>
                           ))}
                         </div>
@@ -244,19 +244,19 @@ export default function PiezasClient({ userId }: Props) {
                     {/* Gancho */}
                     {isEditing ? (
                       <div className="mb-4">
-                        <label className="text-xs font-bold text-negro uppercase tracking-wider mb-1 block">Gancho</label>
+                        <label className="text-xs font-bold text-on-surface uppercase tracking-wider mb-1 block">Gancho</label>
                         <textarea
                           value={editData?.gancho || ""}
                           onChange={(e) => setEditData({ ...editData!, gancho: e.target.value })}
-                          className="w-full px-3 py-2 border border-borde rounded-lg bg-white text-negro text-sm resize-none focus:outline-none focus:border-naranja"
+                          className="w-full px-3 py-2 border border-outline rounded-lg bg-white text-on-surface text-sm resize-none focus:outline-none focus:border-primary"
                           rows={2}
                         />
                       </div>
                     ) : (
                       s.gancho && (
-                        <div className="bg-negro/[0.03] border-l-4 border-naranja rounded-r-lg px-4 py-3 mb-4">
-                          <p className="text-[10px] font-bold text-muted uppercase tracking-wider mb-1">Gancho</p>
-                          <p className="text-sm text-negro italic">&ldquo;{s.gancho}&rdquo;</p>
+                        <div className="bg-negro/[0.03] border-l-4 border-primary rounded-r-lg px-4 py-3 mb-4">
+                          <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Gancho</p>
+                          <p className="text-sm text-on-surface italic">&ldquo;{s.gancho}&rdquo;</p>
                         </div>
                       )
                     )}
@@ -264,19 +264,19 @@ export default function PiezasClient({ userId }: Props) {
                     {/* Enfoque */}
                     {isEditing ? (
                       <div className="mb-4">
-                        <label className="text-xs font-bold text-negro uppercase tracking-wider mb-1 block">Enfoque</label>
+                        <label className="text-xs font-bold text-on-surface uppercase tracking-wider mb-1 block">Enfoque</label>
                         <textarea
                           value={editData?.enfoque || ""}
                           onChange={(e) => setEditData({ ...editData!, enfoque: e.target.value })}
-                          className="w-full px-3 py-2 border border-borde rounded-lg bg-white text-negro text-sm resize-none focus:outline-none focus:border-naranja"
+                          className="w-full px-3 py-2 border border-outline rounded-lg bg-white text-on-surface text-sm resize-none focus:outline-none focus:border-primary"
                           rows={2}
                         />
                       </div>
                     ) : (
                       s.enfoque && (
                         <div className="mb-4">
-                          <p className="text-xs font-bold text-negro uppercase tracking-wider mb-1">Enfoque</p>
-                          <p className="text-sm text-negro/80">{s.enfoque}</p>
+                          <p className="text-xs font-bold text-on-surface uppercase tracking-wider mb-1">Enfoque</p>
+                          <p className="text-sm text-on-surface/80">{s.enfoque}</p>
                         </div>
                       )
                     )}
@@ -284,7 +284,7 @@ export default function PiezasClient({ userId }: Props) {
                     {/* Pistas */}
                     {isEditing ? (
                       <div className="mb-4">
-                        <label className="text-xs font-bold text-negro uppercase tracking-wider mb-2 block">Pistas creativas</label>
+                        <label className="text-xs font-bold text-on-surface uppercase tracking-wider mb-2 block">Pistas creativas</label>
                         {editData?.pistas?.map((p, i) => (
                           <input
                             key={i}
@@ -294,18 +294,18 @@ export default function PiezasClient({ userId }: Props) {
                               newPistas[i] = e.target.value;
                               setEditData({ ...editData, pistas: newPistas });
                             }}
-                            className="w-full px-3 py-2 border border-borde rounded-lg bg-white text-negro text-sm mb-2 focus:outline-none focus:border-naranja"
+                            className="w-full px-3 py-2 border border-outline rounded-lg bg-white text-on-surface text-sm mb-2 focus:outline-none focus:border-primary"
                           />
                         ))}
                       </div>
                     ) : (
                       s.pistas?.length > 0 && (
-                        <div className="bg-card border border-borde rounded-xl p-4 mb-4">
-                          <p className="text-xs font-bold text-negro uppercase tracking-wider mb-2">Pistas creativas</p>
+                        <div className="bg-card border border-outline rounded-xl p-4 mb-4">
+                          <p className="text-xs font-bold text-on-surface uppercase tracking-wider mb-2">Pistas creativas</p>
                           {s.pistas.map((p, i) => (
                             <div key={i} className="flex items-start gap-2 mb-1.5">
-                              <span className="text-naranja mt-0.5">▸</span>
-                              <p className="text-sm text-negro/80 leading-snug">{p}</p>
+                              <span className="text-primary mt-0.5">▸</span>
+                              <p className="text-sm text-on-surface/80 leading-snug">{p}</p>
                             </div>
                           ))}
                         </div>
@@ -315,18 +315,18 @@ export default function PiezasClient({ userId }: Props) {
                     {/* CTA */}
                     {isEditing ? (
                       <div className="mb-4">
-                        <label className="text-xs font-bold text-negro uppercase tracking-wider mb-1 block">CTA / Cierre</label>
+                        <label className="text-xs font-bold text-on-surface uppercase tracking-wider mb-1 block">CTA / Cierre</label>
                         <input
                           value={editData?.cta || ""}
                           onChange={(e) => setEditData({ ...editData!, cta: e.target.value })}
-                          className="w-full px-3 py-2 border border-borde rounded-lg bg-white text-negro text-sm focus:outline-none focus:border-naranja"
+                          className="w-full px-3 py-2 border border-outline rounded-lg bg-white text-on-surface text-sm focus:outline-none focus:border-primary"
                         />
                       </div>
                     ) : (
                       s.cta && (
                         <div className="mb-4">
-                          <p className="text-xs font-bold text-negro uppercase tracking-wider mb-1">CTA</p>
-                          <p className="text-sm text-negro/80">{s.cta}</p>
+                          <p className="text-xs font-bold text-on-surface uppercase tracking-wider mb-1">CTA</p>
+                          <p className="text-sm text-on-surface/80">{s.cta}</p>
                         </div>
                       )
                     )}
@@ -334,12 +334,12 @@ export default function PiezasClient({ userId }: Props) {
                     {/* Notes */}
                     {isEditing && (
                       <div className="mb-4">
-                        <label className="text-xs font-bold text-negro uppercase tracking-wider mb-1 block">Notas personales</label>
+                        <label className="text-xs font-bold text-on-surface uppercase tracking-wider mb-1 block">Notas personales</label>
                         <textarea
                           value={editNotes}
                           onChange={(e) => setEditNotes(e.target.value)}
                           placeholder="Tus apuntes sobre esta pieza..."
-                          className="w-full px-3 py-2 border border-borde rounded-lg bg-white text-negro text-sm resize-none focus:outline-none focus:border-naranja"
+                          className="w-full px-3 py-2 border border-outline rounded-lg bg-white text-on-surface text-sm resize-none focus:outline-none focus:border-primary"
                           rows={2}
                         />
                       </div>
@@ -352,7 +352,7 @@ export default function PiezasClient({ userId }: Props) {
                           <button
                             onClick={saveEdits}
                             disabled={saving}
-                            className="bg-naranja text-white text-xs font-medium px-4 py-2 rounded-lg hover:bg-naranja-hover transition-colors disabled:opacity-50"
+                            className="bg-primary-container text-white text-xs font-medium px-4 py-2 rounded-lg hover:bg-primary-container-hover transition-colors disabled:opacity-50"
                           >
                             {saving ? "Guardando..." : "Guardar cambios"}
                           </button>
@@ -361,7 +361,7 @@ export default function PiezasClient({ userId }: Props) {
                               setEditingId(null);
                               setEditData(null);
                             }}
-                            className="text-xs text-muted hover:text-negro transition-colors px-3 py-2"
+                            className="text-xs text-on-surface-variant hover:text-on-surface transition-colors px-3 py-2"
                           >
                             Cancelar
                           </button>
@@ -370,7 +370,7 @@ export default function PiezasClient({ userId }: Props) {
                         <>
                           <button
                             onClick={() => startEditing(piece)}
-                            className="text-xs font-medium text-negro hover:text-naranja transition-colors"
+                            className="text-xs font-medium text-on-surface hover:text-primary transition-colors"
                           >
                             ✏️ Editar
                           </button>
@@ -381,12 +381,12 @@ export default function PiezasClient({ userId }: Props) {
                               tomorrow.setDate(tomorrow.getDate() + 1);
                               setPlanDate(tomorrow.toISOString().split("T")[0]);
                             }}
-                            className="text-xs font-medium text-naranja hover:text-naranja-hover transition-colors"
+                            className="text-xs font-medium text-primary hover:text-primary-hover transition-colors"
                           >
                             📅 Planificar
                           </button>
                           <div className="flex-1" />
-                          <span className="text-[10px] text-muted">
+                          <span className="text-[10px] text-on-surface-variant">
                             {new Date(piece.created_at).toLocaleDateString("es-ES", {
                               day: "numeric",
                               month: "short",
@@ -394,7 +394,7 @@ export default function PiezasClient({ userId }: Props) {
                           </span>
                           <button
                             onClick={() => deletePiece(piece.id)}
-                            className="text-[10px] text-muted hover:text-danger transition-colors"
+                            className="text-[10px] text-on-surface-variant hover:text-danger transition-colors"
                           >
                             ✕
                           </button>
@@ -404,24 +404,24 @@ export default function PiezasClient({ userId }: Props) {
 
                     {/* Plan form inline */}
                     {isPlanning && (
-                      <div className="bg-crema rounded-lg p-4 mt-3">
+                      <div className="bg-surface rounded-lg p-4 mt-3">
                         <div className="grid grid-cols-2 gap-3 mb-3">
                           <div>
-                            <label className="block text-xs text-muted mb-1">Fecha</label>
+                            <label className="block text-xs text-on-surface-variant mb-1">Fecha</label>
                             <input
                               type="date"
                               value={planDate}
                               onChange={(e) => setPlanDate(e.target.value)}
-                              className="w-full px-3 py-2 border border-borde rounded-lg bg-white text-negro text-sm focus:outline-none focus:border-naranja"
+                              className="w-full px-3 py-2 border border-outline rounded-lg bg-white text-on-surface text-sm focus:outline-none focus:border-primary"
                             />
                           </div>
                           <div>
-                            <label className="block text-xs text-muted mb-1">Hora</label>
+                            <label className="block text-xs text-on-surface-variant mb-1">Hora</label>
                             <input
                               type="time"
                               value={planTime}
                               onChange={(e) => setPlanTime(e.target.value)}
-                              className="w-full px-3 py-2 border border-borde rounded-lg bg-white text-negro text-sm focus:outline-none focus:border-naranja"
+                              className="w-full px-3 py-2 border border-outline rounded-lg bg-white text-on-surface text-sm focus:outline-none focus:border-primary"
                             />
                           </div>
                         </div>
@@ -429,13 +429,13 @@ export default function PiezasClient({ userId }: Props) {
                           <button
                             onClick={() => planPiece(piece)}
                             disabled={planSaving || !planDate}
-                            className="flex-1 bg-naranja text-white text-sm font-medium py-2.5 rounded-lg hover:bg-naranja-hover transition-colors disabled:opacity-50"
+                            className="flex-1 bg-primary-container text-white text-sm font-medium py-2.5 rounded-lg hover:bg-primary-container-hover transition-colors disabled:opacity-50"
                           >
                             {planSaving ? "..." : "Confirmar"}
                           </button>
                           <button
                             onClick={() => setPlanningId(null)}
-                            className="px-4 py-2.5 border border-borde rounded-lg text-muted text-sm hover:text-negro transition-colors"
+                            className="px-4 py-2.5 border border-outline rounded-lg text-on-surface-variant text-sm hover:text-on-surface transition-colors"
                           >
                             Cancelar
                           </button>

@@ -147,7 +147,7 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
     options: { value: string; label: string; icon?: string; desc?: string }[];
   }) => (
     <div className="mb-6">
-      <h3 className="text-sm font-semibold text-negro mb-2">{title}</h3>
+      <h3 className="text-sm font-semibold text-on-surface mb-2">{title}</h3>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
         {options.map((opt) => (
           <div
@@ -157,7 +157,7 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
           >
             {opt.icon && <div className="text-lg mb-1">{opt.icon}</div>}
             <div className="font-medium text-sm">{opt.label}</div>
-            {opt.desc && <div className="text-xs text-muted mt-0.5">{opt.desc}</div>}
+            {opt.desc && <div className="text-xs text-on-surface-variant mt-0.5">{opt.desc}</div>}
           </div>
         ))}
       </div>
@@ -168,17 +168,17 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
     <AppShell>
       <div className="max-w-3xl mx-auto">
         <div className="mb-8">
-          <h1 className="font-heading text-3xl text-negro mb-1">El Maestro</h1>
-          <p className="text-muted text-sm">
+          <h1 className="font-headline text-3xl text-on-surface mb-1">El Maestro</h1>
+          <p className="text-on-surface-variant text-sm">
             Cuéntame cómo estás hoy y qué quieres lograr. Yo te digo qué crear.
           </p>
         </div>
 
         {/* Idea banner */}
         {ideaText && (
-          <div className="bg-naranja/[0.06] border border-naranja/20 rounded-xl p-4 mb-6">
-            <p className="text-[10px] font-bold text-naranja uppercase tracking-wider mb-1">Trabajando idea</p>
-            <p className="text-sm text-negro font-medium">&ldquo;{ideaText}&rdquo;</p>
+          <div className="bg-primary/[0.06] rounded-2xl p-4 mb-6 signature-shadow">
+            <p className="text-[10px] font-bold text-primary uppercase tracking-wider mb-1">Trabajando idea</p>
+            <p className="text-sm text-on-surface font-medium">&ldquo;{ideaText}&rdquo;</p>
           </div>
         )}
 
@@ -203,7 +203,7 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
 
         {/* Step 3: Canal */}
         <div className="mb-6">
-          <h3 className="text-sm font-semibold text-negro mb-2">¿En qué canal?</h3>
+          <h3 className="text-sm font-semibold text-on-surface mb-2">¿En qué canal?</h3>
           <div className="flex flex-wrap gap-2">
             {canales.map((ch: string) => (
               <div
@@ -222,8 +222,8 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
         {/* Step 4: Pilar (optional) */}
         {pilares.length > 0 && (
           <div className="mb-6">
-            <h3 className="text-sm font-semibold text-negro mb-1">
-              ¿Sobre qué pilar? <span className="text-muted font-normal">(opcional)</span>
+            <h3 className="text-sm font-semibold text-on-surface mb-1">
+              ¿Sobre qué pilar? <span className="text-on-surface-variant font-normal">(opcional)</span>
             </h3>
             <div className="flex flex-wrap gap-2">
               {pilares.map((p: any, i: number) => (
@@ -243,8 +243,8 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
 
         {/* Formats preview */}
         {selection.energia && (
-          <div className="bg-card border border-borde rounded-card p-4 mb-6">
-            <span className="text-xs font-semibold text-muted uppercase tracking-wide">
+          <div className="surface-card signature-shadow rounded-2xl p-4 mb-6">
+            <span className="text-xs font-semibold text-on-surface-variant uppercase tracking-wide">
               Formatos posibles para tu energía
             </span>
             <div className="flex flex-wrap gap-1.5 mt-2">
@@ -260,12 +260,12 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
           <button
             onClick={generate}
             disabled={!canGenerate}
-            className="w-full bg-naranja text-white font-semibold py-3.5 rounded-lg hover:bg-naranja-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed mb-4"
+            className="w-full gradient-denim text-white font-semibold py-3.5 rounded-2xl hover:shadow-card-hover transition-shadow disabled:opacity-40 disabled:cursor-not-allowed mb-4"
           >
             🎯 Generar sugerencia
           </button>
         ) : (
-          <div className="bg-negro rounded-2xl p-6 sm:p-8 mb-4 text-center">
+          <div className="bg-primary rounded-2xl p-6 sm:p-8 mb-4 text-center signature-shadow">
             <div className="flex justify-center mb-4">
               <span className="loader" />
             </div>
@@ -274,15 +274,15 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
               <p className="text-white text-sm sm:text-base font-medium italic leading-relaxed">
                 &ldquo;{currentQuote.text}&rdquo;
               </p>
-              <p className="text-naranja text-xs font-semibold mt-2">— {currentQuote.author}</p>
+              <p className="text-gradient-yellow text-xs font-semibold mt-2">— {currentQuote.author}</p>
             </div>
           </div>
         )}
 
         {!apiKey && (
-          <p className="text-center text-sm text-muted mb-4">
+          <p className="text-center text-sm text-on-surface-variant mb-4">
             ⚠️ Necesitas{" "}
-            <Link href="/settings" className="text-naranja hover:underline">
+            <Link href="/settings" className="text-primary hover:underline">
               configurar tu API Key
             </Link>{" "}
             para usar el Maestro.
@@ -305,18 +305,18 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
               <span className="pill pill-light">{result.tono}</span>
             </div>
 
-            <h3 className="font-heading text-xl text-negro mb-1">{result.subtema}</h3>
-            <p className="text-sm text-muted mb-5">Ángulo: {result.angulo}</p>
+            <h3 className="font-headline text-xl text-on-surface mb-1">{result.subtema}</h3>
+            <p className="text-sm text-on-surface-variant mb-5">Ángulo: {result.angulo}</p>
 
             {/* Titulares */}
             {result.titulares && result.titulares.length > 0 && (
-              <div className="bg-naranja/5 border border-naranja/20 rounded-xl p-4 mb-4">
-                <h4 className="text-xs font-bold text-naranja uppercase tracking-wider mb-3">Ideas de titular</h4>
+              <div className="surface-low rounded-2xl p-4 mb-4 signature-shadow">
+                <h4 className="text-xs font-bold text-primary uppercase tracking-wider mb-3">Ideas de titular</h4>
                 <div className="space-y-2">
                   {result.titulares.map((t, i) => (
                     <div key={i} className="flex items-start gap-2.5">
-                      <span className="flex-shrink-0 w-5 h-5 rounded-full bg-naranja/15 text-naranja text-[10px] font-bold flex items-center justify-center mt-0.5">{i + 1}</span>
-                      <p className="text-sm text-negro font-medium leading-snug">{t}</p>
+                      <span className="flex-shrink-0 w-5 h-5 rounded-full bg-primary/15 text-primary text-[10px] font-bold flex items-center justify-center mt-0.5">{i + 1}</span>
+                      <p className="text-sm text-on-surface font-medium leading-snug">{t}</p>
                     </div>
                   ))}
                 </div>
@@ -325,29 +325,29 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
 
             {/* Gancho */}
             {result.gancho && (
-              <div className="bg-negro/[0.03] border-l-4 border-naranja rounded-r-lg px-4 py-3 mb-4">
-                <h4 className="text-[10px] font-bold text-muted uppercase tracking-wider mb-1">Gancho de apertura</h4>
-                <p className="text-sm text-negro font-medium italic leading-relaxed">&ldquo;{result.gancho}&rdquo;</p>
+              <div className="surface-low rounded-2xl border-l-4 border-primary px-4 py-3 mb-4 signature-shadow">
+                <h4 className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Gancho de apertura</h4>
+                <p className="text-sm text-on-surface font-medium italic leading-relaxed">&ldquo;{result.gancho}&rdquo;</p>
               </div>
             )}
 
             {/* Enfoque */}
             {result.enfoque && (
               <div className="mb-4">
-                <h4 className="text-xs font-bold text-negro uppercase tracking-wider mb-2">Enfoque</h4>
-                <p className="text-sm text-negro/80 leading-relaxed">{result.enfoque}</p>
+                <h4 className="text-xs font-bold text-on-surface uppercase tracking-wider mb-2">Enfoque</h4>
+                <p className="text-sm text-on-surface/80 leading-relaxed">{result.enfoque}</p>
               </div>
             )}
 
             {/* Pistas creativas */}
             {result.pistas && result.pistas.length > 0 && (
-              <div className="bg-card border border-borde rounded-xl p-4 mb-4">
-                <h4 className="text-xs font-bold text-negro uppercase tracking-wider mb-3">Pistas creativas</h4>
+              <div className="surface-card signature-shadow rounded-2xl p-4 mb-4">
+                <h4 className="text-xs font-bold text-on-surface uppercase tracking-wider mb-3">Pistas creativas</h4>
                 <div className="space-y-2.5">
                   {result.pistas.map((p, i) => (
                     <div key={i} className="flex items-start gap-2.5">
-                      <span className="flex-shrink-0 text-naranja mt-0.5">▸</span>
-                      <p className="text-sm text-negro/80 leading-snug">{p}</p>
+                      <span className="flex-shrink-0 text-primary mt-0.5">▸</span>
+                      <p className="text-sm text-on-surface/80 leading-snug">{p}</p>
                     </div>
                   ))}
                 </div>
@@ -357,24 +357,24 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
             {/* CTA */}
             {result.cta && (
               <div className="mb-4">
-                <h4 className="text-xs font-bold text-negro uppercase tracking-wider mb-2">Cierre / CTA</h4>
-                <p className="text-sm text-negro/80 leading-relaxed">{result.cta}</p>
+                <h4 className="text-xs font-bold text-on-surface uppercase tracking-wider mb-2">Cierre / CTA</h4>
+                <p className="text-sm text-on-surface/80 leading-relaxed">{result.cta}</p>
               </div>
             )}
 
             {/* Estrategia + Por qué ahora (compact) */}
             {(result.estrategia || result.porQueAhora) && (
-              <div className="border-t border-borde pt-4 mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="border-t border-surface-mid pt-4 mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {result.estrategia && (
                   <div>
-                    <h4 className="text-[10px] font-bold text-muted uppercase tracking-wider mb-1">🧠 Estrategia</h4>
-                    <p className="text-xs text-muted leading-relaxed">{result.estrategia}</p>
+                    <h4 className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">🧠 Estrategia</h4>
+                    <p className="text-xs text-on-surface-variant leading-relaxed">{result.estrategia}</p>
                   </div>
                 )}
                 {result.porQueAhora && (
                   <div>
-                    <h4 className="text-[10px] font-bold text-muted uppercase tracking-wider mb-1">⏰ Por qué ahora</h4>
-                    <p className="text-xs text-muted leading-relaxed">{result.porQueAhora}</p>
+                    <h4 className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">⏰ Por qué ahora</h4>
+                    <p className="text-xs text-on-surface-variant leading-relaxed">{result.porQueAhora}</p>
                   </div>
                 )}
               </div>
@@ -382,14 +382,14 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
 
             {/* Legacy: show old sugerencia if present (old history entries) */}
             {result.sugerencia && !result.pistas && (
-              <div className="border-t border-borde pt-4 mt-4">
-                <h4 className="text-sm font-semibold text-negro mb-2">💡 Sugerencia</h4>
-                <div className="text-sm text-negro leading-relaxed whitespace-pre-line">{result.sugerencia}</div>
+              <div className="border-t border-surface-mid pt-4 mt-4">
+                <h4 className="text-sm font-semibold text-on-surface mb-2">💡 Sugerencia</h4>
+                <div className="text-sm text-on-surface leading-relaxed whitespace-pre-line">{result.sugerencia}</div>
               </div>
             )}
 
             {/* Action buttons */}
-            <div className="border-t border-borde pt-4 mt-4 space-y-3">
+            <div className="border-t border-surface-mid pt-4 mt-4 space-y-3">
               {/* Planificar */}
               {!planSaved ? (
                 !showPlanForm ? (
@@ -401,7 +401,7 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
                         tomorrow.setDate(tomorrow.getDate() + 1);
                         setPlanDate(tomorrow.toISOString().split("T")[0]);
                       }}
-                      className="py-3 bg-naranja text-white rounded-lg font-medium hover:bg-naranja-hover transition-colors text-sm"
+                      className="py-3 gradient-denim text-white rounded-2xl font-medium hover:shadow-card-hover transition-shadow text-sm"
                     >
                       📅 Planificar
                     </button>
@@ -421,37 +421,37 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
                         setPieceSaved(true);
                       }}
                       disabled={pieceSaving || pieceSaved}
-                      className={`py-3 rounded-lg font-medium text-sm transition-colors ${
+                      className={`py-3 rounded-2xl font-medium text-sm transition-colors ${
                         pieceSaved
-                          ? "bg-success/10 text-success border border-success/30"
-                          : "border-2 border-negro/15 text-negro hover:border-negro/30"
+                          ? "surface-card text-success signature-shadow"
+                          : "surface-card text-on-surface signature-shadow hover:shadow-card-hover"
                       }`}
                     >
                       {pieceSaving ? "..." : pieceSaved ? "✓ Guardada" : "💾 Guardar para después"}
                     </button>
                   </div>
                 ) : (
-                  <div className="bg-crema rounded-lg p-4">
-                    <h4 className="text-sm font-semibold text-negro mb-3">
+                  <div className="surface-low rounded-2xl p-4 signature-shadow">
+                    <h4 className="text-sm font-semibold text-on-surface mb-3">
                       📅 ¿Cuándo quieres crear esta pieza?
                     </h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
                       <div>
-                        <label className="block text-xs text-muted mb-1">Fecha</label>
+                        <label className="block text-xs text-on-surface-variant mb-1">Fecha</label>
                         <input
                           type="date"
                           value={planDate}
                           onChange={(e) => setPlanDate(e.target.value)}
-                          className="w-full px-3 py-2 border border-borde rounded-lg bg-white text-negro text-sm focus:outline-none focus:border-naranja"
+                          className="w-full px-3 py-2 bg-surface-container-low border-none rounded-xl text-on-surface text-sm focus:outline-none focus:ring-2 focus:ring-primary/10"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs text-muted mb-1">Hora</label>
+                        <label className="block text-xs text-on-surface-variant mb-1">Hora</label>
                         <input
                           type="time"
                           value={planTime}
                           onChange={(e) => setPlanTime(e.target.value)}
-                          className="w-full px-3 py-2 border border-borde rounded-lg bg-white text-negro text-sm focus:outline-none focus:border-naranja"
+                          className="w-full px-3 py-2 bg-surface-container-low border-none rounded-xl text-on-surface text-sm focus:outline-none focus:ring-2 focus:ring-primary/10"
                         />
                       </div>
                     </div>
@@ -485,13 +485,13 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
                           setShowPlanForm(false);
                         }}
                         disabled={planSaving || !planDate}
-                        className="flex-1 bg-naranja text-white text-sm font-medium py-2.5 rounded-lg hover:bg-naranja-hover transition-colors disabled:opacity-50"
+                        className="flex-1 gradient-denim text-white text-sm font-medium py-2.5 rounded-xl hover:shadow-card-hover transition-shadow disabled:opacity-50"
                       >
                         {planSaving ? "Guardando..." : "Confirmar"}
                       </button>
                       <button
                         onClick={() => setShowPlanForm(false)}
-                        className="px-4 py-2.5 border border-borde rounded-lg text-muted text-sm hover:text-negro transition-colors"
+                        className="px-4 py-2.5 surface-card text-on-surface-variant rounded-xl text-sm hover:shadow-card-hover transition-shadow"
                       >
                         Cancelar
                       </button>
@@ -501,7 +501,7 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
               ) : (
                 <div className="text-center py-2">
                   <p className="text-success font-medium text-sm">✓ Añadida al planificador</p>
-                  <Link href="/planner" className="text-naranja text-xs hover:underline mt-1 inline-block">
+                  <Link href="/planner" className="text-primary text-xs hover:underline mt-1 inline-block">
                     Ver planificador →
                   </Link>
                 </div>
@@ -510,7 +510,7 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
               {/* Link to saved pieces */}
               {pieceSaved && (
                 <div className="text-center">
-                  <Link href="/piezas" className="text-naranja text-xs hover:underline">
+                  <Link href="/piezas" className="text-primary text-xs hover:underline">
                     Ver mis piezas guardadas →
                   </Link>
                 </div>

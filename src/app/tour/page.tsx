@@ -62,14 +62,14 @@ export default function TourPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-crema">
+    <div className="min-h-screen bg-surface-base">
       {/* Navigation */}
-      <nav className="border-b border-borde/40 bg-white/60 backdrop-blur-sm">
+      <nav className="surface-card signature-shadow bg-surface-card/60 backdrop-blur-sm">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/dashboard" className="flex items-center gap-2 text-sm font-heading text-negro hover:text-denim transition-colors">
+          <Link href="/dashboard" className="flex items-center gap-2 text-sm font-headline text-on-surface hover:text-primary transition-colors">
             <span>🦍</span> Sistema Buena Vida
           </Link>
-          <div className="text-xs text-muted font-medium">
+          <div className="text-xs text-on-surface-variant font-medium">
             {step + 1} de 7
           </div>
         </div>
@@ -82,7 +82,7 @@ export default function TourPage() {
             key={dot}
             onClick={() => setStep(dot)}
             className={`h-2 rounded-full transition-all ${
-              dot === step ? 'bg-denim w-8' : dot < step ? 'bg-denim/40 w-2.5' : 'bg-borde w-2.5 hover:bg-denim/20'
+              dot === step ? 'gradient-denim w-8' : dot < step ? 'gradient-denim/40 w-2.5' : 'bg-surface-container-high w-2.5 hover:bg-primary/20'
             }`}
             aria-label={`Step ${dot + 1}`}
           />
@@ -95,21 +95,21 @@ export default function TourPage() {
         {step === 0 && (
           <div className="animate-fadeIn space-y-8">
             <div className="space-y-6">
-              <h1 className="text-4xl md:text-5xl font-heading text-negro">
+              <h1 className="text-4xl md:text-5xl font-headline text-on-surface">
                 Bienvenido al Sistema 🦍
               </h1>
-              <div className="space-y-4 text-lg text-negro">
+              <div className="space-y-4 text-lg text-on-surface">
                 <p>
                   Este no es un curso. Es un sistema que te guía paso a paso para construir tu marca personal desde la base.
                 </p>
-                <p className="text-muted">
+                <p className="text-on-surface-variant">
                   Vamos a enseñarte cómo funciona en 2 minutos.
                 </p>
               </div>
             </div>
             <button
               onClick={nextStep}
-              className="bg-denim text-white px-7 py-3.5 rounded-xl font-heading hover:bg-denim-dark transition-colors inline-flex items-center gap-2 shadow-button"
+              className="gradient-denim text-white px-7 py-3.5 rounded-2xl font-headline hover:opacity-90 transition-opacity inline-flex items-center gap-2 signature-shadow"
             >
               Empezar →
             </button>
@@ -121,17 +121,17 @@ export default function TourPage() {
           <div className="animate-fadeIn space-y-8">
             <div className="space-y-6">
               <div className="text-5xl mb-4">🔺</div>
-              <h2 className="text-3xl md:text-4xl font-heading text-negro">
+              <h2 className="text-3xl md:text-4xl font-headline text-on-surface">
                 Fase 1 — La Pirámide
               </h2>
-              <p className="text-sm text-denim font-heading uppercase tracking-wide">
+              <p className="text-sm text-primary font-headline uppercase tracking-wide">
                 (quién eres)
               </p>
-              <div className="space-y-4 text-lg text-negro">
+              <div className="space-y-4 text-lg text-on-surface">
                 <p>
                   Todo empieza aquí. La Pirámide te guía por 5 niveles: tu historia, tus valores, tu mercado, tu estrategia y tus resultados.
                 </p>
-                <p className="text-muted">
+                <p className="text-on-surface-variant">
                   Sin esta base, todo lo demás se tambalea. Por eso es lo primero que vas a hacer.
                 </p>
               </div>
@@ -145,7 +145,7 @@ export default function TourPage() {
                   <div key={idx} className="flex flex-col items-center">
                     <div
                       style={{ width: `${width}%` }}
-                      className="bg-denim/10 border-2 border-denim/30 text-negro text-center py-3 rounded-lg font-heading text-sm transition-all hover:bg-denim/15 hover:border-denim/50"
+                      className="bg-primary/10 ghost-border text-on-surface text-center py-3 rounded-2xl font-headline text-sm transition-all hover:bg-primary/15"
                     >
                       {level}
                     </div>
@@ -163,17 +163,17 @@ export default function TourPage() {
           <div className="animate-fadeIn space-y-8">
             <div className="space-y-6">
               <div className="text-5xl mb-4">🌳</div>
-              <h2 className="text-3xl md:text-4xl font-heading text-negro">
+              <h2 className="text-3xl md:text-4xl font-headline text-on-surface">
                 Fase 2 — El Árbol
               </h2>
-              <p className="text-sm text-denim font-heading uppercase tracking-wide">
+              <p className="text-sm text-primary font-headline uppercase tracking-wide">
                 (tu marca visible)
               </p>
-              <div className="space-y-4 text-lg text-negro">
+              <div className="space-y-4 text-lg text-on-surface">
                 <p>
                   Cuando termines la Pirámide, pasas al Árbol. 9 secciones que definen quién eres, qué ofreces y cómo te comunicas.
                 </p>
-                <p className="text-muted">
+                <p className="text-on-surface-variant">
                   Al completarlo, una IA analiza la coherencia de tu marca y te dice dónde están las grietas.
                 </p>
               </div>
@@ -189,17 +189,17 @@ export default function TourPage() {
           <div className="animate-fadeIn space-y-8">
             <div className="space-y-6">
               <div className="text-5xl mb-4">🗺️</div>
-              <h2 className="text-3xl md:text-4xl font-heading text-negro">
+              <h2 className="text-3xl md:text-4xl font-headline text-on-surface">
                 Fase 3 — Las Rutas
               </h2>
-              <p className="text-sm text-denim font-heading uppercase tracking-wide">
+              <p className="text-sm text-primary font-headline uppercase tracking-wide">
                 (tu estrategia)
               </p>
-              <div className="space-y-4 text-lg text-negro">
+              <div className="space-y-4 text-lg text-on-surface">
                 <p>
                   Con tu marca diagnosticada, Las Rutas te asignan un camino personalizado según tu perfil.
                 </p>
-                <p className="text-muted">
+                <p className="text-on-surface-variant">
                   No es un plan genérico. Es tu hoja de ruta basada en tus fortalezas y tus grietas, con estrategias generadas por IA.
                 </p>
               </div>
@@ -215,17 +215,17 @@ export default function TourPage() {
           <div className="animate-fadeIn space-y-8">
             <div className="space-y-6">
               <div className="text-5xl mb-4">🧭</div>
-              <h2 className="text-3xl md:text-4xl font-heading text-negro">
+              <h2 className="text-3xl md:text-4xl font-headline text-on-surface">
                 Fase 4 — La Brújula
               </h2>
-              <p className="text-sm text-denim font-heading uppercase tracking-wide">
+              <p className="text-sm text-primary font-headline uppercase tracking-wide">
                 (tu contenido)
               </p>
-              <div className="space-y-4 text-lg text-negro">
+              <div className="space-y-4 text-lg text-on-surface">
                 <p>
                   Con tu identidad clara, tu marca diagnosticada y tu estrategia definida, llega el momento de crear contenido.
                 </p>
-                <p className="text-muted">
+                <p className="text-on-surface-variant">
                   La Brújula es tu sistema de contenido: defines tu briefing, tus buyer persona, tus pilares y tu estrategia de canales. Todo alineado con lo que ya has trabajado.
                 </p>
               </div>
@@ -240,10 +240,10 @@ export default function TourPage() {
         {step === 5 && (
           <div className="animate-fadeIn space-y-8">
             <div className="space-y-6">
-              <h2 className="text-3xl md:text-4xl font-heading text-negro">
+              <h2 className="text-3xl md:text-4xl font-headline text-on-surface">
                 Herramientas libres
               </h2>
-              <p className="text-lg text-negro">
+              <p className="text-lg text-on-surface">
                 Además del recorrido principal, tienes herramientas que puedes usar en cualquier momento:
               </p>
             </div>
@@ -251,12 +251,12 @@ export default function TourPage() {
             {/* Tools Grid */}
             <div className="space-y-3">
               {freeTools.map((tool, idx) => (
-                <div key={idx} className="border-l-3 border-l-4 border-denim/40 bg-white rounded-xl pl-5 pr-4 py-4 hover:border-denim transition-colors">
+                <div key={idx} className="surface-card signature-shadow rounded-2xl pl-5 pr-4 py-4 hover:bg-surface-low transition-colors border-l-4 border-l-primary/30">
                   <div className="flex items-start gap-3">
                     <span className="text-2xl flex-shrink-0">{tool.icon}</span>
                     <div>
-                      <p className="font-heading text-negro text-base">{tool.name}</p>
-                      <p className="text-muted text-sm mt-0.5">{tool.desc}</p>
+                      <p className="font-headline text-on-surface text-base">{tool.name}</p>
+                      <p className="text-on-surface-variant text-sm mt-0.5">{tool.desc}</p>
                     </div>
                   </div>
                 </div>
@@ -264,18 +264,18 @@ export default function TourPage() {
             </div>
 
             {/* API Key Section */}
-            <div className="bg-amarillo/10 border border-amarillo/25 rounded-2xl p-6 space-y-3 my-8">
-              <p className="text-negro text-sm leading-relaxed">
-                <span className="font-heading block mb-2">Para que el Maestro y otras herramientas con IA funcionen</span>
-                necesitarás una <span className="font-heading text-denim">API Key de Anthropic</span>. Es como la llave que activa la inteligencia del sistema.
+            <div className="bg-secondary-container/20 rounded-2xl p-6 space-y-3 my-8 signature-shadow ghost-border">
+              <p className="text-on-surface text-sm leading-relaxed">
+                <span className="font-headline block mb-2">Para que el Maestro y otras herramientas con IA funcionen</span>
+                necesitarás una <span className="font-headline text-primary">API Key de Anthropic</span>. Es como la llave que activa la inteligencia del sistema.
               </p>
-              <p className="text-muted text-sm leading-relaxed">
-                La configuras en <span className="font-heading text-negro">Ajustes → API Key</span>. Si no la tienes, te explicamos cómo conseguirla allí.
+              <p className="text-on-surface-variant text-sm leading-relaxed">
+                La configuras en <span className="font-headline text-on-surface">Ajustes → API Key</span>. Si no la tienes, te explicamos cómo conseguirla allí.
               </p>
             </div>
 
             {/* Tools Note */}
-            <div className="bg-denim/[0.04] rounded-xl p-4 text-sm text-muted italic">
+            <div className="bg-primary/[0.04] rounded-2xl p-4 text-sm text-on-surface-variant italic ghost-border">
               Estas herramientas funcionan mejor cuando has completado las fases anteriores — pero puedes explorarlas cuando quieras.
             </div>
 
@@ -287,14 +287,14 @@ export default function TourPage() {
         {step === 6 && (
           <div className="animate-fadeIn space-y-8">
             <div className="space-y-6">
-              <h2 className="text-3xl md:text-4xl font-heading text-negro">
+              <h2 className="text-3xl md:text-4xl font-headline text-on-surface">
                 ¿Listo para empezar? 🦍
               </h2>
-              <div className="space-y-4 text-lg text-negro">
+              <div className="space-y-4 text-lg text-on-surface">
                 <p>
                   Tu marca personal se construye de abajo arriba. Siempre.
                 </p>
-                <p className="text-muted">
+                <p className="text-on-surface-variant">
                   Empieza por La Pirámide. El resto vendrá cuando estés preparado.
                 </p>
               </div>
@@ -310,7 +310,7 @@ export default function TourPage() {
               ].map((item, i) => (
                 <div key={i} className={`flex items-center gap-3 ${item.offset}`}>
                   <div className="text-3xl">{item.icon}</div>
-                  {i < 3 && <div className="flex-1 h-1 bg-gradient-to-r from-denim/40 to-denim/10 rounded-full" />}
+                  {i < 3 && <div className="flex-1 h-1 bg-gradient-to-r from-primary/40 to-primary/10 rounded-full" />}
                 </div>
               ))}
             </div>
@@ -320,13 +320,13 @@ export default function TourPage() {
               <button
                 onClick={handleStartPiramide}
                 disabled={isLoading}
-                className="w-full bg-denim text-white px-6 py-4 rounded-xl font-heading hover:bg-denim-dark transition-colors disabled:opacity-50 text-lg shadow-button"
+                className="w-full gradient-denim text-white px-6 py-4 rounded-2xl font-headline hover:opacity-90 transition-opacity disabled:opacity-50 text-lg signature-shadow"
               >
                 {isLoading ? 'Iniciando...' : 'Empezar con La Pirámide →'}
               </button>
               <button
                 onClick={goToDashboard}
-                className="w-full text-denim hover:text-denim-dark font-heading transition-colors text-sm py-2"
+                className="w-full text-primary hover:text-primary-container font-headline transition-colors text-sm py-2"
               >
                 Ir al Panel
               </button>
@@ -336,7 +336,7 @@ export default function TourPage() {
             <div className="mt-8">
               <button
                 onClick={prevStep}
-                className="text-denim hover:text-denim-dark font-heading transition-colors"
+                className="text-primary hover:text-primary-container font-headline transition-colors"
               >
                 ← Atrás
               </button>
@@ -370,13 +370,13 @@ function NavButtons({ onPrev, onNext }: { onPrev: () => void; onNext: () => void
     <div className="flex gap-3">
       <button
         onClick={onPrev}
-        className="text-denim hover:text-denim-dark font-heading transition-colors"
+        className="text-primary hover:text-primary-container font-headline transition-colors"
       >
         ← Atrás
       </button>
       <button
         onClick={onNext}
-        className="bg-denim text-white px-7 py-3 rounded-xl font-heading hover:bg-denim-dark transition-colors ml-auto shadow-button"
+        className="gradient-denim text-white px-7 py-3 rounded-2xl font-headline hover:opacity-90 transition-opacity ml-auto signature-shadow"
       >
         Siguiente →
       </button>
@@ -386,10 +386,10 @@ function NavButtons({ onPrev, onNext }: { onPrev: () => void; onNext: () => void
 
 function LockedBanner({ text }: { text: string }) {
   return (
-    <div className="bg-denim/[0.05] border-2 border-denim/15 rounded-2xl p-8 text-center space-y-3">
+    <div className="bg-primary/[0.05] rounded-2xl p-8 text-center space-y-3 signature-shadow ghost-border">
       <div className="text-3xl">🔒</div>
-      <p className="text-negro font-heading">Se desbloquea al completar</p>
-      <p className="text-denim font-heading">{text}</p>
+      <p className="text-on-surface font-headline">Se desbloquea al completar</p>
+      <p className="text-primary font-headline">{text}</p>
     </div>
   );
 }

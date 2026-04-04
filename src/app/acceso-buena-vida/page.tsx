@@ -91,17 +91,18 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-crema flex flex-col">
+    <div className="min-h-screen bg-surface flex flex-col font-body">
       <nav className="flex items-center px-6 sm:px-10 py-5 max-w-6xl mx-auto w-full">
         <Link href="/" className="flex items-center gap-2.5">
-          <span className="text-2xl">🦍</span>
-          <span className="font-heading text-xl text-negro">Sistema de Buena Vida</span>
+          <img src="/gorilla-logo.png" alt="" className="w-7 h-7 rounded-lg bg-primary-container object-cover"
+            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+          <span className="font-headline text-xl font-bold text-on-surface">Sistema de Buena Vida</span>
         </Link>
       </nav>
 
       <div className="flex-1 flex items-center justify-center px-6 -mt-10">
         <div className="w-full max-w-md">
-          <div className="bg-white rounded-2xl shadow-card border border-borde/40 p-8 sm:p-10">
+          <div className="surface-card rounded-2xl signature-shadow p-8 sm:p-10">
 
             {/* ── Email sent confirmation ── */}
             {view === "email-sent" && (
@@ -130,14 +131,14 @@ export default function LoginPage() {
 
                 <form onSubmit={handleLogin}>
                   <label className="block text-sm font-semibold text-negro mb-1.5">Email</label>
-                  <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="tu@email.com" className="w-full px-4 py-3 border border-borde rounded-xl bg-crema text-negro placeholder:text-muted-light focus:outline-none focus:border-naranja transition-colors" />
+                  <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="tu@email.com" className="w-full px-4 py-3 border-none rounded-xl bg-surface-container-low text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/10 transition-all" />
 
                   <label className="block text-sm font-semibold text-negro mb-1.5 mt-4">Contraseña</label>
-                  <input type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Tu contraseña" className="w-full px-4 py-3 border border-borde rounded-xl bg-crema text-negro placeholder:text-muted-light focus:outline-none focus:border-naranja transition-colors" />
+                  <input type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Tu contraseña" className="w-full px-4 py-3 border-none rounded-xl bg-surface-container-low text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/10 transition-all" />
 
                   {error && <p className="text-danger text-sm mt-3">{error}</p>}
 
-                  <button type="submit" disabled={loading} className="w-full mt-5 bg-naranja text-white font-semibold py-3 rounded-xl hover:bg-naranja-hover transition-colors disabled:opacity-50">
+                  <button type="submit" disabled={loading} className="w-full mt-5 gradient-denim text-white font-semibold py-3 rounded-xl shadow-button hover:shadow-button-hover transition-all disabled:opacity-50">
                     {loading ? "Entrando..." : "Iniciar sesión →"}
                   </button>
                 </form>
@@ -152,7 +153,7 @@ export default function LoginPage() {
                 {/* Magic Link */}
                 <button
                   onClick={() => switchView("magic")}
-                  className="w-full border-2 border-borde text-negro font-medium py-3 rounded-xl hover:border-naranja/40 transition-colors text-sm flex items-center justify-center gap-2"
+                  className="w-full bg-surface-container-low text-on-surface font-medium py-3 rounded-xl hover:bg-surface-container transition-all text-sm flex items-center justify-center gap-2"
                 >
                   <span>✨</span> Entrar con enlace mágico
                 </button>
@@ -178,14 +179,14 @@ export default function LoginPage() {
 
                 <form onSubmit={handleSignUp}>
                   <label className="block text-sm font-semibold text-negro mb-1.5">Email</label>
-                  <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="tu@email.com" className="w-full px-4 py-3 border border-borde rounded-xl bg-crema text-negro placeholder:text-muted-light focus:outline-none focus:border-naranja transition-colors" />
+                  <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="tu@email.com" className="w-full px-4 py-3 border-none rounded-xl bg-surface-container-low text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/10 transition-all" />
 
                   <label className="block text-sm font-semibold text-negro mb-1.5 mt-4">Contraseña</label>
-                  <input type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Mínimo 6 caracteres" className="w-full px-4 py-3 border border-borde rounded-xl bg-crema text-negro placeholder:text-muted-light focus:outline-none focus:border-naranja transition-colors" />
+                  <input type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Mínimo 6 caracteres" className="w-full px-4 py-3 border-none rounded-xl bg-surface-container-low text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/10 transition-all" />
 
                   {error && <p className="text-danger text-sm mt-3">{error}</p>}
 
-                  <button type="submit" disabled={loading} className="w-full mt-5 bg-naranja text-white font-semibold py-3 rounded-xl hover:bg-naranja-hover transition-colors disabled:opacity-50">
+                  <button type="submit" disabled={loading} className="w-full mt-5 gradient-denim text-white font-semibold py-3 rounded-xl shadow-button hover:shadow-button-hover transition-all disabled:opacity-50">
                     {loading ? "Creando cuenta..." : "Crear cuenta →"}
                   </button>
                 </form>
@@ -208,11 +209,11 @@ export default function LoginPage() {
 
                 <form onSubmit={handleResetPassword}>
                   <label className="block text-sm font-semibold text-negro mb-1.5">Email</label>
-                  <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="tu@email.com" className="w-full px-4 py-3 border border-borde rounded-xl bg-crema text-negro placeholder:text-muted-light focus:outline-none focus:border-naranja transition-colors" />
+                  <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="tu@email.com" className="w-full px-4 py-3 border-none rounded-xl bg-surface-container-low text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/10 transition-all" />
 
                   {error && <p className="text-danger text-sm mt-3">{error}</p>}
 
-                  <button type="submit" disabled={loading} className="w-full mt-5 bg-naranja text-white font-semibold py-3 rounded-xl hover:bg-naranja-hover transition-colors disabled:opacity-50">
+                  <button type="submit" disabled={loading} className="w-full mt-5 gradient-denim text-white font-semibold py-3 rounded-xl shadow-button hover:shadow-button-hover transition-all disabled:opacity-50">
                     {loading ? "Enviando..." : "Enviar enlace →"}
                   </button>
                 </form>
@@ -235,11 +236,11 @@ export default function LoginPage() {
 
                 <form onSubmit={handleMagicLink}>
                   <label className="block text-sm font-semibold text-negro mb-1.5">Email</label>
-                  <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="tu@email.com" className="w-full px-4 py-3 border border-borde rounded-xl bg-crema text-negro placeholder:text-muted-light focus:outline-none focus:border-naranja transition-colors" />
+                  <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="tu@email.com" className="w-full px-4 py-3 border-none rounded-xl bg-surface-container-low text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/10 transition-all" />
 
                   {error && <p className="text-danger text-sm mt-3">{error}</p>}
 
-                  <button type="submit" disabled={loading} className="w-full mt-5 bg-naranja text-white font-semibold py-3 rounded-xl hover:bg-naranja-hover transition-colors disabled:opacity-50">
+                  <button type="submit" disabled={loading} className="w-full mt-5 gradient-denim text-white font-semibold py-3 rounded-xl shadow-button hover:shadow-button-hover transition-all disabled:opacity-50">
                     {loading ? "Enviando..." : "Enviar enlace mágico →"}
                   </button>
                 </form>

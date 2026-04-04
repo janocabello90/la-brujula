@@ -109,10 +109,10 @@ export default function IdeasClient({ userId, data, apiKey }: Props) {
 
   const statusColor = (s: string) => {
     switch (s) {
-      case "raw": return "bg-negro/[0.06] text-muted";
-      case "enriched": return "bg-naranja/10 text-naranja";
+      case "raw": return "bg-surface-low text-on-surface-variant";
+      case "enriched": return "bg-primary/10 text-primary";
       case "worked": return "bg-success/10 text-success";
-      default: return "bg-negro/[0.06] text-muted";
+      default: return "bg-surface-low text-on-surface-variant";
     }
   };
 
@@ -121,14 +121,14 @@ export default function IdeasClient({ userId, data, apiKey }: Props) {
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="font-heading text-3xl text-negro mb-1">Ideas</h1>
-          <p className="text-muted text-sm">
+          <h1 className="font-headline text-3xl text-on-surface mb-1">Ideas</h1>
+          <p className="text-on-surface-variant text-sm">
             Tu cajón de ideas. Apunta lo que se te ocurra y la IA lo conecta con tu estrategia.
           </p>
         </div>
 
         {/* Input */}
-        <div className="bg-white rounded-2xl border border-borde/60 p-4 mb-6">
+        <div className="surface-card signature-shadow rounded-2xl p-4 mb-6">
           <textarea
             ref={inputRef}
             value={newIdea}
@@ -140,17 +140,17 @@ export default function IdeasClient({ userId, data, apiKey }: Props) {
               }
             }}
             placeholder='Ej: "El síndrome del perfil bonito pero vacío", "Analogía de la pirámide de Keops"...'
-            className="w-full resize-none border-0 bg-transparent text-negro text-sm placeholder:text-muted/50 focus:outline-none leading-relaxed"
+            className="w-full resize-none border-0 bg-transparent text-on-surface text-sm placeholder:text-on-surface-variant/50 focus:outline-none leading-relaxed"
             rows={2}
           />
-          <div className="flex items-center justify-between mt-2 pt-2 border-t border-borde/40">
-            <span className="text-[11px] text-muted">
+          <div className="flex items-center justify-between mt-2 pt-2 border-t border-surface-mid">
+            <span className="text-[11px] text-on-surface-variant">
               Enter para guardar · Shift+Enter nueva línea
             </span>
             <button
               onClick={addIdea}
               disabled={saving || !newIdea.trim()}
-              className="bg-naranja text-white text-sm font-medium px-5 py-2 rounded-lg hover:bg-naranja-hover transition-colors disabled:opacity-40"
+              className="gradient-yellow text-on-surface text-sm font-medium px-5 py-2 rounded-xl shadow-button hover:opacity-90 transition-opacity disabled:opacity-40"
             >
               {saving ? "..." : "💡 Guardar idea"}
             </button>
@@ -163,10 +163,10 @@ export default function IdeasClient({ userId, data, apiKey }: Props) {
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`text-xs font-medium px-3 py-1.5 rounded-lg transition-colors ${
+              className={`text-xs font-medium px-3 py-1.5 rounded-full transition-colors ${
                 filter === f
-                  ? "bg-negro text-white"
-                  : "text-muted hover:text-negro hover:bg-negro/[0.04]"
+                  ? "gradient-denim text-white"
+                  : "surface-low text-on-surface-variant hover:text-on-surface"
               }`}
             >
               {f === "all" ? `Todas (${ideas.length})` :
@@ -180,7 +180,7 @@ export default function IdeasClient({ userId, data, apiKey }: Props) {
         {/* Ideas list */}
         <div className="space-y-3">
           {filteredIdeas.length === 0 && (
-            <div className="text-center py-12 text-muted text-sm">
+            <div className="text-center py-12 text-on-surface-variant text-sm">
               {ideas.length === 0
                 ? "Todavía no tienes ideas guardadas. Empieza a apuntar."
                 : "No hay ideas con este filtro."}
@@ -190,11 +190,11 @@ export default function IdeasClient({ userId, data, apiKey }: Props) {
           {filteredIdeas.map((idea) => (
             <div
               key={idea.id}
-              className="bg-white rounded-2xl border border-borde/60 p-5 hover:border-naranja/30 transition-colors"
+              className="surface-card signature-shadow rounded-2xl p-5 transition-colors"
             >
               {/* Top row */}
               <div className="flex items-start justify-between gap-3 mb-3">
-                <p className="text-sm text-negro font-medium leading-relaxed flex-1">
+                <p className="text-sm text-on-surface font-medium leading-relaxed flex-1">
                   {idea.text}
                 </p>
                 <span className={`flex-shrink-0 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${statusColor(idea.status)}`}>
@@ -204,17 +204,17 @@ export default function IdeasClient({ userId, data, apiKey }: Props) {
 
               {/* Enrichment result */}
               {idea.enrichment && (
-                <div className="bg-naranja/[0.04] border border-naranja/15 rounded-xl p-4 mb-3">
+                <div className="surface-low rounded-2xl p-4 mb-3">
                   <div className="flex flex-wrap gap-2 mb-2">
-                    <span className="pill pill-dark text-xs">{idea.enrichment.pilar}</span>
-                    <span className="pill pill-accent text-xs">{idea.enrichment.subtema}</span>
+                    <span className="surface-card text-xs px-2 py-1 rounded-lg text-on-surface font-medium">{idea.enrichment.pilar}</span>
+                    <span className="surface-card text-xs px-2 py-1 rounded-lg text-on-surface font-medium">{idea.enrichment.subtema}</span>
                   </div>
-                  <p className="text-xs text-negro/70 leading-relaxed mb-2">
+                  <p className="text-xs text-on-surface/70 leading-relaxed mb-2">
                     {idea.enrichment.conexion}
                   </p>
                   <div className="flex flex-wrap gap-1.5">
                     {idea.enrichment.angulos?.map((a, i) => (
-                      <span key={i} className="text-[10px] font-medium text-muted bg-negro/[0.04] px-2 py-0.5 rounded">
+                      <span key={i} className="text-[10px] font-medium text-on-surface-variant surface-base px-2 py-0.5 rounded">
                         {a}
                       </span>
                     ))}
@@ -228,7 +228,7 @@ export default function IdeasClient({ userId, data, apiKey }: Props) {
                   <button
                     onClick={() => enrichIdea(idea)}
                     disabled={enrichingId === idea.id}
-                    className="text-xs font-medium text-naranja hover:text-naranja-hover transition-colors disabled:opacity-50"
+                    className="text-xs font-medium text-primary hover:opacity-80 transition-opacity disabled:opacity-50"
                   >
                     {enrichingId === idea.id ? (
                       <span className="flex items-center gap-1.5">
@@ -242,18 +242,18 @@ export default function IdeasClient({ userId, data, apiKey }: Props) {
                 {(idea.status === "enriched" || idea.enrichment) && (
                   <Link
                     href={`/maestro?idea=${encodeURIComponent(idea.text)}&ideaId=${idea.id}&pilar=${encodeURIComponent(idea.enrichment?.pilar || "")}`}
-                    className="text-xs font-medium text-naranja hover:text-naranja-hover transition-colors"
+                    className="text-xs font-medium text-primary hover:opacity-80 transition-opacity"
                   >
                     🎯 Trabajar con el Maestro
                   </Link>
                 )}
                 <div className="flex-1" />
-                <span className="text-[10px] text-muted">
+                <span className="text-[10px] text-on-surface-variant">
                   {new Date(idea.created_at).toLocaleDateString("es-ES", { day: "numeric", month: "short" })}
                 </span>
                 <button
                   onClick={() => deleteIdea(idea.id)}
-                  className="text-[10px] text-muted hover:text-danger transition-colors ml-1"
+                  className="text-[10px] text-on-surface-variant hover:text-danger transition-colors ml-1"
                 >
                   ✕
                 </button>

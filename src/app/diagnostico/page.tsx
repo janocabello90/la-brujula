@@ -145,8 +145,8 @@ const RESULTS = [
       "Probablemente tienes una idea intuitiva de quién eres y a quién ayudas, pero no lo has aterrizado. Tu marca funciona a ratos porque a ratos te sale bien, pero no de forma predecible. Lo que te falta no es más información — es método.",
     action:
       "Tu siguiente paso: trabaja la conexión entre niveles. Que tus valores definan tu mercado, y tu mercado defina tu estrategia. No al revés. Las herramientas del Sistema están diseñadas exactamente para esto.",
-    color: "text-naranja",
-    bg: "bg-naranja",
+    color: "text-primary",
+    bg: "bg-primary-container",
   },
   {
     min: 7,
@@ -231,12 +231,12 @@ function DiagnosticoQuiz() {
   };
 
   return (
-    <div className="min-h-screen bg-crema">
+    <div className="min-h-screen bg-surface">
       {/* Nav */}
       <nav className="flex items-center justify-between px-6 sm:px-10 py-5 max-w-4xl mx-auto">
         <a href="/" className="flex items-center gap-2.5">
           <span className="text-2xl">🎓</span>
-          <span className="font-heading text-xl font-semibold text-negro tracking-tight">
+          <span className="font-headline text-xl font-semibold text-on-surface tracking-tight">
             El Sistema de Buena Vida
           </span>
         </a>
@@ -247,14 +247,14 @@ function DiagnosticoQuiz() {
         {step < 6 && (
           <div className="mb-10">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-xs font-bold text-naranja uppercase tracking-widest">
+              <span className="text-xs font-bold text-primary uppercase tracking-widest">
                 {step < 5 ? `Pregunta ${step + 1} de 5` : "Último paso"}
               </span>
-              <span className="text-xs text-muted">{progress}%</span>
+              <span className="text-xs text-on-surface-variant">{progress}%</span>
             </div>
             <div className="w-full h-1.5 bg-negro/[0.06] rounded-full overflow-hidden">
               <div
-                className="h-full bg-naranja rounded-full transition-all duration-500 ease-out"
+                className="h-full bg-primary-container rounded-full transition-all duration-500 ease-out"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -267,11 +267,11 @@ function DiagnosticoQuiz() {
             className={`transition-all duration-300 ${animating ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"}`}
           >
             <div className="mb-2">
-              <span className="text-naranja text-[11px] font-bold uppercase tracking-widest">
+              <span className="text-primary text-[11px] font-bold uppercase tracking-widest">
                 {QUESTIONS[step].level}
               </span>
             </div>
-            <h2 className="font-heading text-2xl sm:text-3xl text-negro leading-snug mb-8">
+            <h2 className="font-headline text-2xl sm:text-3xl text-on-surface leading-snug mb-8">
               {QUESTIONS[step].question}
             </h2>
             <div className="space-y-3">
@@ -279,13 +279,13 @@ function DiagnosticoQuiz() {
                 <button
                   key={opt.letter}
                   onClick={() => handleAnswer(opt.points)}
-                  className="w-full text-left bg-white rounded-xl border border-borde/40 p-5 hover:border-naranja/40 hover:shadow-card transition-all group"
+                  className="w-full text-left bg-white rounded-xl border border-outline/40 p-5 hover:border-naranja/40 hover:shadow-card transition-all group"
                 >
                   <div className="flex gap-4">
-                    <span className="flex-shrink-0 w-8 h-8 rounded-lg bg-negro/[0.04] group-hover:bg-naranja/10 flex items-center justify-center text-sm font-bold text-negro/40 group-hover:text-naranja transition-colors">
+                    <span className="flex-shrink-0 w-8 h-8 rounded-lg bg-negro/[0.04] group-hover:bg-primary-container/10 flex items-center justify-center text-sm font-bold text-on-surface/40 group-hover:text-primary transition-colors">
                       {opt.letter}
                     </span>
-                    <p className="text-sm text-negro/80 leading-relaxed pt-1">
+                    <p className="text-sm text-on-surface/80 leading-relaxed pt-1">
                       {opt.text}
                     </p>
                   </div>
@@ -298,13 +298,13 @@ function DiagnosticoQuiz() {
         {/* Email step (step 5) */}
         {step === 5 && (
           <div className="text-center">
-            <div className="w-16 h-16 rounded-2xl bg-naranja/10 flex items-center justify-center text-3xl mx-auto mb-6">
+            <div className="w-16 h-16 rounded-2xl bg-primary-container/10 flex items-center justify-center text-3xl mx-auto mb-6">
               🔺
             </div>
-            <h2 className="font-heading text-2xl sm:text-3xl text-negro mb-3">
+            <h2 className="font-headline text-2xl sm:text-3xl text-on-surface mb-3">
               Tu diagnóstico está listo.
             </h2>
-            <p className="text-muted text-base mb-8 max-w-md mx-auto">
+            <p className="text-on-surface-variant text-base mb-8 max-w-md mx-auto">
               Deja tu email para ver tu resultado completo y recibir una guía
               con los pasos concretos para desbloquear tu marca.
             </p>
@@ -318,18 +318,18 @@ function DiagnosticoQuiz() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="tu@email.com"
-                className="flex-1 px-4 py-3 rounded-xl border border-borde/60 bg-white text-negro text-sm focus:outline-none focus:border-naranja focus:ring-2 focus:ring-naranja/20 transition-all"
+                className="flex-1 px-4 py-3 rounded-xl border border-outline/60 bg-white text-on-surface text-sm focus:outline-none focus:border-naranja focus:ring-2 focus:ring-naranja/20 transition-all"
               />
               <button
                 type="submit"
                 disabled={sending}
-                className="inline-flex items-center justify-center gap-2 bg-naranja text-white font-semibold px-6 py-3 rounded-xl hover:bg-naranja-hover transition-colors text-sm disabled:opacity-60"
+                className="inline-flex items-center justify-center gap-2 bg-primary-container text-white font-semibold px-6 py-3 rounded-xl hover:bg-primary-container-hover transition-colors text-sm disabled:opacity-60"
               >
                 {sending ? "Enviando..." : "Ver mi resultado"}
               </button>
             </form>
-            <p className="text-xs text-muted/60">
-              <span className="text-naranja/60">✓</span> Sin spam · Te envío el
+            <p className="text-xs text-on-surface-variant/60">
+              <span className="text-primary/60">✓</span> Sin spam · Te envío el
               diagnóstico completo en PDF
             </p>
           </div>
@@ -363,37 +363,37 @@ function DiagnosticoQuiz() {
                   />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="font-heading text-3xl text-negro">
+                  <span className="font-headline text-3xl text-on-surface">
                     {totalScore}
                   </span>
-                  <span className="text-xs text-muted">/10</span>
+                  <span className="text-xs text-on-surface-variant">/10</span>
                 </div>
               </div>
-              <h2 className="font-heading text-2xl sm:text-3xl text-negro mb-2">
+              <h2 className="font-headline text-2xl sm:text-3xl text-on-surface mb-2">
                 {result.title}
               </h2>
-              <p className="text-muted text-base italic">{result.subtitle}</p>
+              <p className="text-on-surface-variant text-base italic">{result.subtitle}</p>
             </div>
 
             {/* Level breakdown */}
-            <div className="bg-white rounded-2xl border border-borde/40 p-6 sm:p-8 mb-6">
-              <p className="text-[11px] font-bold text-negro/40 uppercase tracking-widest mb-5">
+            <div className="bg-white rounded-2xl border border-outline/40 p-6 sm:p-8 mb-6">
+              <p className="text-[11px] font-bold text-on-surface/40 uppercase tracking-widest mb-5">
                 Tu puntuación por nivel
               </p>
               <div className="space-y-4">
                 {QUESTIONS.map((q, i) => (
                   <div key={q.level}>
                     <div className="flex justify-between items-center mb-1.5">
-                      <span className="text-sm font-medium text-negro">
+                      <span className="text-sm font-medium text-on-surface">
                         {q.level}
                       </span>
-                      <span className="text-xs text-muted">
+                      <span className="text-xs text-on-surface-variant">
                         {answers[i]}/2
                       </span>
                     </div>
                     <div className="w-full h-2 bg-negro/[0.06] rounded-full overflow-hidden">
                       <div
-                        className={`h-full rounded-full transition-all duration-700 ${answers[i] === 2 ? "bg-green-400" : answers[i] === 1 ? "bg-naranja" : "bg-red-400"}`}
+                        className={`h-full rounded-full transition-all duration-700 ${answers[i] === 2 ? "bg-green-400" : answers[i] === 1 ? "bg-primary-container" : "bg-red-400"}`}
                         style={{ width: `${(answers[i] / 2) * 100}%` }}
                       />
                     </div>
@@ -403,12 +403,12 @@ function DiagnosticoQuiz() {
             </div>
 
             {/* Interpretation */}
-            <div className="bg-white rounded-2xl border border-borde/40 p-6 sm:p-8 mb-6">
-              <p className="text-sm text-negro/70 leading-relaxed mb-5">
+            <div className="bg-white rounded-2xl border border-outline/40 p-6 sm:p-8 mb-6">
+              <p className="text-sm text-on-surface/70 leading-relaxed mb-5">
                 {result.description}
               </p>
-              <div className="bg-crema rounded-xl p-5 border border-borde/30">
-                <p className="text-sm text-negro font-medium leading-relaxed">
+              <div className="bg-surface rounded-xl p-5 border border-outline/30">
+                <p className="text-sm text-on-surface font-medium leading-relaxed">
                   {result.action}
                 </p>
               </div>
@@ -416,7 +416,7 @@ function DiagnosticoQuiz() {
 
             {/* CTA */}
             <div className="bg-negro rounded-2xl p-8 sm:p-10 text-center">
-              <h3 className="font-heading text-xl sm:text-2xl text-white mb-3">
+              <h3 className="font-headline text-xl sm:text-2xl text-white mb-3">
                 ¿Quieres construirla bien?
               </h3>
               <p className="text-white/50 text-sm mb-6 max-w-md mx-auto">
@@ -428,7 +428,7 @@ function DiagnosticoQuiz() {
                 href={SKOOL_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-naranja text-white font-semibold px-8 py-4 rounded-xl hover:bg-naranja-hover transition-colors text-sm"
+                className="inline-flex items-center gap-2 bg-primary-container text-white font-semibold px-8 py-4 rounded-xl hover:bg-primary-container-hover transition-colors text-sm"
               >
                 Unirme a la comunidad — 39$/mes
                 <svg
@@ -457,7 +457,7 @@ function DiagnosticoQuiz() {
                   setStep(0);
                   setAnswers([]);
                 }}
-                className="text-sm text-muted hover:text-negro transition-colors"
+                className="text-sm text-on-surface-variant hover:text-on-surface transition-colors"
               >
                 Repetir el diagnóstico
               </button>
@@ -467,20 +467,20 @@ function DiagnosticoQuiz() {
       </div>
 
       {/* Footer */}
-      <footer className="border-t border-borde/30 py-6 mt-10">
+      <footer className="border-t border-outline/30 py-6 mt-10">
         <div className="max-w-4xl mx-auto px-6 sm:px-10 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-muted/60">
+          <p className="text-xs text-on-surface-variant/60">
             Jano Cabello ·{" "}
             <a
               href="https://janocabello.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-naranja/60 hover:text-naranja"
+              className="text-primary/60 hover:text-primary"
             >
               janocabello.com
             </a>
           </p>
-          <p className="text-xs text-muted/40 italic">
+          <p className="text-xs text-on-surface-variant/40 italic">
             &ldquo;Tu marca personal no es tu escaparate en redes — es el
             vehículo para vivir una buena vida.&rdquo;
           </p>
@@ -494,8 +494,8 @@ export default function DiagnosticoPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-crema flex items-center justify-center">
-          <div className="animate-pulse text-muted">Cargando diagnóstico...</div>
+        <div className="min-h-screen bg-surface flex items-center justify-center">
+          <div className="animate-pulse text-on-surface-variant">Cargando diagnóstico...</div>
         </div>
       }
     >

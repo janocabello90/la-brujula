@@ -4,41 +4,44 @@ export default function Home() {
   const SKOOL_URL = "https://www.skool.com/una-buena-vida-comunidad-2471";
 
   return (
-    <div className="min-h-screen bg-crema overflow-hidden">
-      {/* ─── Nav ─────────────────────────────────────────── */}
-      <nav className="relative z-10 flex items-center justify-between px-6 sm:px-10 py-5 max-w-6xl mx-auto">
-        <div className="flex items-center gap-2.5">
-          <span className="text-2xl">🦍</span>
-          <span className="font-heading text-xl font-semibold text-negro tracking-tight">
-            Sistema de Buena Vida
-          </span>
+    <div className="min-h-screen bg-surface overflow-hidden font-body">
+      {/* ─── Nav — Floating pill with glassmorphism ──────── */}
+      <nav className="sticky top-4 z-50 max-w-3xl mx-auto px-6">
+        <div className="glass signature-shadow rounded-2xl flex items-center justify-between px-5 py-3">
+          <div className="flex items-center gap-2.5">
+            <img src="/gorilla-logo.png" alt="" className="w-7 h-7 rounded-lg bg-primary-container object-cover"
+              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+            <span className="font-headline text-lg font-bold text-on-surface tracking-tight">
+              Sistema de Buena Vida
+            </span>
+          </div>
+          <a
+            href="https://janocabello.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-on-surface-variant hover:text-primary transition-colors hidden sm:block"
+          >
+            janocabello.com
+          </a>
         </div>
-        <a
-          href="https://janocabello.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sm text-muted hover:text-negro transition-colors hidden sm:block"
-        >
-          janocabello.com
-        </a>
       </nav>
 
       {/* ─── Hero: El gancho emocional ──────────────────── */}
-      <section className="relative max-w-6xl mx-auto px-6 sm:px-10 pt-10 sm:pt-20 pb-16 sm:pb-24">
-        <div className="absolute top-0 right-0 w-72 h-72 sm:w-96 sm:h-96 bg-denim/[0.06] rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-60 h-60 sm:w-80 sm:h-80 bg-amarillo/[0.08] rounded-full blur-3xl translate-y-1/3 -translate-x-1/4 pointer-events-none" />
+      <section className="relative max-w-6xl mx-auto px-6 sm:px-10 pt-14 sm:pt-24 pb-16 sm:pb-24">
+        <div className="absolute top-0 right-0 w-72 h-72 sm:w-96 sm:h-96 bg-primary/[0.04] rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-60 h-60 sm:w-80 sm:h-80 bg-secondary-container/[0.08] rounded-full blur-3xl translate-y-1/3 -translate-x-1/4 pointer-events-none" />
 
         <div className="relative max-w-3xl mx-auto text-center">
-          <p className="inline-block text-xs font-bold text-naranja uppercase tracking-widest bg-naranja/[0.08] px-3 py-1.5 rounded-full mb-6">
+          <p className="inline-block text-xs font-bold text-primary uppercase tracking-widest bg-primary/[0.06] px-3 py-1.5 rounded-full mb-6">
             Acceso exclusivo para miembros
           </p>
-          <h1 className="font-heading text-4xl sm:text-5xl lg:text-[3.5rem] text-negro leading-[1.1] mb-6">
-            La mayoría construye su marca personal al revés.
+          <h1 className="font-headline text-4xl sm:text-5xl lg:text-[3.5rem] text-on-surface leading-[1.1] mb-6">
+            Construye tu Marca Personal <em className="not-italic text-secondary-container">de abajo arriba</em>
           </h1>
-          <p className="text-base sm:text-lg text-negro/70 leading-relaxed mb-4 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-on-surface/70 leading-relaxed mb-4 max-w-2xl mx-auto">
             Empiezan por la estrategia, por el contenido, por lo que &ldquo;funciona en redes&rdquo;. Y luego se preguntan por qué no conectan, por qué no venden, por qué no sienten que eso que publican tenga algo que ver con lo que son.
           </p>
-          <p className="text-base sm:text-lg text-negro/70 leading-relaxed mb-8 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-on-surface/70 leading-relaxed mb-8 max-w-2xl mx-auto">
             El Sistema de Buena Vida existe para construirla desde abajo. Desde quien eres de verdad. Con método, herramientas y una comunidad de personas que piensan como tú.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
@@ -46,7 +49,7 @@ export default function Home() {
               href={SKOOL_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-naranja text-white font-semibold px-7 py-3.5 rounded-xl hover:bg-naranja-hover transition-colors text-sm"
+              className="inline-flex items-center gap-2 gradient-denim text-white font-semibold px-7 py-3.5 rounded-xl hover:shadow-button-hover transition-all text-sm shadow-button"
             >
               Unirme a la comunidad
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -55,7 +58,7 @@ export default function Home() {
             </a>
             <a
               href="/diagnostico"
-              className="inline-flex items-center gap-2 border-2 border-naranja/40 text-naranja font-semibold px-7 py-3.5 rounded-xl hover:bg-naranja/[0.06] hover:border-naranja/60 transition-colors text-sm"
+              className="inline-flex items-center gap-2 surface-card signature-shadow text-primary font-semibold px-7 py-3.5 rounded-xl hover:shadow-card-hover transition-all text-sm"
             >
               Descubre tu nivel (gratis)
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -80,21 +83,21 @@ export default function Home() {
       </section>
 
       {/* ─── El problema ───────────────────────────────── */}
-      <section id="el-problema" className="bg-negro py-16 sm:py-24">
+      <section id="el-problema" className="bg-inverse-surface py-16 sm:py-24">
         <div className="max-w-3xl mx-auto px-6 sm:px-10">
-          <p className="text-naranja text-xs font-bold uppercase tracking-widest mb-6">El problema</p>
-          <h2 className="font-heading text-3xl sm:text-4xl text-white leading-snug mb-8">
+          <p className="text-secondary-container text-xs font-bold uppercase tracking-widest mb-6">El problema</p>
+          <h2 className="font-headline text-3xl sm:text-4xl text-inverse-on-surface leading-snug mb-8">
             Las redes te dicen qué publicar.<br />
             Nadie te pregunta quién eres.
           </h2>
-          <div className="space-y-5 text-white/60 text-base leading-relaxed">
+          <div className="space-y-5 text-inverse-on-surface/60 text-base leading-relaxed">
             <p>
               Hay miles de herramientas de contenido, calendarios editoriales, plantillas de &ldquo;copy que convierte&rdquo; y cursos de &ldquo;cómo crecer en LinkedIn&rdquo;. Y aun así, la mayoría de profesionales con cosas valiosas que decir siguen sintiéndose invisibles. O peor: visibles pero incoherentes.
             </p>
             <p>
               El problema no es que te falte una herramienta. Es que estás empezando la pirámide por arriba.
             </p>
-            <p className="text-white/80 font-medium">
+            <p className="text-inverse-on-surface/80 font-medium">
               Primero defines quién eres. Después, qué comunicas. Y al final — solo al final — cómo lo haces.
             </p>
             <p>
@@ -148,15 +151,15 @@ export default function Home() {
       </section>
 
       {/* ─── Quote de Jano ─────────────────────────────── */}
-      <section className="bg-white border-y border-borde/40">
+      <section className="surface-card">
         <div className="max-w-3xl mx-auto px-6 sm:px-10 py-14 sm:py-20 text-center">
-          <p className="font-heading text-2xl sm:text-3xl text-negro/90 italic leading-snug mb-5">
+          <p className="font-headline text-2xl sm:text-3xl text-on-surface/90 italic leading-snug mb-5">
             &ldquo;Las herramientas sin método son ruido. El método sin herramientas es filosofía que no aterriza. Necesitas las dos cosas.&rdquo;
           </p>
           <div className="flex items-center justify-center gap-3">
-            <div className="w-8 h-[1px] bg-naranja/50" />
-            <p className="text-naranja text-sm font-semibold">Jano Cabello</p>
-            <div className="w-8 h-[1px] bg-naranja/50" />
+            <div className="w-8 h-[1px] bg-primary/30" />
+            <p className="text-primary text-sm font-semibold">Jano Cabello</p>
+            <div className="w-8 h-[1px] bg-primary/30" />
           </div>
         </div>
       </section>
@@ -200,10 +203,10 @@ export default function Home() {
           ].map((tool) => (
             <div
               key={tool.title}
-              className="bg-white rounded-2xl p-6 sm:p-8 border border-borde/40 hover:border-naranja/30 hover:shadow-card transition-all group relative"
+              className="surface-card rounded-2xl p-6 sm:p-8 signature-shadow hover:shadow-card-hover transition-all group relative"
             >
               <span
-                className="absolute top-4 right-4 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-naranja/15 text-naranja"
+                className="absolute top-4 right-4 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-primary/10 text-primary"
               >
                 {tool.tag}
               </span>
@@ -260,7 +263,7 @@ export default function Home() {
       </section>
 
       {/* ─── Y además... ───────────────────────────────── */}
-      <section className="bg-white border-y border-borde/60">
+      <section className="surface-card">
         <div className="max-w-6xl mx-auto px-6 sm:px-10 py-16 sm:py-24">
           <div className="text-center mb-12">
             <p className="text-xs font-bold text-naranja uppercase tracking-widest mb-3">Y además</p>
@@ -272,9 +275,9 @@ export default function Home() {
           <div className="space-y-6">
             {/* Las Rutas + El Espejo */}
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-crema rounded-2xl p-7 sm:p-9 border border-borde/40">
+              <div className="surface-low rounded-2xl p-7 sm:p-9">
                 <div className="flex items-center gap-3 mb-4">
-                  <span className="w-10 h-10 rounded-xl bg-naranja/10 flex items-center justify-center text-xl">🗺️</span>
+                  <span className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-xl">🗺️</span>
                   <h3 className="font-heading text-xl text-negro">Las Rutas</h3>
                   <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-naranja/15 text-naranja">Nuevo</span>
                 </div>
@@ -288,7 +291,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="bg-gradient-to-br from-negro to-negro/95 rounded-2xl p-7 sm:p-9">
+              <div className="gradient-hero rounded-2xl p-7 sm:p-9">
                 <div className="flex items-center gap-3 mb-4">
                   <span className="w-10 h-10 rounded-xl bg-naranja/20 flex items-center justify-center text-xl">🪞</span>
                   <h3 className="font-heading text-xl text-white">El Espejo</h3>
@@ -305,9 +308,9 @@ export default function Home() {
 
             {/* Maestro + Planificador */}
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-crema rounded-2xl p-7 sm:p-9 border border-borde/40">
+              <div className="surface-low rounded-2xl p-7 sm:p-9">
                 <div className="flex items-center gap-3 mb-4">
-                  <span className="w-10 h-10 rounded-xl bg-naranja/10 flex items-center justify-center text-xl">🎯</span>
+                  <span className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-xl">🎯</span>
                   <h3 className="font-heading text-xl text-negro">El Maestro</h3>
                 </div>
                 <p className="text-sm text-muted leading-relaxed mb-4">
@@ -320,9 +323,9 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="bg-crema rounded-2xl p-7 sm:p-9 border border-borde/40">
+              <div className="surface-low rounded-2xl p-7 sm:p-9">
                 <div className="flex items-center gap-3 mb-4">
-                  <span className="w-10 h-10 rounded-xl bg-naranja/10 flex items-center justify-center text-xl">📅</span>
+                  <span className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-xl">📅</span>
                   <h3 className="font-heading text-xl text-negro">El Planificador</h3>
                 </div>
                 <p className="text-sm text-muted leading-relaxed mb-4">
@@ -338,14 +341,14 @@ export default function Home() {
 
             {/* Ideas + Piezas */}
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-crema rounded-2xl p-6 border border-borde/40">
+              <div className="surface-low rounded-2xl p-6">
                 <span className="text-2xl block mb-3">💡</span>
                 <h4 className="font-heading text-lg text-negro mb-2">Banco de Ideas</h4>
                 <p className="text-xs text-muted leading-relaxed">
                   Captura ideas al vuelo, enriquécelas con IA y conviértelas en piezas de contenido listas para producir. Tu semillero creativo siempre abierto.
                 </p>
               </div>
-              <div className="bg-crema rounded-2xl p-6 border border-borde/40">
+              <div className="surface-low rounded-2xl p-6">
                 <span className="text-2xl block mb-3">📝</span>
                 <h4 className="font-heading text-lg text-negro mb-2">Piezas Guardadas</h4>
                 <p className="text-xs text-muted leading-relaxed">
@@ -358,7 +361,7 @@ export default function Home() {
       </section>
 
       {/* ─── Captación de email — Lead Magnet ──────────── */}
-      <section className="bg-[#ede8df] border-y border-borde/40">
+      <section className="surface-mid">
         <div className="max-w-3xl mx-auto px-6 sm:px-10 py-14 sm:py-20 text-center">
           <p className="text-naranja text-xs font-bold uppercase tracking-widest mb-4">Diagnóstico gratuito</p>
           <h2 className="font-heading text-3xl sm:text-4xl text-negro mb-4 leading-snug">
@@ -393,7 +396,7 @@ export default function Home() {
               type="email"
               required
               placeholder="tu@email.com"
-              className="flex-1 px-4 py-3 rounded-xl border border-borde/60 bg-white text-negro text-sm focus:outline-none focus:border-naranja focus:ring-2 focus:ring-naranja/20 transition-all"
+              className="flex-1 px-4 py-3 rounded-xl border-none bg-surface-container-low text-on-surface text-sm focus:outline-none focus:ring-2 focus:ring-primary/10 transition-all"
             />
             <button
               type="submit"
@@ -443,7 +446,7 @@ export default function Home() {
               role: "Emprendedor y estratega creativo",
             },
           ].map((t, i) => (
-            <div key={i} className="bg-white rounded-2xl p-6 sm:p-7 border border-borde/40">
+            <div key={i} className="surface-card rounded-2xl p-6 sm:p-7 signature-shadow">
               <div className="flex gap-1 mb-4">
                 {[1, 2, 3, 4, 5].map((s) => (
                   <span key={s} className="text-amarillo text-sm">★</span>
@@ -462,7 +465,7 @@ export default function Home() {
       </section>
 
       {/* ─── Quién soy ──────────────────────────────────── */}
-      <section className="bg-white border-y border-borde/60">
+      <section className="surface-card">
         <div className="max-w-6xl mx-auto px-6 sm:px-10 py-16 sm:py-24">
           <div className="grid md:grid-cols-5 gap-10 items-center">
             <div className="md:col-span-3">
@@ -524,11 +527,11 @@ export default function Home() {
         </div>
 
         <div className="max-w-3xl mx-auto">
-          <div className="bg-white rounded-3xl border-2 border-denim/20 shadow-card p-8 sm:p-10 relative overflow-hidden">
+          <div className="surface-card rounded-3xl signature-shadow p-8 sm:p-10 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-40 h-40 bg-amarillo/[0.10] rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
 
             <div className="relative">
-              <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8 pb-8 border-b border-borde/40">
+              <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8 pb-8 border-b border-surface-container-high">
                 <div>
                   <h3 className="font-heading text-2xl sm:text-3xl text-negro mb-1">Comunidad Buena Vida</h3>
                   <p className="text-sm text-muted">Método + herramientas + comunidad + acompañamiento</p>
@@ -581,7 +584,7 @@ export default function Home() {
       </section>
 
       {/* ─── CTA final ───────────────────────────────────── */}
-      <section className="bg-negro">
+      <section className="bg-inverse-surface">
         <div className="max-w-3xl mx-auto px-6 sm:px-10 py-16 sm:py-24 text-center">
           <p className="text-naranja text-xs font-bold uppercase tracking-widest mb-6">39$/mes · Cancela cuando quieras</p>
           <h2 className="font-heading text-3xl sm:text-4xl text-white mb-5 leading-snug">
@@ -609,7 +612,7 @@ export default function Home() {
       </section>
 
       {/* ─── Footer ──────────────────────────────────────── */}
-      <footer className="bg-negro border-t border-white/[0.06] py-8">
+      <footer className="bg-inverse-surface py-8">
         <div className="max-w-6xl mx-auto px-6 sm:px-10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <span className="text-lg">🦍</span>

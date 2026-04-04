@@ -425,15 +425,15 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
       <AppShell>
         <div className="max-w-3xl mx-auto">
           <div className="mb-8">
-            <h1 className="font-heading text-3xl text-negro mb-1">El Entrevistador</h1>
-            <p className="text-muted text-sm">Tu podcast privado. Practica tu relato, descubre tus mejores frases.</p>
+            <h1 className="font-headline text-3xl text-on-surface mb-1">El Entrevistador</h1>
+            <p className="text-on-surface-variant text-sm">Tu podcast privado. Practica tu relato, descubre tus mejores frases.</p>
           </div>
 
-          <div className="bg-naranja/10 border border-naranja/30 rounded-xl p-6 text-center">
-            <p className="text-negro mb-4">
+          <div className="surface-card signature-shadow rounded-2xl p-6 text-center">
+            <p className="text-on-surface mb-4">
               Para usar El Entrevistador necesitas una API Key de Anthropic. Configúrala en Ajustes.
             </p>
-            <Link href="/settings" className="inline-block bg-naranja text-white px-6 py-2 rounded-lg font-medium hover:bg-naranja-hover transition-colors">
+            <Link href="/settings" className="inline-block gradient-denim text-white px-6 py-2 rounded-lg font-medium hover:opacity-90 transition-opacity">
               Ir a Ajustes
             </Link>
           </div>
@@ -446,18 +446,18 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
     <AppShell>
       <div className="max-w-3xl mx-auto">
         <div className="mb-8">
-          <h1 className="font-heading text-3xl text-negro mb-1">El Entrevistador</h1>
-          <p className="text-muted text-sm">Tu podcast privado. Practica tu relato, descubre tus mejores frases.</p>
+          <h1 className="font-headline text-3xl text-on-surface mb-1">El Entrevistador</h1>
+          <p className="text-on-surface-variant text-sm">Tu podcast privado. Practica tu relato, descubre tus mejores frases.</p>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-6 mb-6 border-b border-borde">
+        <div className="flex gap-6 mb-6 border-b border-outline">
           <button
             onClick={() => setActiveTab("entrevista")}
             className={`pb-3 font-medium text-sm transition-colors ${
               activeTab === "entrevista"
-                ? "border-b-2 border-naranja text-naranja"
-                : "text-muted hover:text-negro"
+                ? "border-b-2 border-primary text-primary"
+                : "text-on-surface-variant hover:text-on-surface"
             }`}
           >
             Entrevista
@@ -466,8 +466,8 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
             onClick={() => setActiveTab("frases")}
             className={`pb-3 font-medium text-sm transition-colors ${
               activeTab === "frases"
-                ? "border-b-2 border-naranja text-naranja"
-                : "text-muted hover:text-negro"
+                ? "border-b-2 border-primary text-primary"
+                : "text-on-surface-variant hover:text-on-surface"
             }`}
           >
             Mis Frases
@@ -479,21 +479,21 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
           <div>
             {!hasStarted ? (
               <div>
-                <h3 className="text-sm font-semibold text-negro mb-4">Elige tu estilo de entrevista</h3>
+                <h3 className="text-sm font-semibold text-on-surface mb-4">Elige tu estilo de entrevista</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                   {ESTILOS.map((estilo) => (
                     <div
                       key={estilo.id}
                       onClick={() => setSelectedEstilo(estilo.id)}
-                      className={`cursor-pointer p-4 rounded-xl border-2 transition-all ${
+                      className={`cursor-pointer p-4 rounded-xl transition-all ${
                         selectedEstilo === estilo.id
-                          ? "border-naranja bg-naranja/10"
-                          : "border-borde hover:border-borde/80"
+                          ? "surface-card signature-shadow ring-2 ring-primary/20"
+                          : "surface-low hover:surface-container-low"
                       }`}
                     >
                       <div className="text-2xl mb-2">{estilo.icon}</div>
-                      <h4 className="font-semibold text-negro mb-1">{estilo.name}</h4>
-                      <p className="text-xs text-muted leading-relaxed">{estilo.desc}</p>
+                      <h4 className="font-semibold text-on-surface mb-1">{estilo.name}</h4>
+                      <p className="text-xs text-on-surface-variant leading-relaxed">{estilo.desc}</p>
                     </div>
                   ))}
                 </div>
@@ -501,7 +501,7 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
                 <button
                   onClick={startInterview}
                   disabled={!selectedEstilo || loading}
-                  className="w-full bg-naranja text-white font-semibold py-3.5 rounded-lg hover:bg-naranja-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="w-full gradient-denim text-white font-semibold py-3.5 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   🎙️ Empezar entrevista
                 </button>
@@ -516,10 +516,10 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
                       className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                     >
                       <div
-                        className={`max-w-xs sm:max-w-md px-4 py-3 rounded-xl ${
+                        className={`max-w-xs sm:max-w-md px-4 py-3 rounded-2xl ${
                           msg.role === "user"
-                            ? "bg-naranja/10 border border-naranja/30 text-negro"
-                            : "bg-white border border-borde text-negro"
+                            ? "gradient-denim text-white"
+                            : "surface-low text-on-surface"
                         }`}
                       >
                         {msg.role === "assistant" ? (
@@ -535,10 +535,10 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
 
                   {loading && (
                     <div className="flex justify-start">
-                      <div className="bg-white border border-borde rounded-xl px-4 py-3">
+                      <div className="surface-low rounded-2xl px-4 py-3">
                         <div className="flex items-center gap-2">
                           <div className="animate-pulse text-2xl">🎙️</div>
-                          <p className="text-sm text-muted">El Entrevistador está escuchando...</p>
+                          <p className="text-sm text-on-surface-variant">El Entrevistador está escuchando...</p>
                         </div>
                       </div>
                     </div>
@@ -549,8 +549,8 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
 
                 {/* Interim transcript indicator */}
                 {isListening && interimTranscript && (
-                  <div className="px-3 py-1.5 bg-red-50 border border-red-200 rounded-lg mb-2">
-                    <p className="text-xs text-red-400 italic">{interimTranscript}...</p>
+                  <div className="px-3 py-1.5 surface-low rounded-lg mb-2 border border-primary/20">
+                    <p className="text-xs text-primary italic">{interimTranscript}...</p>
                   </div>
                 )}
 
@@ -562,8 +562,8 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
                       disabled={loading}
                       className={`flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center transition-all ${
                         isListening
-                          ? "bg-red-500 text-white animate-pulse shadow-lg shadow-red-500/30"
-                          : "bg-negro/5 border border-negro/10 text-negro hover:bg-negro/10"
+                          ? "bg-error text-white animate-pulse shadow-lg shadow-error/30"
+                          : "surface-container-low text-on-surface hover:surface-container"
                       } disabled:opacity-40 disabled:cursor-not-allowed`}
                       title={isListening ? "Parar dictado" : "Dictar con voz"}
                     >
@@ -599,9 +599,7 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
                     placeholder={isListening ? "Escuchando... habla ahora. Extiéndete todo lo que quieras." : "Tu respuesta... (Shift+Enter para nueva línea)"}
                     disabled={loading}
                     rows={2}
-                    className={`flex-1 px-4 py-3 border rounded-lg bg-white text-negro placeholder:text-muted focus:outline-none focus:border-naranja disabled:opacity-50 resize-none overflow-y-auto ${
-                      isListening ? "border-red-300 bg-red-50/30" : "border-borde"
-                    }`}
+                    className="flex-1 px-4 py-3 bg-surface-container-low border-none rounded-xl text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:ring-2 focus:ring-primary/10 disabled:opacity-50 resize-none overflow-y-auto"
                     style={{ maxHeight: "200px" }}
                   />
                   <button
@@ -610,13 +608,13 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
                       sendMessage();
                     }}
                     disabled={!inputValue.trim() || loading}
-                    className="bg-naranja text-white px-6 py-3 rounded-lg font-medium hover:bg-naranja-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
+                    className="gradient-denim text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
                   >
                     Enviar
                   </button>
                 </div>
                 {isListening && (
-                  <p className="text-xs text-red-500 mt-1.5 text-center animate-pulse">
+                  <p className="text-xs text-error mt-1.5 text-center animate-pulse">
                     Grabando... pulsa el botón rojo para parar o Enviar cuando termines
                   </p>
                 )}
@@ -630,7 +628,7 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
           <div>
             {frases.length === 0 ? (
               <div className="text-center py-12">
-                <p className="text-muted text-sm">
+                <p className="text-on-surface-variant text-sm">
                   Todavía no tienes frases guardadas. Empieza una entrevista y las iremos destacando por ti.
                 </p>
               </div>
@@ -639,18 +637,18 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
                 {Object.entries(groupFrasesByDate(frases)).map(([group, items]) =>
                   items.length > 0 ? (
                     <div key={group}>
-                      <h3 className="text-xs font-bold text-muted uppercase tracking-wider mb-3">
+                      <h3 className="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-3">
                         {group}
                       </h3>
                       <div className="space-y-3">
                         {items.map((frase) => (
                           <div
                             key={frase.id}
-                            className="bg-white border border-borde rounded-xl p-4 hover:border-naranja/30 transition-colors"
+                            className="surface-card signature-shadow rounded-2xl p-4 hover:shadow-lg transition-shadow"
                           >
-                            <p className="font-heading text-lg text-negro mb-2">{frase.frase}</p>
+                            <p className="font-headline text-lg text-on-surface italic mb-2">{frase.frase}</p>
                             {frase.pregunta && (
-                              <p className="text-xs text-muted italic mb-3">
+                              <p className="text-xs text-on-surface-variant italic mb-3">
                                 Pregunta: &ldquo;{frase.pregunta}&rdquo;
                               </p>
                             )}
@@ -660,7 +658,7 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
                                 <span className="pill pill-light text-xs">
                                   {ESTILOS.find((e) => e.id === frase.contexto)?.name || frase.contexto}
                                 </span>
-                                <span className="text-[10px] text-muted">
+                                <span className="text-[10px] text-on-surface-variant">
                                   {new Date(frase.created_at).toLocaleDateString("es-ES", {
                                     month: "short",
                                     day: "numeric",
@@ -671,13 +669,13 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
                               <div className="flex gap-2">
                                 <button
                                   onClick={() => copyToClipboard(frase.frase, frase.id)}
-                                  className="px-3 py-1.5 bg-negro/5 border border-negro/10 rounded-lg text-xs font-medium text-negro hover:bg-negro/10 transition-colors"
+                                  className="px-3 py-1.5 surface-container-low rounded-lg text-xs font-medium text-on-surface hover:surface-container transition-colors"
                                 >
                                   {copiedId === frase.id ? "Copiado ✓" : "Copiar"}
                                 </button>
                                 <button
                                   onClick={() => saveToIdeas(frase.frase)}
-                                  className="px-3 py-1.5 bg-naranja/10 border border-naranja/30 rounded-lg text-xs font-medium text-naranja hover:bg-naranja/20 transition-colors"
+                                  className="px-3 py-1.5 surface-container-low rounded-lg text-xs font-medium text-primary hover:surface-container transition-colors"
                                 >
                                   → Ideas
                                 </button>
@@ -697,7 +695,7 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
 
       {/* Toast notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 bg-negro text-white px-4 py-3 rounded-lg text-sm font-medium shadow-lg animate-in fade-in">
+        <div className="fixed bottom-6 right-6 surface-container text-on-surface px-4 py-3 rounded-lg text-sm font-medium signature-shadow animate-in fade-in">
           {toastMessage}
         </div>
       )}

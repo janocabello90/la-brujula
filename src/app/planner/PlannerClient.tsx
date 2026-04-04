@@ -317,47 +317,47 @@ export default function PlannerClient({ userId }: Props) {
         draggable
         onDragStart={(e) => handleDragStart(e, item.id)}
         onDragEnd={handleDragEnd}
-        className={`group relative rounded-xl border-2 p-3 mb-2.5 cursor-grab active:cursor-grabbing transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 ${
-          isDone ? "border-success/30 bg-success/5 opacity-70" : `${colors.border} ${colors.bg}`
+        className={`group relative rounded-xl p-3 mb-2.5 cursor-grab active:cursor-grabbing transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 signature-shadow ${
+          isDone ? "bg-success/5 opacity-70" : `${colors.bg}`
         } ${dragItemId === item.id ? "opacity-30 scale-95" : ""}`}
       >
         <div className="flex items-start gap-2">
           <button onClick={(e) => { e.stopPropagation(); toggleStatus(item.id); }}
             className={`mt-0.5 w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all ${
-              isDone ? "bg-success border-success" : "border-gray-300 hover:border-naranja"
+              isDone ? "bg-success border-success" : "border-surface-mid hover:border-primary"
             }`}>
             {isDone && <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
           </button>
           <div className="flex-1 min-w-0 cursor-pointer" onClick={() => setExpandedId(isExpanded ? null : item.id)}>
             <div className="flex flex-wrap gap-1.5 mb-1">
               <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide ${colors.pill}`}>{item.pilar}</span>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-gray-100 text-gray-600">{item.formato}</span>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-surface-mid text-on-surface">{item.formato}</span>
             </div>
-            <p className={`text-sm font-semibold leading-snug ${isDone ? "line-through text-gray-400" : "text-gray-800"}`}>{item.title}</p>
+            <p className={`text-sm font-semibold leading-snug ${isDone ? "line-through text-on-surface-variant" : "text-on-surface"}`}>{item.title}</p>
             <div className="flex items-center gap-2 mt-1">
-              {item.scheduled_time && <span className="text-[11px] text-gray-500">{item.scheduled_time}</span>}
-              {item.canal && <span className="text-[11px] text-gray-400">{item.canal}</span>}
+              {item.scheduled_time && <span className="text-[11px] text-on-surface-variant">{item.scheduled_time}</span>}
+              {item.canal && <span className="text-[11px] text-on-surface-variant">{item.canal}</span>}
               {item.gcal_synced && <span className="text-[10px] text-success font-medium ml-auto">✓ Cal</span>}
             </div>
           </div>
         </div>
 
         {isExpanded && (
-          <div className="mt-3 pt-3 border-t border-gray-200/60">
-            <p className="text-xs text-gray-600 leading-relaxed mb-3 line-clamp-4">{item.sugerencia}</p>
+          <div className="mt-3 pt-3 border-t border-surface-container-high">
+            <p className="text-xs text-on-surface-variant leading-relaxed mb-3 line-clamp-4">{item.sugerencia}</p>
             <div className="flex items-center gap-2 flex-wrap">
-              <div className="flex items-center gap-1 bg-white/60 rounded-lg px-2 py-1 border border-gray-200">
+              <div className="flex items-center gap-1 bg-surface-low rounded-lg px-2 py-1">
                 <input type="time" value={item.scheduled_time || ""} onChange={(e) => updateTime(item.id, e.target.value)}
-                  className="text-xs bg-transparent text-gray-700 focus:outline-none" onClick={(e) => e.stopPropagation()} />
+                  className="text-xs bg-transparent text-on-surface focus:outline-none" onClick={(e) => e.stopPropagation()} />
               </div>
               {item.scheduled_date && !item.gcal_synced && (
                 <button onClick={(e) => { e.stopPropagation(); syncToCalendar(item); }}
-                  className="text-xs px-2.5 py-1 rounded-lg bg-naranja/10 text-naranja font-medium hover:bg-naranja/20 transition-colors">
+                  className="text-xs px-2.5 py-1 rounded-lg bg-primary/10 text-primary font-medium hover:bg-primary/20 transition-colors">
                   📅 Sync
                 </button>
               )}
               <button onClick={(e) => { e.stopPropagation(); deleteItem(item.id); }}
-                className="text-xs px-2 py-1 rounded-lg text-gray-400 hover:text-danger hover:bg-danger/5 transition-colors ml-auto">
+                className="text-xs px-2 py-1 rounded-lg text-on-surface-variant hover:text-danger hover:bg-danger/5 transition-colors ml-auto">
                 🗑
               </button>
             </div>
@@ -395,11 +395,11 @@ export default function PlannerClient({ userId }: Props) {
     const isExpanded = expandedId === item.id;
 
     return (
-      <div className={`border-2 rounded-xl p-4 mb-2 transition-all ${isDone ? "border-success/20 bg-success/5 opacity-70" : `${colors.border} ${colors.bg}`}`}>
+      <div className={`rounded-xl p-4 mb-2 transition-all signature-shadow ${isDone ? "bg-success/5 opacity-70" : `${colors.bg}`}`}>
         <div className="flex items-center gap-3 flex-wrap">
           <button onClick={() => toggleStatus(item.id)}
             className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all ${
-              isDone ? "bg-success border-success" : "border-gray-300 hover:border-naranja"
+              isDone ? "bg-success border-success" : "border-surface-mid hover:border-primary"
             }`}>
             {isDone && <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
           </button>
@@ -407,40 +407,40 @@ export default function PlannerClient({ userId }: Props) {
           {/* Date */}
           <div className="w-16 sm:w-20 flex-shrink-0 text-center">
             {item.scheduled_date ? (
-              <span className="text-xs font-semibold text-gray-600">
+              <span className="text-xs font-semibold text-on-surface">
                 {new Date(item.scheduled_date + "T00:00:00").toLocaleDateString("es-ES", { day: "numeric", month: "short" })}
               </span>
             ) : (
-              <span className="text-[10px] text-gray-400 italic">Sin fecha</span>
+              <span className="text-[10px] text-on-surface-variant italic">Sin fecha</span>
             )}
-            {item.scheduled_time && <span className="block text-[10px] text-gray-400">{item.scheduled_time}</span>}
+            {item.scheduled_time && <span className="block text-[10px] text-on-surface-variant">{item.scheduled_time}</span>}
           </div>
 
           {/* Pills */}
           <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide flex-shrink-0 ${colors.pill}`}>{item.pilar}</span>
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-gray-100 text-gray-600 flex-shrink-0">{item.formato}</span>
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-surface-mid text-on-surface flex-shrink-0">{item.formato}</span>
 
           {/* Title */}
-          <p className={`flex-1 text-sm font-semibold cursor-pointer ${isDone ? "line-through text-gray-400" : "text-gray-800"}`}
+          <p className={`flex-1 text-sm font-semibold cursor-pointer ${isDone ? "line-through text-on-surface-variant" : "text-on-surface"}`}
             onClick={() => setExpandedId(isExpanded ? null : item.id)}>
             {item.title}
           </p>
 
           {/* Canal */}
-          {item.canal && <span className="text-[11px] text-gray-400 hidden sm:block">{item.canal}</span>}
+          {item.canal && <span className="text-[11px] text-on-surface-variant hidden sm:block">{item.canal}</span>}
 
           {/* Sync status */}
           {item.gcal_synced ? (
             <span className="text-[10px] text-success font-semibold">✓ Cal</span>
           ) : item.scheduled_date ? (
             <button onClick={() => syncToCalendar(item)}
-              className="text-xs px-2.5 py-1 rounded-lg bg-naranja/10 text-naranja font-medium hover:bg-naranja/20 transition-colors">
+              className="text-xs px-2.5 py-1 rounded-lg bg-primary/10 text-primary font-medium hover:bg-primary/20 transition-colors">
               📅
             </button>
           ) : null}
 
           <button onClick={() => deleteItem(item.id)}
-            className="text-gray-300 hover:text-danger transition-colors">
+            className="text-on-surface-variant hover:text-danger transition-colors">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
             </svg>
@@ -448,11 +448,11 @@ export default function PlannerClient({ userId }: Props) {
         </div>
 
         {isExpanded && (
-          <div className="mt-3 pt-3 border-t border-gray-200/60 ml-8">
-            <p className="text-xs text-gray-600 leading-relaxed mb-2">{item.sugerencia}</p>
+          <div className="mt-3 pt-3 border-t border-surface-container-high ml-8">
+            <p className="text-xs text-on-surface-variant leading-relaxed mb-2">{item.sugerencia}</p>
             <div className="flex items-center gap-2">
               <input type="time" value={item.scheduled_time || ""} onChange={(e) => updateTime(item.id, e.target.value)}
-                className="text-xs bg-white border border-gray-200 rounded-lg px-2 py-1 text-gray-700 focus:outline-none focus:border-naranja" />
+                className="text-xs bg-surface-card rounded-lg px-2 py-1 text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/10" />
             </div>
           </div>
         )}
@@ -471,7 +471,7 @@ export default function PlannerClient({ userId }: Props) {
       <AppShell fullWidth>
         <div className="flex flex-col items-center justify-center py-20 gap-3">
           <span className="loader" />
-          <p className="text-sm text-muted">Cargando planificador...</p>
+          <p className="text-sm text-on-surface-variant">Cargando planificador...</p>
         </div>
       </AppShell>
     );
@@ -488,13 +488,13 @@ export default function PlannerClient({ userId }: Props) {
           {/* Row 1: Title + Sync */}
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="font-heading text-2xl sm:text-3xl text-negro">Planificador</h1>
-              <p className="text-muted text-sm hidden sm:block">Organiza tu contenido arrastrando las piezas</p>
+              <h1 className="font-headline text-2xl sm:text-3xl text-on-surface">Planificador</h1>
+              <p className="text-on-surface-variant text-sm hidden sm:block">Organiza tu contenido arrastrando las piezas</p>
             </div>
 
             {scheduledUnsyncedItems.length > 0 && (
               <button onClick={syncAllToCalendar} disabled={syncingAll}
-                className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 bg-naranja text-white text-xs sm:text-sm font-semibold rounded-xl hover:bg-naranja-hover transition-colors shadow-sm disabled:opacity-60">
+                className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 gradient-denim text-white text-xs sm:text-sm font-semibold rounded-xl transition-colors shadow-sm disabled:opacity-60">
                 {syncingAll ? (
                   <><span className="loader-sm" /> Sincronizando...</>
                 ) : (
@@ -507,7 +507,7 @@ export default function PlannerClient({ userId }: Props) {
           {/* Row 2: View toggle + Navigation */}
           <div className="flex items-center justify-between gap-3 flex-wrap">
             {/* View toggle */}
-            <div className="inline-flex bg-white border border-borde rounded-xl overflow-hidden shadow-sm">
+            <div className="inline-flex bg-surface-card rounded-xl overflow-hidden signature-shadow">
               {([
                 { key: "week" as ViewMode, label: "Semanal", icon: "📋" },
                 { key: "month" as ViewMode, label: "Mensual", icon: "📅" },
@@ -515,7 +515,7 @@ export default function PlannerClient({ userId }: Props) {
               ]).map((v) => (
                 <button key={v.key} onClick={() => setView(v.key)}
                   className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-colors ${
-                    view === v.key ? "bg-naranja text-white" : "text-muted hover:text-negro hover:bg-crema"
+                    view === v.key ? "bg-primary text-white" : "text-on-surface-variant hover:text-on-surface hover:bg-surface-low"
                   }`}>
                   <span className="sm:hidden">{v.icon}</span>
                   <span className="hidden sm:inline">{v.icon} {v.label}</span>
@@ -526,13 +526,13 @@ export default function PlannerClient({ userId }: Props) {
             {/* Period nav */}
             {view !== "list" && (
               <div className="flex items-center gap-2">
-                <span className="text-sm font-semibold text-negro mr-1">{periodLabel}</span>
-                <div className="inline-flex bg-white border border-borde rounded-xl overflow-hidden shadow-sm">
-                  <button onClick={goPrev} className="px-2.5 py-1.5 text-muted hover:text-negro hover:bg-crema transition-colors border-r border-borde">
+                <span className="text-sm font-semibold text-on-surface mr-1">{periodLabel}</span>
+                <div className="inline-flex bg-surface-card rounded-xl overflow-hidden signature-shadow">
+                  <button onClick={goPrev} className="px-2.5 py-1.5 text-on-surface-variant hover:text-on-surface hover:bg-surface-low transition-colors">
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
                   </button>
-                  <button onClick={goToday} className="px-3 py-1.5 text-xs text-naranja font-semibold hover:bg-naranja/5 transition-colors">Hoy</button>
-                  <button onClick={goNext} className="px-2.5 py-1.5 text-muted hover:text-negro hover:bg-crema transition-colors border-l border-borde">
+                  <button onClick={goToday} className="px-3 py-1.5 text-xs text-primary font-semibold hover:bg-primary/5 transition-colors">Hoy</button>
+                  <button onClick={goNext} className="px-2.5 py-1.5 text-on-surface-variant hover:text-on-surface hover:bg-surface-low transition-colors">
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
                   </button>
                 </div>
@@ -549,19 +549,19 @@ export default function PlannerClient({ userId }: Props) {
             {/* Backlog */}
             <div
               className={`w-36 sm:w-44 lg:w-52 flex-shrink-0 rounded-2xl transition-all ${
-                dropTarget === "backlog" ? "bg-naranja/10 ring-2 ring-naranja/30" : "bg-gray-50"
+                dropTarget === "backlog" ? "bg-primary/10 ring-2 ring-primary/30" : "bg-surface-low"
               }`}
               onDragOver={(e) => handleDragOver(e, null)}
               onDragLeave={handleDragLeave}
               onDrop={(e) => handleDrop(e, null)}
             >
-              <div className="sticky top-0 bg-gray-100/80 backdrop-blur-sm rounded-t-2xl px-3 py-2.5 border-b border-gray-200/60">
+              <div className="sticky top-0 bg-surface-mid backdrop-blur-sm rounded-t-2xl px-3 py-2.5 border-b border-surface-container-high">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-gray-400" />
-                    <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-gray-500">Bandeja</span>
+                    <span className="w-2 h-2 rounded-full bg-on-surface-variant" />
+                    <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-on-surface-variant">Bandeja</span>
                   </div>
-                  <span className="w-5 h-5 rounded-full bg-gray-200 text-[10px] font-bold text-gray-600 flex items-center justify-center">{unassignedItems.length}</span>
+                  <span className="w-5 h-5 rounded-full bg-surface-high text-[10px] font-bold text-on-surface-variant flex items-center justify-center">{unassignedItems.length}</span>
                 </div>
               </div>
               <div className="p-2 min-h-[350px] sm:min-h-[450px]">
@@ -569,7 +569,7 @@ export default function PlannerClient({ userId }: Props) {
                 {unassignedItems.length === 0 && (
                   <div className="flex flex-col items-center justify-center py-10 opacity-40">
                     <span className="text-xl mb-1">📥</span>
-                    <span className="text-[10px] text-gray-400 text-center">Sin asignar</span>
+                    <span className="text-[10px] text-on-surface-variant text-center">Sin asignar</span>
                   </div>
                 )}
               </div>
@@ -586,22 +586,22 @@ export default function PlannerClient({ userId }: Props) {
               return (
                 <div key={dateStr}
                   className={`flex-1 min-w-[120px] sm:min-w-[150px] lg:min-w-[170px] rounded-2xl transition-all ${
-                    isDropHere ? "bg-naranja/10 ring-2 ring-naranja/30 scale-[1.01]"
-                    : today ? "bg-naranja/5" : past ? "bg-gray-50/70" : "bg-white/50"
-                  }`}
+                    isDropHere ? "bg-primary/10 ring-2 ring-primary/30 scale-[1.01]"
+                    : today ? "bg-secondary-container/10" : past ? "bg-surface-low/70" : "bg-surface-card/50"
+                  } signature-shadow`}
                   onDragOver={(e) => handleDragOver(e, dateStr)}
                   onDragLeave={handleDragLeave}
                   onDrop={(e) => handleDrop(e, dateStr)}
                 >
-                  <div className={`sticky top-0 backdrop-blur-sm rounded-t-2xl px-2 py-2.5 border-b ${today ? "bg-naranja/10 border-naranja/20" : "bg-white/80 border-gray-200/60"}`}>
+                  <div className={`sticky top-0 backdrop-blur-sm rounded-t-2xl px-2 py-2.5 border-b ${today ? "bg-secondary-container/10 border-secondary-container/20" : "bg-surface-low border-surface-container-high"}`}>
                     <div className="flex flex-col items-center">
-                      <span className={`text-[10px] font-bold uppercase tracking-widest ${today ? "text-naranja" : past ? "text-gray-400" : "text-gray-500"}`}>{DAYS_SHORT[i]}</span>
-                      <span className={`text-lg sm:text-xl font-bold ${today ? "text-naranja" : past ? "text-gray-400" : "text-gray-800"}`}>{date.getDate()}</span>
-                      {today && <div className="w-1.5 h-1.5 rounded-full bg-naranja mt-0.5" />}
+                      <span className={`text-[10px] font-bold uppercase tracking-widest ${today ? "text-secondary" : past ? "text-on-surface-variant" : "text-on-surface-variant"}`}>{DAYS_SHORT[i]}</span>
+                      <span className={`text-lg sm:text-xl font-bold ${today ? "text-secondary" : past ? "text-on-surface-variant" : "text-on-surface"}`}>{date.getDate()}</span>
+                      {today && <div className="w-1.5 h-1.5 rounded-full bg-secondary mt-0.5" />}
                     </div>
                     {dayItems.length > 0 && (
                       <div className="flex justify-center mt-1">
-                        <span className={`px-1.5 py-0.5 rounded-full text-[9px] font-bold ${today ? "bg-naranja/20 text-naranja" : "bg-gray-100 text-gray-500"}`}>
+                        <span className={`px-1.5 py-0.5 rounded-full text-[9px] font-bold ${today ? "bg-secondary-container/20 text-secondary" : "bg-surface-mid text-on-surface-variant"}`}>
                           {dayItems.length}
                         </span>
                       </div>
@@ -611,8 +611,8 @@ export default function PlannerClient({ userId }: Props) {
                     {dayItems.map((item) => <FullCard key={item.id} item={item} />)}
                     {dayItems.length === 0 && (
                       <div className="flex flex-col items-center justify-center py-8 opacity-30">
-                        <svg className="w-6 h-6 text-gray-300 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
-                        <span className="text-[10px] text-gray-400">Arrastra</span>
+                        <svg className="w-6 h-6 text-on-surface-variant mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                        <span className="text-[10px] text-on-surface-variant">Arrastra</span>
                       </div>
                     )}
                   </div>
@@ -626,12 +626,12 @@ export default function PlannerClient({ userId }: Props) {
             MONTH VIEW (Calendar grid)
         ═══════════════════════════════════════════ */}
         {view === "month" && (
-          <div className="bg-white rounded-2xl border border-borde shadow-sm overflow-x-auto">
+          <div className="surface-card rounded-2xl signature-shadow overflow-x-auto">
             <div className="min-w-[500px]">
             {/* Day headers */}
-            <div className="grid grid-cols-7 border-b border-borde">
+            <div className="grid grid-cols-7 border-b border-surface-container-high">
               {DAYS_SHORT.map((d) => (
-                <div key={d} className="py-2 text-center text-[10px] sm:text-xs font-bold uppercase tracking-wider text-gray-500 border-r border-borde last:border-r-0">
+                <div key={d} className="py-2 text-center text-[10px] sm:text-xs font-bold uppercase tracking-wider text-on-surface-variant border-r border-surface-container-high last:border-r-0">
                   {d}
                 </div>
               ))}
@@ -647,16 +647,16 @@ export default function PlannerClient({ userId }: Props) {
 
                 return (
                   <div key={idx}
-                    className={`min-h-[80px] sm:min-h-[110px] border-r border-b border-borde last:border-r-0 p-1 transition-all ${
-                      !isCurrentMonth ? "bg-gray-50/50" : today ? "bg-naranja/5" : "bg-white"
-                    } ${isDropHere ? "bg-naranja/10 ring-inset ring-2 ring-naranja/30" : ""}`}
+                    className={`min-h-[80px] sm:min-h-[110px] border-r border-b border-surface-container-high last:border-r-0 p-1 transition-all ${
+                      !isCurrentMonth ? "bg-surface-low/50" : today ? "bg-secondary-container/5" : "bg-surface-card"
+                    } ${isDropHere ? "bg-primary/10 ring-inset ring-2 ring-primary/30" : ""}`}
                     onDragOver={(e) => handleDragOver(e, dateStr)}
                     onDragLeave={handleDragLeave}
                     onDrop={(e) => handleDrop(e, dateStr)}
                   >
                     <div className={`text-right mb-0.5 ${!isCurrentMonth ? "opacity-30" : ""}`}>
                       <span className={`inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-semibold ${
-                        today ? "bg-naranja text-white" : "text-gray-600"
+                        today ? "bg-secondary text-white ring-2 ring-secondary-container" : "text-on-surface"
                       }`}>
                         {date.getDate()}
                       </span>
@@ -666,7 +666,7 @@ export default function PlannerClient({ userId }: Props) {
                         <MonthDot key={item.id} item={item} />
                       ))}
                       {dayItems.length > 3 && (
-                        <span className="text-[9px] text-gray-400 pl-1">+{dayItems.length - 3} más</span>
+                        <span className="text-[9px] text-on-surface-variant pl-1">+{dayItems.length - 3} más</span>
                       )}
                     </div>
                   </div>
@@ -685,8 +685,8 @@ export default function PlannerClient({ userId }: Props) {
             {/* Unassigned */}
             {unassignedItems.length > 0 && (
               <div className="mb-6">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-gray-400" /> Sin fecha asignada ({unassignedItems.length})
+                <h3 className="text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-2 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-on-surface-variant" /> Sin fecha asignada ({unassignedItems.length})
                 </h3>
                 {unassignedItems.map((item) => <ListRow key={item.id} item={item} />)}
               </div>
@@ -709,10 +709,10 @@ export default function PlannerClient({ userId }: Props) {
 
               return Object.entries(groups).map(([date, dateItems]) => (
                 <div key={date} className="mb-4">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2 flex items-center gap-2">
-                    <span className={`w-2 h-2 rounded-full ${isToday(new Date(date + "T00:00:00")) ? "bg-naranja" : "bg-gray-300"}`} />
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-2 flex items-center gap-2">
+                    <span className={`w-2 h-2 rounded-full ${isToday(new Date(date + "T00:00:00")) ? "bg-secondary" : "bg-on-surface-variant"}`} />
                     {new Date(date + "T00:00:00").toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" })}
-                    {isToday(new Date(date + "T00:00:00")) && <span className="text-naranja text-[10px] font-semibold ml-1">HOY</span>}
+                    {isToday(new Date(date + "T00:00:00")) && <span className="text-secondary text-[10px] font-semibold ml-1">HOY</span>}
                   </h3>
                   {dateItems.map((item) => <ListRow key={item.id} item={item} />)}
                 </div>
@@ -724,7 +724,7 @@ export default function PlannerClient({ userId }: Props) {
         {/* ── Detail overlay for month view ─────── */}
         {view === "month" && expandedItem && (
           <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setExpandedId(null)}>
-            <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
+            <div className="surface-card rounded-2xl shadow-2xl max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
               {(() => {
                 const colors = getPilarColor(expandedItem.pilar);
                 const isDone = expandedItem.status === "published";
@@ -733,27 +733,27 @@ export default function PlannerClient({ userId }: Props) {
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex gap-2">
                         <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${colors.pill}`}>{expandedItem.pilar}</span>
-                        <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600">{expandedItem.formato}</span>
+                        <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-surface-mid text-on-surface">{expandedItem.formato}</span>
                       </div>
-                      <button onClick={() => setExpandedId(null)} className="text-gray-400 hover:text-negro transition-colors">✕</button>
+                      <button onClick={() => setExpandedId(null)} className="text-on-surface-variant hover:text-on-surface transition-colors">✕</button>
                     </div>
-                    <h3 className={`text-lg font-bold mb-2 ${isDone ? "line-through text-gray-400" : "text-gray-800"}`}>{expandedItem.title}</h3>
-                    <div className="flex items-center gap-3 text-xs text-gray-500 mb-4">
+                    <h3 className={`text-lg font-bold mb-2 ${isDone ? "line-through text-on-surface-variant" : "text-on-surface"}`}>{expandedItem.title}</h3>
+                    <div className="flex items-center gap-3 text-xs text-on-surface-variant mb-4">
                       {expandedItem.scheduled_date && <span>{new Date(expandedItem.scheduled_date + "T00:00:00").toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" })}</span>}
                       {expandedItem.scheduled_time && <span>{expandedItem.scheduled_time}</span>}
                       {expandedItem.canal && <span>· {expandedItem.canal}</span>}
                     </div>
-                    <p className="text-sm text-gray-600 leading-relaxed mb-4">{expandedItem.sugerencia}</p>
+                    <p className="text-sm text-on-surface-variant leading-relaxed mb-4">{expandedItem.sugerencia}</p>
                     <div className="flex items-center gap-2 flex-wrap">
                       <button onClick={() => toggleStatus(expandedItem.id)}
-                        className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-colors ${isDone ? "bg-gray-100 text-gray-600" : "bg-success/10 text-success"}`}>
+                        className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-colors ${isDone ? "bg-surface-mid text-on-surface" : "bg-success/10 text-success"}`}>
                         {isDone ? "Desmarcar" : "✓ Marcar publicada"}
                       </button>
                       <input type="time" value={expandedItem.scheduled_time || ""} onChange={(e) => updateTime(expandedItem.id, e.target.value)}
-                        className="text-xs bg-white border border-gray-200 rounded-lg px-2 py-1.5 text-gray-700 focus:outline-none focus:border-naranja" />
+                        className="text-xs bg-surface-card rounded-lg px-2 py-1.5 text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/10" />
                       {expandedItem.scheduled_date && !expandedItem.gcal_synced && (
                         <button onClick={() => syncToCalendar(expandedItem)}
-                          className="text-xs px-3 py-1.5 rounded-lg bg-naranja/10 text-naranja font-medium hover:bg-naranja/20 transition-colors">
+                          className="text-xs px-3 py-1.5 rounded-lg bg-primary/10 text-primary font-medium hover:bg-primary/20 transition-colors">
                           📅 Sync Calendar
                         </button>
                       )}
@@ -772,20 +772,20 @@ export default function PlannerClient({ userId }: Props) {
 
         {/* ── Empty state ─────────────────────────── */}
         {items.length === 0 && (
-          <div className="text-center py-12 bg-white rounded-2xl border border-borde mt-4">
+          <div className="text-center py-12 surface-card rounded-2xl signature-shadow mt-4">
             <span className="text-5xl mb-4 block">📋</span>
-            <h3 className="font-heading text-2xl text-negro mb-2">Tu planificador está vacío</h3>
-            <p className="text-muted text-sm mb-6 max-w-md mx-auto">
+            <h3 className="font-headline text-2xl text-on-surface mb-2">Tu planificador está vacío</h3>
+            <p className="text-on-surface-variant text-sm mb-6 max-w-md mx-auto">
               Ve al Maestro, genera sugerencias de contenido y pulsa &ldquo;Planificar esta pieza&rdquo; para que aparezcan aquí.
             </p>
-            <Link href="/maestro" className="inline-flex items-center gap-2 px-6 py-2.5 bg-naranja text-white font-semibold rounded-xl hover:bg-naranja-hover transition-colors">
+            <Link href="/maestro" className="inline-flex items-center gap-2 px-6 py-2.5 gradient-denim text-white font-semibold rounded-xl transition-colors">
               🎯 Ir al Maestro
             </Link>
           </div>
         )}
 
         {/* ── Toast ───────────────────────────────── */}
-        <div className={`fixed bottom-6 left-1/2 -translate-x-1/2 bg-negro text-white px-6 py-3 rounded-xl shadow-lg text-sm font-medium transition-all duration-300 z-50 ${
+        <div className={`fixed bottom-6 left-1/2 -translate-x-1/2 bg-on-surface text-surface-card px-6 py-3 rounded-xl shadow-lg text-sm font-medium transition-all duration-300 z-50 ${
           toast ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
         }`}>
           {toast}

@@ -169,18 +169,18 @@ export default function PiramideClient({ initialData, userId, isAdmin = false }:
   return (
     <div className="flex flex-col lg:flex-row gap-0 lg:gap-0 -mx-3 sm:-mx-6 -my-4 sm:-my-8 min-h-[calc(100vh-56px)] lg:min-h-screen">
       {/* ─── Sidebar: Steps navigation ─── */}
-      <div className="lg:w-[280px] xl:w-[320px] flex-shrink-0 bg-white border-b lg:border-b-0 lg:border-r border-borde/60 lg:sticky lg:top-0 lg:h-screen overflow-y-auto">
+      <div className="lg:w-[280px] xl:w-[320px] flex-shrink-0 bg-white border-b lg:border-b-0 lg:border-r border-outline lg:sticky lg:top-0 lg:h-screen overflow-y-auto">
         <div className="p-4 lg:p-5">
           {/* Title */}
           <div className="mb-5">
-            <h2 className="font-heading text-lg text-negro">La Pirámide</h2>
-            <p className="text-[10px] text-muted mt-0.5">
+            <h2 className="font-headline text-lg text-on-surface">La Pirámide</h2>
+            <p className="text-[10px] text-on-surface-variant mt-0.5">
               {data.steps_completed?.length || 0}/{PIRAMIDE_STEPS.length} pasos completados
             </p>
             {/* Overall progress */}
             <div className="w-full h-1.5 bg-borde/20 rounded-full mt-2 overflow-hidden">
               <div
-                className="h-full bg-naranja rounded-full transition-all duration-500"
+                className="h-full bg-primary-container rounded-full transition-all duration-500"
                 style={{
                   width: `${((data.steps_completed?.length || 0) / PIRAMIDE_STEPS.length) * 100}%`,
                 }}
@@ -189,7 +189,7 @@ export default function PiramideClient({ initialData, userId, isAdmin = false }:
           </div>
 
           {/* Preparación section */}
-          <p className="text-[10px] font-semibold text-muted/50 uppercase tracking-widest mb-2">
+          <p className="text-[10px] font-semibold text-on-surface-variant/50 uppercase tracking-widest mb-2">
             Preparación
           </p>
           <div className="space-y-0.5 mb-4">
@@ -208,7 +208,7 @@ export default function PiramideClient({ initialData, userId, isAdmin = false }:
           </div>
 
           {/* Pirámide section */}
-          <p className="text-[10px] font-semibold text-muted/50 uppercase tracking-widest mb-2">
+          <p className="text-[10px] font-semibold text-on-surface-variant/50 uppercase tracking-widest mb-2">
             La Pirámide
           </p>
 
@@ -226,12 +226,12 @@ export default function PiramideClient({ initialData, userId, isAdmin = false }:
                   disabled={locked}
                   className={`${widths[i]} h-7 rounded-sm flex items-center justify-center text-[10px] font-medium transition-all ${
                     locked
-                      ? "bg-borde/10 text-muted/20 cursor-not-allowed"
+                      ? "bg-borde/10 text-on-surface-variant/20 cursor-not-allowed"
                       : isStepActive
-                      ? "bg-naranja text-white"
+                      ? "bg-primary-container text-white"
                       : isStepComplete
-                      ? "bg-naranja/20 text-naranja"
-                      : "bg-borde/15 text-muted/40 hover:bg-borde/25"
+                      ? "bg-primary-container/20 text-primary"
+                      : "bg-borde/15 text-on-surface-variant/40 hover:bg-borde/25"
                   }`}
                   title={locked ? `Completa ${PIRAMIDE_STEPS[PIRAMIDE_STEPS.findIndex(s => s.id === step.id) - 1]?.label || 'el paso anterior'} para desbloquear` : step.title}
                 >
@@ -266,27 +266,27 @@ export default function PiramideClient({ initialData, userId, isAdmin = false }:
             <div className="flex items-center gap-2 mb-1">
               <span className="text-2xl">{activeConfig.icon}</span>
               {activeConfig.level === "piramide" && (
-                <span className="text-[10px] font-bold text-naranja uppercase tracking-widest bg-naranja/10 px-2 py-0.5 rounded-full">
+                <span className="text-[10px] font-bold text-primary uppercase tracking-widest bg-primary-container/10 px-2 py-0.5 rounded-full">
                   {activeConfig.label}
                 </span>
               )}
               {activeConfig.level === "preparacion" && (
-                <span className="text-[10px] font-bold text-muted/50 uppercase tracking-widest bg-borde/10 px-2 py-0.5 rounded-full">
+                <span className="text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-widest bg-borde/10 px-2 py-0.5 rounded-full">
                   Preparación
                 </span>
               )}
             </div>
-            <h1 className="font-heading text-2xl sm:text-3xl text-negro tracking-tight">
+            <h1 className="font-headline text-2xl sm:text-3xl text-on-surface tracking-tight">
               {activeConfig.title}
             </h1>
-            <p className="text-sm text-muted italic mt-1">
+            <p className="text-sm text-on-surface-variant italic mt-1">
               &ldquo;{activeConfig.tagline}&rdquo;
             </p>
           </div>
 
           {/* Intro text */}
-          <div className="bg-crema/60 border border-borde/30 rounded-2xl p-5 mb-8">
-            <p className="text-sm text-negro/70 leading-relaxed">
+          <div className="bg-surface/60 border border-outline rounded-2xl p-5 mb-8">
+            <p className="text-sm text-on-surface/70 leading-relaxed">
               {activeConfig.intro}
             </p>
           </div>
@@ -295,8 +295,8 @@ export default function PiramideClient({ initialData, userId, isAdmin = false }:
           {isActiveLocked ? (
             <div className="text-center py-16">
               <div className="text-5xl mb-4">🔒</div>
-              <h2 className="font-heading text-xl text-negro mb-2">Este paso aún no está desbloqueado</h2>
-              <p className="text-sm text-muted/60 max-w-md mx-auto mb-6">
+              <h2 className="font-headline text-xl text-on-surface mb-2">Este paso aún no está desbloqueado</h2>
+              <p className="text-sm text-on-surface-variant/60 max-w-md mx-auto mb-6">
                 Completa <strong>&ldquo;{PIRAMIDE_STEPS[activeIndex - 1]?.label}&rdquo;</strong> para desbloquear este paso.
                 Cada nivel se construye sobre el anterior — sin prisas, con profundidad.
               </p>
@@ -329,8 +329,8 @@ export default function PiramideClient({ initialData, userId, isAdmin = false }:
 
           {/* Footer: Save status + Complete button */}
           {!isActiveLocked && (
-          <div className="mt-10 pt-6 border-t border-borde/30 flex items-center justify-between">
-            <div className="flex items-center gap-2 text-xs text-muted/50">
+          <div className="mt-10 pt-6 border-t border-outline flex items-center justify-between">
+            <div className="flex items-center gap-2 text-xs text-on-surface-variant/50">
               {saving && (
                 <>
                   <div className="w-3 h-3 rounded-full border-2 border-naranja/30 border-t-naranja animate-spin" />
@@ -357,7 +357,7 @@ export default function PiramideClient({ initialData, userId, isAdmin = false }:
               {activeIndex > 0 && (
                 <button
                   onClick={() => goToStep(PIRAMIDE_STEPS[activeIndex - 1].id)}
-                  className="text-xs text-muted hover:text-negro transition-colors flex items-center gap-1"
+                  className="text-xs text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1"
                 >
                   <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -372,7 +372,7 @@ export default function PiramideClient({ initialData, userId, isAdmin = false }:
                 disabled={filledFields === 0}
                 className={`inline-flex items-center gap-2 text-sm font-medium px-5 py-2.5 rounded-xl transition-all ${
                   filledFields === 0
-                    ? "bg-borde/20 text-muted/40 cursor-not-allowed"
+                    ? "bg-borde/20 text-on-surface-variant/40 cursor-not-allowed"
                     : isCompleted
                     ? "bg-green-50 text-green-700 border border-green-200 hover:bg-green-100"
                     : "bg-negro text-white hover:bg-negro/90"
@@ -425,14 +425,14 @@ function ExerciseBlock({
   const isObjectives = exercise.layout === "objectives";
 
   return (
-    <div className="border border-borde/30 rounded-2xl overflow-hidden">
+    <div className="border border-outline rounded-2xl overflow-hidden">
       {/* Exercise header */}
-      <div className="bg-crema/40 px-5 py-4 border-b border-borde/20">
-        <h3 className="font-heading text-base text-negro">
+      <div className="bg-surface/40 px-5 py-4 border-b border-outline">
+        <h3 className="font-headline text-base text-on-surface">
           {exercise.title}
         </h3>
         {exercise.description && (
-          <p className="text-xs text-negro/60 leading-relaxed mt-1.5">
+          <p className="text-xs text-on-surface/60 leading-relaxed mt-1.5">
             {exercise.description}
           </p>
         )}
@@ -441,7 +441,7 @@ function ExerciseBlock({
             href={exercise.theoryLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-[10px] text-naranja hover:text-naranja/80 mt-2 font-medium"
+            className="inline-flex items-center gap-1 text-[10px] text-primary hover:text-primary/80 mt-2 font-medium"
           >
             <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -510,7 +510,7 @@ function TableFields({
             {headers.map((h, i) => (
               <th
                 key={i}
-                className="text-left text-[10px] font-semibold text-muted/60 uppercase tracking-wider pb-2 px-1"
+                className="text-left text-[10px] font-semibold text-on-surface-variant/60 uppercase tracking-wider pb-2 px-1"
               >
                 {h}
               </th>
@@ -519,7 +519,7 @@ function TableFields({
         </thead>
         <tbody>
           {rows.map((row, rowIdx) => (
-            <tr key={rowIdx} className={rowIdx > 0 ? "border-t border-borde/15" : ""}>
+            <tr key={rowIdx} className={rowIdx > 0 ? "border-t border-outline-variant/15" : ""}>
               {row.map((field, colIdx) => (
                 <td key={field.key} className="py-1.5 px-1 align-top">
                   <input
@@ -527,7 +527,7 @@ function TableFields({
                     value={stepData[field.key] || ""}
                     onChange={(e) => onFieldChange(field.key, e.target.value)}
                     placeholder={field.placeholder || field.label}
-                    className={`w-full rounded-lg border border-borde/40 bg-white px-3 py-2 text-sm text-negro placeholder:text-muted/25 focus:outline-none focus:ring-2 focus:ring-naranja/20 focus:border-naranja/40 transition-all ${
+                    className={`w-full rounded-lg border border-outline bg-white px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/25 focus:outline-none focus:ring-2 focus:ring-naranja/20 focus:border-naranja/40 transition-all ${
                       colIdx === 0 ? "font-medium" : ""
                     }`}
                   />
@@ -607,25 +607,25 @@ function ObjectivesFields({
               {/* Main objective */}
               {mainField && (
                 <div>
-                  <label className="block text-sm font-semibold text-negro mb-1">
+                  <label className="block text-sm font-semibold text-on-surface mb-1">
                     {block.emoji} {block.label}
                   </label>
                   {mainField.hint && (
-                    <p className="text-xs text-muted/60 italic mb-1.5">{mainField.hint}</p>
+                    <p className="text-xs text-on-surface-variant/60 italic mb-1.5">{mainField.hint}</p>
                   )}
                   <textarea
                     value={stepData[mainField.key] || ""}
                     onChange={(e) => onFieldChange(mainField.key, e.target.value)}
                     placeholder={mainField.placeholder}
                     rows={3}
-                    className="w-full rounded-xl border border-borde/60 bg-white px-4 py-3 text-sm text-negro placeholder:text-muted/30 focus:outline-none focus:ring-2 focus:ring-naranja/20 focus:border-naranja/40 resize-y transition-all leading-relaxed"
+                    className="w-full rounded-xl border border-outline bg-white px-4 py-3 text-sm text-on-surface placeholder:text-on-surface-variant/30 focus:outline-none focus:ring-2 focus:ring-naranja/20 focus:border-naranja/40 resize-y transition-all leading-relaxed"
                   />
                 </div>
               )}
 
               {/* Secondary objectives with KPIs */}
               <div className="space-y-3">
-                <p className="text-[10px] font-semibold text-muted/50 uppercase tracking-widest">
+                <p className="text-[10px] font-semibold text-on-surface-variant/50 uppercase tracking-widest">
                   Objetivos secundarios y KPIs
                 </p>
                 {secFields.map(({ sec, kpi }, idx) => (
@@ -636,17 +636,17 @@ function ObjectivesFields({
                         value={stepData[sec?.key || ""] || ""}
                         onChange={(e) => sec && onFieldChange(sec.key, e.target.value)}
                         placeholder={sec?.placeholder || `Objetivo secundario ${idx + 1}${idx === 2 ? " (opcional)" : ""}`}
-                        className="w-full rounded-lg border border-borde/40 bg-white px-3 py-2 text-sm text-negro placeholder:text-muted/25 focus:outline-none focus:ring-2 focus:ring-naranja/20 focus:border-naranja/40 transition-all"
+                        className="w-full rounded-lg border border-outline bg-white px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/25 focus:outline-none focus:ring-2 focus:ring-naranja/20 focus:border-naranja/40 transition-all"
                       />
                     </div>
                     <div className="flex items-center gap-1">
-                      <span className="text-[10px] text-muted/40 flex-shrink-0">KPI:</span>
+                      <span className="text-[10px] text-on-surface-variant/40 flex-shrink-0">KPI:</span>
                       <input
                         type="text"
                         value={stepData[kpi?.key || ""] || ""}
                         onChange={(e) => kpi && onFieldChange(kpi.key, e.target.value)}
                         placeholder={kpi?.placeholder || "Indicador medible"}
-                        className="w-full rounded-lg border border-borde/40 bg-white px-3 py-2 text-sm text-negro placeholder:text-muted/25 focus:outline-none focus:ring-2 focus:ring-naranja/20 focus:border-naranja/40 transition-all"
+                        className="w-full rounded-lg border border-outline bg-white px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/25 focus:outline-none focus:ring-2 focus:ring-naranja/20 focus:border-naranja/40 transition-all"
                       />
                     </div>
                   </div>
@@ -675,11 +675,11 @@ function FieldInput({
 
   return (
     <div>
-      <label className="block text-sm font-semibold text-negro mb-1.5">
+      <label className="block text-sm font-semibold text-on-surface mb-1.5">
         {field.label}
       </label>
       {field.hint && (
-        <p className="text-xs text-muted/60 italic mb-2">
+        <p className="text-xs text-on-surface-variant/60 italic mb-2">
           {field.hint}
         </p>
       )}
@@ -689,7 +689,7 @@ function FieldInput({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={field.placeholder}
-          className="w-full rounded-xl border border-borde/60 bg-white px-4 py-2.5 text-sm text-negro placeholder:text-muted/30 focus:outline-none focus:ring-2 focus:ring-naranja/20 focus:border-naranja/40 transition-all"
+          className="w-full rounded-xl border border-outline bg-white px-4 py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant/30 focus:outline-none focus:ring-2 focus:ring-naranja/20 focus:border-naranja/40 transition-all"
         />
       ) : (
         <textarea
@@ -697,11 +697,11 @@ function FieldInput({
           onChange={(e) => onChange(e.target.value)}
           placeholder={field.placeholder}
           rows={5}
-          className="w-full rounded-xl border border-borde/60 bg-white px-4 py-3 text-sm text-negro placeholder:text-muted/30 focus:outline-none focus:ring-2 focus:ring-naranja/20 focus:border-naranja/40 resize-y transition-all leading-relaxed"
+          className="w-full rounded-xl border border-outline bg-white px-4 py-3 text-sm text-on-surface placeholder:text-on-surface-variant/30 focus:outline-none focus:ring-2 focus:ring-naranja/20 focus:border-naranja/40 resize-y transition-all leading-relaxed"
         />
       )}
       {value?.trim().length > 0 && (
-        <p className="text-[10px] text-muted/40 mt-1 text-right">
+        <p className="text-[10px] text-on-surface-variant/40 mt-1 text-right">
           {value.trim().length} caracteres
         </p>
       )}
@@ -734,14 +734,14 @@ function StepNavItem({
       disabled={isLocked}
       className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left text-sm transition-all ${
         isLocked
-          ? "text-muted/20 cursor-not-allowed"
+          ? "text-on-surface-variant/20 cursor-not-allowed"
           : isActive
-          ? "bg-naranja/10 text-naranja font-medium"
+          ? "bg-primary-container/10 text-primary font-medium"
           : isCompleted
-          ? "text-negro/70 hover:bg-negro/[0.03]"
+          ? "text-on-surface/70 hover:bg-negro/[0.03]"
           : hasContent
-          ? "text-negro/50 hover:bg-negro/[0.03]"
-          : "text-muted/40 hover:bg-negro/[0.03]"
+          ? "text-on-surface/50 hover:bg-negro/[0.03]"
+          : "text-on-surface-variant/40 hover:bg-negro/[0.03]"
       }`}
     >
       <span className="text-sm flex-shrink-0">{isLocked ? "🔒" : step.icon}</span>
@@ -751,7 +751,7 @@ function StepNavItem({
           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
         </svg>
       ) : hasContent ? (
-        <span className="text-[9px] text-muted/40 flex-shrink-0">
+        <span className="text-[9px] text-on-surface-variant/40 flex-shrink-0">
           {stats.filled}/{stats.total}
         </span>
       ) : null}

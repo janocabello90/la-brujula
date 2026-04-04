@@ -86,12 +86,12 @@ export default function AdminClient({ stats }: Props) {
       <div className="max-w-6xl mx-auto">
         <div className="mb-8 flex items-start justify-between">
           <div>
-            <h1 className="font-heading text-3xl text-negro mb-1">Admin Panel</h1>
-            <p className="text-muted text-sm">Control de usuarios y métricas de La Brújula</p>
+            <h1 className="font-headline text-3xl text-on-surface mb-1">Admin Panel</h1>
+            <p className="text-on-surface-variant text-sm">Control de usuarios y métricas de La Brújula</p>
           </div>
           <Link
             href="/admin/alumnos"
-            className="bg-naranja text-white px-5 py-2.5 rounded-lg font-medium text-sm hover:bg-naranja-hover transition-colors flex-shrink-0"
+            className="bg-primary-container text-white px-5 py-2.5 rounded-lg font-medium text-sm hover:bg-primary-container-hover transition-colors flex-shrink-0"
           >
             📋 Ver ejercicios de alumnos
           </Link>
@@ -115,7 +115,7 @@ export default function AdminClient({ stats }: Props) {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Buscar por email, nombre o tema..."
-            className="flex-1 px-4 py-2.5 border border-borde rounded-xl bg-white text-negro text-sm placeholder:text-muted-light focus:outline-none focus:border-naranja transition-colors"
+            className="flex-1 px-4 py-2.5 border border-outline-variant rounded-xl bg-white text-on-surface text-sm placeholder:text-on-surface-variant-light focus:outline-none focus:border-naranja transition-colors"
           />
           <div className="flex gap-1.5">
             {(["recent", "active", "suggestions"] as const).map((s) => (
@@ -124,8 +124,8 @@ export default function AdminClient({ stats }: Props) {
                 onClick={() => setSortBy(s)}
                 className={`text-xs px-3 py-2 rounded-lg border transition-colors ${
                   sortBy === s
-                    ? "border-naranja bg-naranja/10 text-naranja font-medium"
-                    : "border-borde text-muted hover:border-naranja"
+                    ? "border-naranja bg-primary-container/10 text-primary font-medium"
+                    : "border-outline-variant text-on-surface-variant hover:border-naranja"
                 }`}
               >
                 {s === "recent" ? "Recientes" : s === "active" ? "Más activos" : "Más sugerencias"}
@@ -133,7 +133,7 @@ export default function AdminClient({ stats }: Props) {
             ))}
             <button
               onClick={() => exportCSV(filtered, stats)}
-              className="text-xs px-3 py-2 rounded-lg border border-borde text-muted hover:border-naranja hover:text-naranja transition-colors"
+              className="text-xs px-3 py-2 rounded-lg border border-outline-variant text-on-surface-variant hover:border-naranja hover:text-primary transition-colors"
             >
               Exportar CSV
             </button>
@@ -141,21 +141,21 @@ export default function AdminClient({ stats }: Props) {
         </div>
 
         {/* Users table */}
-        <div className="bg-white rounded-2xl border border-borde/60 overflow-hidden">
+        <div className="bg-white rounded-2xl border border-outline-variant/60 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-borde/60 bg-crema/50">
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted uppercase tracking-wide">Usuario</th>
-                  <th className="text-left px-3 py-3 text-xs font-semibold text-muted uppercase tracking-wide">Tema</th>
-                  <th className="text-center px-3 py-3 text-xs font-semibold text-muted uppercase tracking-wide">Setup</th>
-                  <th className="text-center px-3 py-3 text-xs font-semibold text-muted uppercase tracking-wide">Ideas</th>
-                  <th className="text-center px-3 py-3 text-xs font-semibold text-muted uppercase tracking-wide">Sugerencias</th>
-                  <th className="text-center px-3 py-3 text-xs font-semibold text-muted uppercase tracking-wide">Piezas</th>
-                  <th className="text-center px-3 py-3 text-xs font-semibold text-muted uppercase tracking-wide">Publicadas</th>
-                  <th className="text-center px-3 py-3 text-xs font-semibold text-muted uppercase tracking-wide">Coste</th>
-                  <th className="text-left px-3 py-3 text-xs font-semibold text-muted uppercase tracking-wide">Última actividad</th>
-                  <th className="text-center px-3 py-3 text-xs font-semibold text-muted uppercase tracking-wide">Acciones</th>
+                <tr className="border-b border-outline-variant/60 bg-surface/50">
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-on-surface-variant uppercase tracking-wide">Usuario</th>
+                  <th className="text-left px-3 py-3 text-xs font-semibold text-on-surface-variant uppercase tracking-wide">Tema</th>
+                  <th className="text-center px-3 py-3 text-xs font-semibold text-on-surface-variant uppercase tracking-wide">Setup</th>
+                  <th className="text-center px-3 py-3 text-xs font-semibold text-on-surface-variant uppercase tracking-wide">Ideas</th>
+                  <th className="text-center px-3 py-3 text-xs font-semibold text-on-surface-variant uppercase tracking-wide">Sugerencias</th>
+                  <th className="text-center px-3 py-3 text-xs font-semibold text-on-surface-variant uppercase tracking-wide">Piezas</th>
+                  <th className="text-center px-3 py-3 text-xs font-semibold text-on-surface-variant uppercase tracking-wide">Publicadas</th>
+                  <th className="text-center px-3 py-3 text-xs font-semibold text-on-surface-variant uppercase tracking-wide">Coste</th>
+                  <th className="text-left px-3 py-3 text-xs font-semibold text-on-surface-variant uppercase tracking-wide">Última actividad</th>
+                  <th className="text-center px-3 py-3 text-xs font-semibold text-on-surface-variant uppercase tracking-wide">Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -166,7 +166,7 @@ export default function AdminClient({ stats }: Props) {
             </table>
           </div>
           {filtered.length === 0 && (
-            <div className="text-center py-10 text-muted text-sm">
+            <div className="text-center py-10 text-on-surface-variant text-sm">
               No se encontraron usuarios
             </div>
           )}
@@ -178,12 +178,12 @@ export default function AdminClient({ stats }: Props) {
 
 function BigStat({ label, value, sub, accent }: { label: string; value: number | string; sub?: string; accent?: boolean }) {
   return (
-    <div className={`rounded-xl border p-4 ${accent ? "bg-naranja/10 border-naranja/30" : "bg-white border-borde/60"}`}>
-      <div className={`font-heading text-xl sm:text-2xl ${accent ? "text-naranja" : "text-negro"}`}>
+    <div className={`rounded-xl border p-4 ${accent ? "bg-primary-container/10 border-naranja/30" : "bg-white border-outline-variant/60"}`}>
+      <div className={`font-headline text-xl sm:text-2xl ${accent ? "text-primary" : "text-on-surface"}`}>
         {value}
       </div>
-      <div className="text-[10px] sm:text-xs text-muted mt-0.5">{label}</div>
-      {sub && <div className="text-[10px] text-muted/50 mt-0.5">{sub}</div>}
+      <div className="text-[10px] sm:text-xs text-on-surface-variant mt-0.5">{label}</div>
+      {sub && <div className="text-[10px] text-on-surface-variant/50 mt-0.5">{sub}</div>}
     </div>
   );
 }
@@ -225,44 +225,44 @@ function UserRow({ user: u }: { user: AdminUser }) {
   const timeAgo = u.lastSuggestionAt ? getTimeAgo(new Date(u.lastSuggestionAt)) : "—";
 
   return (
-    <tr className="border-b border-borde/30 hover:bg-crema/30 transition-colors">
+    <tr className="border-b border-outline-variant/30 hover:bg-surface/30 transition-colors">
       {/* User */}
       <td className="px-4 py-3">
-        <div className="font-medium text-negro">{u.displayName || u.email.split("@")[0]}</div>
-        <div className="text-xs text-muted">{u.email}</div>
+        <div className="font-medium text-on-surface">{u.displayName || u.email.split("@")[0]}</div>
+        <div className="text-xs text-on-surface-variant">{u.email}</div>
       </td>
       {/* Tema */}
       <td className="px-3 py-3">
-        <div className="text-xs text-negro/70 max-w-[160px] truncate">{u.temaRaiz || "—"}</div>
+        <div className="text-xs text-on-surface/70 max-w-[160px] truncate">{u.temaRaiz || "—"}</div>
       </td>
       {/* Setup */}
       <td className="px-3 py-3 text-center">
         <div className="inline-flex items-center gap-1">
           <div className="w-16 h-1.5 bg-borde/50 rounded-full overflow-hidden">
             <div
-              className={`h-full rounded-full transition-all ${setupDone === setupTotal ? "bg-success" : "bg-naranja"}`}
+              className={`h-full rounded-full transition-all ${setupDone === setupTotal ? "bg-success" : "bg-primary-container"}`}
               style={{ width: `${(setupDone / setupTotal) * 100}%` }}
             />
           </div>
-          <span className="text-[10px] text-muted">{setupDone}/{setupTotal}</span>
+          <span className="text-[10px] text-on-surface-variant">{setupDone}/{setupTotal}</span>
         </div>
       </td>
       {/* Ideas */}
-      <td className="px-3 py-3 text-center text-negro">{u.ideasCount || "—"}</td>
+      <td className="px-3 py-3 text-center text-on-surface">{u.ideasCount || "—"}</td>
       {/* Suggestions */}
-      <td className="px-3 py-3 text-center font-medium text-negro">{u.suggestionsCount || "—"}</td>
+      <td className="px-3 py-3 text-center font-medium text-on-surface">{u.suggestionsCount || "—"}</td>
       {/* Pieces */}
-      <td className="px-3 py-3 text-center text-negro">{u.piecesCount || "—"}</td>
+      <td className="px-3 py-3 text-center text-on-surface">{u.piecesCount || "—"}</td>
       {/* Published */}
       <td className="px-3 py-3 text-center">
-        <span className={u.publishedCount > 0 ? "text-naranja font-semibold" : "text-muted"}>
+        <span className={u.publishedCount > 0 ? "text-primary font-semibold" : "text-on-surface-variant"}>
           {u.publishedCount || "—"}
         </span>
       </td>
       {/* Cost */}
-      <td className="px-3 py-3 text-center text-xs text-muted">{u.suggestionsCount > 0 ? costEstimate : "—"}</td>
+      <td className="px-3 py-3 text-center text-xs text-on-surface-variant">{u.suggestionsCount > 0 ? costEstimate : "—"}</td>
       {/* Last activity */}
-      <td className="px-3 py-3 text-xs text-muted">{timeAgo}</td>
+      <td className="px-3 py-3 text-xs text-on-surface-variant">{timeAgo}</td>
       {/* Actions */}
       <td className="px-3 py-3 text-center">
         <button
@@ -273,7 +273,7 @@ function UserRow({ user: u }: { user: AdminUser }) {
               ? "border-green-300 bg-green-50 text-green-600"
               : resendStatus === "error"
               ? "border-red-300 bg-red-50 text-red-600"
-              : "border-borde text-muted hover:border-naranja hover:text-naranja"
+              : "border-outline-variant text-on-surface-variant hover:border-naranja hover:text-primary"
           } disabled:opacity-50`}
         >
           {resending ? "..." : resendStatus === "sent" ? "Enviado" : resendStatus === "error" ? "Error" : "Reenviar acceso"}

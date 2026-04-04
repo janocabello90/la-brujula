@@ -115,16 +115,16 @@ export default function ResultadoClient({ userId, userName, hasApiKey, arbolData
         <div className="mb-6 sm:mb-8">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <h1 className="font-heading text-xl sm:text-3xl text-negro mb-1">
+              <h1 className="font-headline text-xl sm:text-3xl text-on-surface mb-1">
                 Tu Árbol Completo
               </h1>
-              <p className="text-muted text-xs sm:text-sm">
+              <p className="text-on-surface-variant text-xs sm:text-sm">
                 {completedCount}/9 secciones · {userName}
               </p>
             </div>
             <Link
               href="/arbol"
-              className="text-xs px-3 sm:px-4 py-2 border border-borde rounded-xl hover:border-naranja/40 transition-colors text-muted hover:text-negro flex-shrink-0"
+              className="text-xs px-3 sm:px-4 py-2 border border-outline rounded-xl hover:border-primary/40 transition-colors text-on-surface-variant hover:text-on-surface flex-shrink-0"
             >
               ← Volver
             </Link>
@@ -139,12 +139,12 @@ export default function ResultadoClient({ userId, userName, hasApiKey, arbolData
         {/* ===== AI ANALYSIS ===== */}
         <div className="mb-10">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-heading text-lg text-negro">Análisis de tu Marca</h2>
+            <h2 className="font-headline text-lg text-on-surface">Análisis de tu Marca</h2>
             {!analysis && (
               <button
                 onClick={runAnalysis}
                 disabled={analyzing || !hasApiKey}
-                className="text-xs px-5 py-2.5 bg-naranja text-white rounded-xl hover:bg-naranja-hover transition-colors disabled:opacity-50 font-medium"
+                className="text-xs px-5 py-2.5 bg-primary-container text-white rounded-xl hover:bg-primary-container-hover transition-colors disabled:opacity-50 font-medium"
               >
                 {analyzing ? "Analizando..." : !hasApiKey ? "Configura tu API Key" : "Analizar con IA"}
               </button>
@@ -158,11 +158,11 @@ export default function ResultadoClient({ userId, userName, hasApiKey, arbolData
           )}
 
           {analyzing && (
-            <div className="p-8 rounded-2xl border border-borde/60 bg-white text-center">
+            <div className="p-8 rounded-2xl border border-outline/60 bg-white text-center">
               <div className="animate-pulse">
                 <div className="text-3xl mb-3">🧠</div>
-                <p className="text-sm text-muted">Analizando tu Árbol en profundidad...</p>
-                <p className="text-xs text-muted/60 mt-1">Esto puede tardar unos segundos</p>
+                <p className="text-sm text-on-surface-variant">Analizando tu Árbol en profundidad...</p>
+                <p className="text-xs text-on-surface-variant/60 mt-1">Esto puede tardar unos segundos</p>
               </div>
             </div>
           )}
@@ -176,11 +176,11 @@ export default function ResultadoClient({ userId, userName, hasApiKey, arbolData
           <button
             onClick={syncBrujula}
             disabled={syncing}
-            className="rounded-2xl border border-borde/60 bg-white hover:border-naranja/40 hover:shadow-card-hover p-5 transition-all text-left group"
+            className="rounded-2xl border border-outline/60 bg-white hover:border-primary/40 hover:shadow-card-hover p-5 transition-all text-left group"
           >
             <div className="text-2xl mb-2">🔄</div>
-            <h3 className="font-heading text-sm text-negro mb-1">Sincronizar con La Brújula</h3>
-            <p className="text-xs text-muted leading-relaxed">
+            <h3 className="font-headline text-sm text-on-surface mb-1">Sincronizar con La Brújula</h3>
+            <p className="text-xs text-on-surface-variant leading-relaxed">
               {syncing ? "Sincronizando..." : "Actualiza tu tono, canales y tema raíz en La Brújula con los datos del Árbol."}
             </p>
           </button>
@@ -189,11 +189,11 @@ export default function ResultadoClient({ userId, userName, hasApiKey, arbolData
           <button
             onClick={exportDocument}
             disabled={exporting}
-            className="rounded-2xl border border-borde/60 bg-white hover:border-naranja/40 hover:shadow-card-hover p-5 transition-all text-left group"
+            className="rounded-2xl border border-outline/60 bg-white hover:border-primary/40 hover:shadow-card-hover p-5 transition-all text-left group"
           >
             <div className="text-2xl mb-2">📄</div>
-            <h3 className="font-heading text-sm text-negro mb-1">Exportar PDF</h3>
-            <p className="text-xs text-muted leading-relaxed">
+            <h3 className="font-headline text-sm text-on-surface mb-1">Exportar PDF</h3>
+            <p className="text-xs text-on-surface-variant leading-relaxed">
               {exporting ? "Generando..." : "Descarga tu Árbol completo con toda la información y el análisis."}
             </p>
           </button>
@@ -201,11 +201,11 @@ export default function ResultadoClient({ userId, userName, hasApiKey, arbolData
           {/* Go to Maestro */}
           <Link
             href="/maestro"
-            className="rounded-2xl border border-borde/60 bg-white hover:border-naranja/40 hover:shadow-card-hover p-5 transition-all text-left group"
+            className="rounded-2xl border border-outline/60 bg-white hover:border-primary/40 hover:shadow-card-hover p-5 transition-all text-left group"
           >
             <div className="text-2xl mb-2">🎯</div>
-            <h3 className="font-heading text-sm text-negro mb-1">Crear Contenido</h3>
-            <p className="text-xs text-muted leading-relaxed">
+            <h3 className="font-headline text-sm text-on-surface mb-1">Crear Contenido</h3>
+            <p className="text-xs text-on-surface-variant leading-relaxed">
               Lleva tu Árbol al Maestro y genera contenido alineado con tu marca.
             </p>
           </Link>
@@ -214,7 +214,7 @@ export default function ResultadoClient({ userId, userName, hasApiKey, arbolData
         {/* Sync result */}
         {syncResult && (
           <div className="mb-10 p-5 rounded-2xl border border-green-200 bg-green-50/50">
-            <h3 className="font-heading text-sm text-green-800 mb-2">Sincronización completada</h3>
+            <h3 className="font-headline text-sm text-green-800 mb-2">Sincronización completada</h3>
             <ul className="space-y-1">
               {syncResult.map((s, i) => (
                 <li key={i} className="text-xs text-green-700 flex items-center gap-2">
@@ -228,12 +228,12 @@ export default function ResultadoClient({ userId, userName, hasApiKey, arbolData
         {/* Next steps from analysis */}
         {analysis && (
           <div className="mb-10">
-            <h2 className="font-heading text-lg text-negro mb-4">Tus Siguientes Pasos</h2>
+            <h2 className="font-headline text-lg text-on-surface mb-4">Tus Siguientes Pasos</h2>
             <div className="space-y-2">
               {analysis.siguientesPasos.map((paso, i) => (
-                <div key={i} className="flex items-start gap-3 rounded-xl border border-borde/60 bg-white px-4 py-3">
-                  <span className="text-naranja font-heading text-sm flex-shrink-0 mt-0.5">{i + 1}</span>
-                  <p className="text-sm text-negro/80">{paso}</p>
+                <div key={i} className="flex items-start gap-3 rounded-xl border border-outline/60 bg-white px-4 py-3">
+                  <span className="text-primary font-headline text-sm flex-shrink-0 mt-0.5">{i + 1}</span>
+                  <p className="text-sm text-on-surface/80">{paso}</p>
                 </div>
               ))}
             </div>
@@ -259,14 +259,14 @@ function TreeInfographic({ data, userName }: { data: any; userName: string }) {
   const arquetipos = (copa.arquetipos || []).filter((a: any) => a.nombre && a.porcentaje > 0).sort((a: any, b: any) => b.porcentaje - a.porcentaje);
 
   return (
-    <div className="rounded-3xl border border-borde/60 bg-gradient-to-b from-blue-50/30 via-green-50/20 to-amber-50/30 overflow-hidden">
+    <div className="rounded-3xl border border-outline/60 bg-gradient-to-b from-blue-50/30 via-green-50/20 to-amber-50/30 overflow-hidden">
       {/* Top: Name + Tagline */}
       <div className="text-center pt-8 pb-4 px-6">
-        <h2 className="font-heading text-xl sm:text-2xl text-negro">
+        <h2 className="font-headline text-xl sm:text-2xl text-on-surface">
           🌳 El Árbol de {userName || "tu Marca"}
         </h2>
         {tronco.temaPrincipal && (
-          <p className="text-sm text-naranja font-medium mt-1">{tronco.temaPrincipal}</p>
+          <p className="text-sm text-primary font-medium mt-1">{tronco.temaPrincipal}</p>
         )}
       </div>
 
@@ -409,44 +409,44 @@ function TreeInfographic({ data, userName }: { data: any; userName: string }) {
       </div>
 
       {/* Bottom bar: Entorno + Tiempo + Cofre */}
-      <div className="bg-white/60 border-t border-borde/40 px-6 py-5">
+      <div className="bg-white/60 border-t border-outline/40 px-6 py-5">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {/* Entorno */}
           <div>
-            <span className="text-xs font-semibold text-muted block mb-2">🌍 Entorno</span>
-            {entorno.audienciaPrincipal && <p className="text-[11px] text-negro/70 mb-1">{entorno.audienciaPrincipal}</p>}
+            <span className="text-xs font-semibold text-on-surface-variant block mb-2">🌍 Entorno</span>
+            {entorno.audienciaPrincipal && <p className="text-[11px] text-on-surface/70 mb-1">{entorno.audienciaPrincipal}</p>}
             {entorno.dondeEstan?.length > 0 && (
               <div className="flex flex-wrap gap-1">
                 {entorno.dondeEstan.map((c: string, i: number) => (
-                  <span key={i} className="text-[10px] bg-gray-100 text-muted px-2 py-0.5 rounded-full">{c}</span>
+                  <span key={i} className="text-[10px] bg-gray-100 text-on-surface-variant px-2 py-0.5 rounded-full">{c}</span>
                 ))}
               </div>
             )}
-            {entorno.posicionamiento && <p className="text-[10px] text-negro/50 mt-1 italic">{entorno.posicionamiento}</p>}
+            {entorno.posicionamiento && <p className="text-[10px] text-on-surface/50 mt-1 italic">{entorno.posicionamiento}</p>}
           </div>
 
           {/* Tiempo */}
           <div>
-            <span className="text-xs font-semibold text-muted block mb-2">⏳ Tiempo</span>
-            {tiempo.ritmoPublicacion && <p className="text-[11px] text-negro/70 mb-1">Ritmo: {tiempo.ritmoPublicacion}</p>}
-            {tiempo.proximoHito && <p className="text-[11px] text-negro/70 mb-1">Próximo hito: {tiempo.proximoHito}</p>}
-            {tiempo.buenaVida && <p className="text-[10px] text-negro/50 italic">{tiempo.buenaVida}</p>}
+            <span className="text-xs font-semibold text-on-surface-variant block mb-2">⏳ Tiempo</span>
+            {tiempo.ritmoPublicacion && <p className="text-[11px] text-on-surface/70 mb-1">Ritmo: {tiempo.ritmoPublicacion}</p>}
+            {tiempo.proximoHito && <p className="text-[11px] text-on-surface/70 mb-1">Próximo hito: {tiempo.proximoHito}</p>}
+            {tiempo.buenaVida && <p className="text-[10px] text-on-surface/50 italic">{tiempo.buenaVida}</p>}
           </div>
 
           {/* Cofre */}
           <div>
-            <span className="text-xs font-semibold text-muted block mb-2">📦 El Cofre</span>
+            <span className="text-xs font-semibold text-on-surface-variant block mb-2">📦 El Cofre</span>
             {(cofre.productos || []).filter((p: any) => p.nombreProducto).map((p: any, i: number) => (
               <div key={i} className="mb-2">
-                <p className="text-[11px] text-negro/70 font-medium">{p.nombreProducto}</p>
-                {p.precio && <span className="text-[10px] text-naranja">{p.precio}</span>}
+                <p className="text-[11px] text-on-surface/70 font-medium">{p.nombreProducto}</p>
+                {p.precio && <span className="text-[10px] text-primary">{p.precio}</span>}
                 {p.estadoActual && p.estadoActual !== "idea" && (
-                  <span className="text-[10px] text-muted ml-2">({p.estadoActual})</span>
+                  <span className="text-[10px] text-on-surface-variant ml-2">({p.estadoActual})</span>
                 )}
               </div>
             ))}
             {(cofre.productos || []).filter((p: any) => p.nombreProducto).length === 0 && (
-              <p className="text-[10px] text-muted italic">Sin productos aún</p>
+              <p className="text-[10px] text-on-surface-variant italic">Sin productos aún</p>
             )}
           </div>
         </div>
@@ -492,22 +492,22 @@ function AnalysisView({ analysis }: { analysis: Analysis }) {
   return (
     <div className="space-y-6">
       {/* Frase de marca — Hero */}
-      <div className="rounded-2xl bg-naranja/5 border border-naranja/20 p-6 text-center">
-        <p className="font-heading text-lg sm:text-xl text-negro leading-relaxed">
+      <div className="rounded-2xl bg-primary-container/5 border border-primary/20 p-6 text-center">
+        <p className="font-headline text-lg sm:text-xl text-on-surface leading-relaxed">
           &ldquo;{analysis.fraseMarca}&rdquo;
         </p>
       </div>
 
       {/* Resumen */}
-      <div className="rounded-2xl border border-borde/60 bg-white p-5">
-        <h3 className="text-xs font-semibold text-muted uppercase tracking-wide mb-3">Resumen de tu marca</h3>
-        <p className="text-sm text-negro/80 leading-relaxed">{analysis.resumen}</p>
+      <div className="rounded-2xl border border-outline/60 bg-white p-5">
+        <h3 className="text-xs font-semibold text-on-surface-variant uppercase tracking-wide mb-3">Resumen de tu marca</h3>
+        <p className="text-sm text-on-surface/80 leading-relaxed">{analysis.resumen}</p>
       </div>
 
       {/* Personalidad */}
-      <div className="rounded-2xl border border-borde/60 bg-white p-5">
-        <h3 className="text-xs font-semibold text-muted uppercase tracking-wide mb-3">Tu personalidad de marca</h3>
-        <p className="text-sm text-negro/80 leading-relaxed">{analysis.personalidad}</p>
+      <div className="rounded-2xl border border-outline/60 bg-white p-5">
+        <h3 className="text-xs font-semibold text-on-surface-variant uppercase tracking-wide mb-3">Tu personalidad de marca</h3>
+        <p className="text-sm text-on-surface/80 leading-relaxed">{analysis.personalidad}</p>
       </div>
 
       {/* Two columns: Fortalezas + Alertas */}
@@ -538,20 +538,20 @@ function AnalysisView({ analysis }: { analysis: Analysis }) {
 
       {/* Tono + Narrativa */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="rounded-2xl border border-borde/60 bg-white p-5">
-          <h3 className="text-xs font-semibold text-muted uppercase tracking-wide mb-3">Tono recomendado</h3>
-          <p className="text-sm text-negro/80 leading-relaxed">{analysis.tonoRecomendado}</p>
+        <div className="rounded-2xl border border-outline/60 bg-white p-5">
+          <h3 className="text-xs font-semibold text-on-surface-variant uppercase tracking-wide mb-3">Tono recomendado</h3>
+          <p className="text-sm text-on-surface/80 leading-relaxed">{analysis.tonoRecomendado}</p>
         </div>
-        <div className="rounded-2xl border border-borde/60 bg-white p-5">
-          <h3 className="text-xs font-semibold text-muted uppercase tracking-wide mb-3">Narrativa</h3>
-          <p className="text-sm text-negro/80 leading-relaxed">{analysis.narrativaRecomendada}</p>
+        <div className="rounded-2xl border border-outline/60 bg-white p-5">
+          <h3 className="text-xs font-semibold text-on-surface-variant uppercase tracking-wide mb-3">Narrativa</h3>
+          <p className="text-sm text-on-surface/80 leading-relaxed">{analysis.narrativaRecomendada}</p>
         </div>
       </div>
 
       {/* Audiencia insight */}
-      <div className="rounded-2xl border border-borde/60 bg-white p-5">
-        <h3 className="text-xs font-semibold text-muted uppercase tracking-wide mb-3">Insight de audiencia</h3>
-        <p className="text-sm text-negro/80 leading-relaxed">{analysis.audienciaInsight}</p>
+      <div className="rounded-2xl border border-outline/60 bg-white p-5">
+        <h3 className="text-xs font-semibold text-on-surface-variant uppercase tracking-wide mb-3">Insight de audiencia</h3>
+        <p className="text-sm text-on-surface/80 leading-relaxed">{analysis.audienciaInsight}</p>
       </div>
     </div>
   );

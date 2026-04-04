@@ -273,7 +273,7 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
                 <div key={i} className="mb-6">
                   {/* Buyer header */}
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm font-semibold text-naranja">
+                    <span className="text-sm font-semibold text-primary">
                       Persona {i + 1}{b.nombre ? ` — ${b.nombre}` : ""}
                     </span>
                     {buyers.length > 1 && (
@@ -289,7 +289,7 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
                     )}
                   </div>
 
-                  <div className="bg-card border border-borde rounded-card p-5">
+                  <div className="surface-card rounded-2xl signature-shadow p-5">
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
                       <TextInput label="Nombre (ficticio)" value={b.nombre} onChange={(v) => updateBuyer("nombre", v)} placeholder={i === 0 ? "Ej: Laura" : i === 1 ? "Ej: Carlos" : "Ej: Ana"} />
                       <TextInput label="Edad" value={b.edad} onChange={(v) => updateBuyer("edad", v)} placeholder="Ej: 32 años" />
@@ -306,12 +306,12 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
 
                   {/* Add more prompt — only after last completed buyer */}
                   {isLast && isComplete && buyers.length < 5 && (
-                    <div className="mt-4 p-4 bg-naranja/5 border border-naranja/20 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <div className="mt-4 p-4 surface-low rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                       <div>
-                        <p className="text-sm font-medium text-negro">
+                        <p className="text-sm font-medium text-on-surface">
                           ¿Quieres añadir otro buyer persona?
                         </p>
-                        <p className="text-xs text-muted mt-0.5">
+                        <p className="text-xs text-on-surface-variant mt-0.5">
                           Puedes definir hasta 5 perfiles diferentes. Así la IA entiende que tu audiencia es diversa.
                         </p>
                       </div>
@@ -323,7 +323,7 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
                           ]);
                           autoSave();
                         }}
-                        className="px-4 py-2 bg-naranja text-white text-sm font-medium rounded-lg hover:bg-naranja-hover transition-colors flex-shrink-0"
+                        className="px-4 py-2 gradient-denim text-white text-sm font-medium rounded-lg shadow-button hover:opacity-90 transition-opacity flex-shrink-0"
                       >
                         + Añadir persona
                       </button>
@@ -429,13 +429,13 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
       case "tree":
         return (
           <div>
-            <p className="text-sm text-muted mb-4">
+            <p className="text-sm text-on-surface-variant mb-4">
               Define entre 3 y 5 pilares. Cada pilar es un gran tema del que hablas. Dentro de cada uno, añade subtemas concretos y, si quieres, ejemplos de titulares que te inspiren.
             </p>
             {tree.pilares.map((pilar, i) => (
-              <div key={i} className="bg-card border border-borde rounded-card p-5 mb-4">
+              <div key={i} className="surface-card rounded-2xl signature-shadow p-5 mb-4">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm font-semibold text-naranja">Pilar {i + 1}</span>
+                  <span className="text-sm font-semibold text-primary">Pilar {i + 1}</span>
                   {tree.pilares.length > 1 && (
                     <button onClick={() => removePilar(i)} className="text-danger text-xs hover:underline">
                       Eliminar
@@ -448,12 +448,12 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
                   value={pilar.nombre}
                   onChange={(e) => updatePilar(i, "nombre", e.target.value)}
                   placeholder="Ej: Marca Personal, Filosofía, Negocios Digitales..."
-                  className="w-full px-4 py-2.5 border border-borde rounded-lg bg-crema text-negro placeholder:text-muted-light focus:outline-none focus:border-naranja transition-colors mb-3"
+                  className="w-full px-4 py-2.5 bg-surface-container-low border-none rounded-lg text-on-surface placeholder:text-on-surface-variant/70 focus:ring-2 focus:ring-primary/10 transition-colors mb-3"
                 />
 
                 {/* Subtemas */}
-                <label className="block text-xs font-medium text-muted mb-1">
-                  Subtemas <span className="text-muted-light">— los temas específicos dentro de este pilar</span>
+                <label className="block text-xs font-medium text-on-surface-variant mb-1">
+                  Subtemas <span className="text-on-surface-variant/70">— los temas específicos dentro de este pilar</span>
                 </label>
                 <div className="flex flex-wrap gap-1 mb-2">
                   {pilar.subtemas.map((sub, j) => (
@@ -496,7 +496,7 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
             {tree.pilares.length < 5 && (
               <button
                 onClick={addPilar}
-                className="w-full py-2.5 border-2 border-dashed border-borde rounded-lg text-muted text-sm hover:border-naranja hover:text-naranja transition-colors"
+                className="w-full py-2.5 border-2 border-dashed border-surface-mid rounded-lg text-on-surface-variant text-sm hover:border-primary hover:text-primary transition-colors"
               >
                 + Añadir pilar
               </button>
@@ -507,7 +507,7 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
       case "channels":
         return (
           <>
-            <label className="block text-sm font-medium text-negro mb-2">¿Dónde publicas?</label>
+            <label className="block text-sm font-medium text-on-surface mb-2">¿Dónde publicas?</label>
             <div className="grid grid-cols-3 gap-2 mb-6">
               {CHANNELS.map((ch) => (
                 <div
@@ -517,7 +517,7 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
                 >
                   <div
                     className={`w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center ${
-                      channels.canales.includes(ch) ? "bg-naranja border-naranja" : "border-borde"
+                      channels.canales.includes(ch) ? "bg-primary border-primary" : "border-surface-mid"
                     }`}
                   >
                     {channels.canales.includes(ch) && (
@@ -531,7 +531,7 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
               ))}
             </div>
 
-            <label className="block text-sm font-medium text-negro mb-2">¿Cuáles son tus objetivos principales?</label>
+            <label className="block text-sm font-medium text-on-surface mb-2">¿Cuáles son tus objetivos principales?</label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-6">
               {OBJECTIVES.map((obj) => (
                 <div
@@ -546,27 +546,27 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
             </div>
 
             {/* API Key */}
-            <div className="border-t border-borde pt-6 mt-4">
-              <label className="block text-sm font-medium text-negro mb-1.5">
-                API Key de Anthropic <span className="text-muted text-xs">(opcional — la puedes poner después desde Ajustes)</span>
+            <div className="border-t border-surface-mid pt-6 mt-4">
+              <label className="block text-sm font-medium text-on-surface mb-1.5">
+                API Key de Anthropic <span className="text-on-surface-variant text-xs">(opcional — la puedes poner después desde Ajustes)</span>
               </label>
 
-              <div className="bg-white border border-borde rounded-lg p-4 mb-4 text-sm text-negro leading-relaxed">
+              <div className="surface-card rounded-lg p-4 mb-4 text-sm text-on-surface leading-relaxed signature-shadow">
                 <p className="font-semibold mb-2">¿Qué es esto y por qué la necesitas?</p>
                 <p className="mb-2">
                   El Maestro usa Claude (la IA de Anthropic) para generar tus ideas de contenido. Para que funcione, necesitas tu propia API Key — es como una llave personal que conecta La Brújula con la IA.
                 </p>
                 <p className="font-semibold mb-2">¿Cómo conseguirla?</p>
                 <ol className="list-decimal list-inside space-y-1 mb-2">
-                  <li>Ve a <a href="https://console.anthropic.com" target="_blank" rel="noopener noreferrer" className="text-naranja underline hover:text-naranja-hover">console.anthropic.com</a> y crea una cuenta</li>
+                  <li>Ve a <a href="https://console.anthropic.com" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:opacity-80">console.anthropic.com</a> y crea una cuenta</li>
                   <li>En <strong>Settings → API Keys</strong>, pulsa <strong>&quot;Create Key&quot;</strong></li>
-                  <li>Copia la key (empieza por <code className="bg-crema px-1 rounded">sk-ant-...</code>) y pégala aquí abajo</li>
+                  <li>Copia la key (empieza por <code className="bg-surface-low px-1 rounded">sk-ant-...</code>) y pégala aquí abajo</li>
                 </ol>
                 <p className="font-semibold mb-2">💳 Sobre el coste</p>
                 <p className="mb-1">
                   Anthropic funciona con créditos de prepago. Necesitarás añadir saldo en <strong>Settings → Billing</strong> dentro de la consola. Con <strong>5 $</strong> tienes para cientos de ideas generadas — cada petición cuesta menos de 0,01 $.
                 </p>
-                <p className="text-muted text-xs">
+                <p className="text-on-surface-variant text-xs">
                   Tu key es privada y solo se usa para conectar tu cuenta con la IA. Nunca la compartimos ni la usamos para otra cosa.
                 </p>
               </div>
@@ -579,7 +579,7 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
                   autoSave();
                 }}
                 placeholder="sk-ant-..."
-                className="w-full px-4 py-3 border border-borde rounded-lg bg-crema text-negro placeholder:text-muted-light focus:outline-none focus:border-naranja transition-colors font-mono text-sm"
+                className="w-full px-4 py-3 bg-surface-container-low border-none rounded-lg text-on-surface placeholder:text-on-surface-variant/70 focus:ring-2 focus:ring-primary/10 transition-colors font-mono text-sm"
               />
             </div>
           </>
@@ -588,11 +588,11 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
   };
 
   return (
-    <div className="min-h-screen bg-crema">
+    <div className="min-h-screen bg-surface-base">
       {/* Progress bar */}
-      <div className="fixed top-0 left-0 right-0 h-1 bg-borde z-50">
+      <div className="fixed top-0 left-0 right-0 h-1 bg-surface-mid z-50">
         <div
-          className="h-full bg-naranja transition-all duration-300"
+          className="h-full bg-primary transition-all duration-300"
           style={{ width: `${((step + 1) / STEPS.length) * 100}%` }}
         />
       </div>
@@ -600,13 +600,13 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
       <div className="max-w-2xl mx-auto px-6 pt-12 pb-24">
         {/* Step header */}
         <div className="mb-8">
-          <span className="text-xs font-semibold text-naranja tracking-wide uppercase">
+          <span className="text-xs font-semibold text-primary tracking-wide uppercase">
             {currentStep.label}
           </span>
-          <h1 className="font-heading text-3xl text-negro mt-1 mb-2">
+          <h1 className="font-headline text-3xl text-on-surface mt-1 mb-2">
             {currentStep.title}
           </h1>
-          <p className="text-muted text-sm">{currentStep.desc}</p>
+          <p className="text-on-surface-variant text-sm">{currentStep.desc}</p>
         </div>
 
         {/* Step content */}
@@ -617,7 +617,7 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
           <button
             onClick={() => setStep(Math.max(0, step - 1))}
             disabled={step === 0}
-            className="px-6 py-2.5 rounded-lg border border-borde text-muted hover:border-negro hover:text-negro transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            className="px-6 py-2.5 rounded-lg border border-surface-mid text-on-surface-variant hover:border-on-surface hover:text-on-surface transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           >
             ← Anterior
           </button>
@@ -625,7 +625,7 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
           <div className="flex items-center gap-3">
             {/* Auto-save status indicator */}
             {saveStatus === 'saving' && (
-              <span className="flex items-center gap-2 text-sm text-muted">
+              <span className="flex items-center gap-2 text-sm text-on-surface-variant">
                 <span className="loader" style={{ width: 14, height: 14, borderWidth: 2 }} />
                 Guardando...
               </span>
@@ -640,7 +640,7 @@ export default function OnboardingFlow({ userId, initialData }: Props) {
           <button
             onClick={saveAndNext}
             disabled={saving}
-            className="px-6 py-2.5 rounded-lg bg-naranja text-white font-medium hover:bg-naranja-hover transition-colors disabled:opacity-50"
+            className="px-6 py-2.5 rounded-lg gradient-denim text-white font-medium shadow-button hover:opacity-90 transition-opacity disabled:opacity-50"
           >
             {saving ? (
               <span className="flex items-center gap-2">
@@ -674,14 +674,14 @@ function TextInput({
 }) {
   return (
     <div className="mb-4">
-      <label className="block text-sm font-medium text-negro mb-1.5">{label}</label>
+      <label className="block text-sm font-medium text-on-surface mb-1.5">{label}</label>
       {textarea ? (
         <textarea
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           rows={3}
-          className="w-full px-4 py-3 border border-borde rounded-lg bg-crema text-negro placeholder:text-muted-light focus:outline-none focus:border-naranja transition-colors resize-none"
+          className="w-full px-4 py-3 bg-surface-container-low border-none rounded-lg text-on-surface placeholder:text-on-surface-variant/70 focus:ring-2 focus:ring-primary/10 transition-colors resize-none"
         />
       ) : (
         <input
@@ -689,7 +689,7 @@ function TextInput({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className="w-full px-4 py-3 border border-borde rounded-lg bg-crema text-negro placeholder:text-muted-light focus:outline-none focus:border-naranja transition-colors"
+          className="w-full px-4 py-3 bg-surface-container-low border-none rounded-lg text-on-surface placeholder:text-on-surface-variant/70 focus:ring-2 focus:ring-primary/10 transition-colors"
         />
       )}
     </div>
@@ -713,7 +713,7 @@ function SubtemaInput({ onAdd, placeholder }: { onAdd: (v: string) => void; plac
         }
       }}
       placeholder={placeholder || "Escribe un subtema y pulsa Enter"}
-      className="w-full px-3 py-2 border border-borde rounded-lg bg-crema text-negro text-sm placeholder:text-muted-light focus:outline-none focus:border-naranja transition-colors"
+      className="w-full px-3 py-2 bg-surface-container-low border-none rounded-lg text-on-surface text-sm placeholder:text-on-surface-variant/70 focus:ring-2 focus:ring-primary/10 transition-colors"
     />
   );
 }
@@ -737,7 +737,7 @@ function TitularInput({ onAdd, placeholder }: { onAdd: (v: string) => void; plac
         }
       }}
       placeholder={placeholder || "Escribe un titular de ejemplo y pulsa Enter (opcional)"}
-      className="w-full px-3 py-2 border border-borde rounded-lg bg-crema text-negro text-sm placeholder:text-muted-light focus:outline-none focus:border-naranja transition-colors"
+      className="w-full px-3 py-2 bg-surface-container-low border-none rounded-lg text-on-surface text-sm placeholder:text-on-surface-variant/70 focus:ring-2 focus:ring-primary/10 transition-colors"
     />
   );
 }

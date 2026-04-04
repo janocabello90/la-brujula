@@ -390,15 +390,15 @@ export default function MinorityReportClient({ userId, data, history, hasApiKey 
 
   const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
     <div className="bg-card rounded-card shadow-card p-6 mb-4">
-      <h3 className="font-heading text-xl text-negro mb-3">{title}</h3>
+      <h3 className="font-headline text-xl text-on-surface mb-3">{title}</h3>
       {children}
     </div>
   );
 
   const Field = ({ label, value }: { label: string; value: string }) => (
     <div className="mb-2">
-      <span className="text-xs font-semibold text-muted uppercase tracking-wide">{label}</span>
-      <p className="text-negro text-sm mt-0.5">{value || <span className="text-muted-light italic">Sin completar</span>}</p>
+      <span className="text-xs font-semibold text-on-surface-variant uppercase tracking-wide">{label}</span>
+      <p className="text-on-surface text-sm mt-0.5">{value || <span className="text-on-surface-variant-light italic">Sin completar</span>}</p>
     </div>
   );
 
@@ -407,8 +407,8 @@ export default function MinorityReportClient({ userId, data, history, hasApiKey 
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="font-heading text-3xl text-negro">Minority Report</h1>
-            <p className="text-muted text-sm">Tu mapa estratégico completo</p>
+            <h1 className="font-headline text-3xl text-on-surface">Minority Report</h1>
+            <p className="text-on-surface-variant text-sm">Tu mapa estratégico completo</p>
           </div>
           <button
             onClick={exportExcel}
@@ -432,10 +432,10 @@ export default function MinorityReportClient({ userId, data, history, hasApiKey 
         )}
 
         {!hasApiKey && (
-          <div className="bg-naranja/10 border border-naranja/30 rounded-lg p-4 text-sm mb-6">
-            <p className="text-negro">
+          <div className="bg-primary-container/10 border border-naranja/30 rounded-lg p-4 text-sm mb-6">
+            <p className="text-on-surface">
               ⚠️ Sin API Key, el Excel se exportará sin sugerencias de contenido IA.{" "}
-              <Link href="/settings" className="text-naranja hover:underline font-medium">
+              <Link href="/settings" className="text-primary hover:underline font-medium">
                 Configúrala en Ajustes
               </Link>
             </p>
@@ -453,9 +453,9 @@ export default function MinorityReportClient({ userId, data, history, hasApiKey 
         {/* Buyers */}
         <Section title={`👤 Buyer Persona${(data?.buyers || []).length > 1 ? "s" : ""}`}>
           {(data?.buyers && data.buyers.length > 0 ? data.buyers : data?.buyer?.nombre ? [data.buyer] : []).map((b: any, i: number) => (
-            <div key={i} className={`${i > 0 ? "mt-4 pt-4 border-t border-borde/40" : ""}`}>
+            <div key={i} className={`${i > 0 ? "mt-4 pt-4 border-t border-outline/40" : ""}`}>
               {(data?.buyers || []).length > 1 && (
-                <span className="text-xs font-semibold text-naranja mb-2 block">Persona {i + 1}</span>
+                <span className="text-xs font-semibold text-primary mb-2 block">Persona {i + 1}</span>
               )}
               <div className="grid grid-cols-2 gap-x-6">
                 <Field label="Nombre" value={b.nombre} />
@@ -492,13 +492,13 @@ export default function MinorityReportClient({ userId, data, history, hasApiKey 
         {/* Tree */}
         <Section title="🌳 Árbol de Contenidos">
           {(data?.tree?.pilares || []).map((pilar: any, i: number) => (
-            <div key={i} className="border border-borde rounded-lg p-4 mb-3">
-              <h4 className="font-semibold text-negro mb-2">
+            <div key={i} className="border border-outline rounded-lg p-4 mb-3">
+              <h4 className="font-semibold text-on-surface mb-2">
                 <span className="pill pill-dark mr-2">{pilar.nombre || `Pilar ${i + 1}`}</span>
               </h4>
               {pilar.subtemas?.length > 0 && (
                 <div className="mb-2">
-                  <span className="text-xs text-muted">Subtemas: </span>
+                  <span className="text-xs text-on-surface-variant">Subtemas: </span>
                   {pilar.subtemas.map((sub: string, j: number) => (
                     <span key={j} className="subtema-tag">{sub}</span>
                   ))}
@@ -506,7 +506,7 @@ export default function MinorityReportClient({ userId, data, history, hasApiKey 
               )}
               {pilar.angulos?.length > 0 && (
                 <div>
-                  <span className="text-xs text-muted">Ángulos: </span>
+                  <span className="text-xs text-on-surface-variant">Ángulos: </span>
                   {pilar.angulos.map((ang: string, j: number) => (
                     <span key={j} className="pill pill-light mr-1 mb-1">{ang}</span>
                   ))}
@@ -514,10 +514,10 @@ export default function MinorityReportClient({ userId, data, history, hasApiKey 
               )}
               {pilar.titulares?.length > 0 && (
                 <div className="mt-2">
-                  <span className="text-xs text-muted">Titulares de referencia:</span>
+                  <span className="text-xs text-on-surface-variant">Titulares de referencia:</span>
                   <div className="mt-1 space-y-1">
                     {pilar.titulares.map((tit: string, j: number) => (
-                      <p key={j} className="text-xs text-negro/70 italic pl-2 border-l-2 border-naranja/30">&ldquo;{tit}&rdquo;</p>
+                      <p key={j} className="text-xs text-on-surface/70 italic pl-2 border-l-2 border-naranja/30">&ldquo;{tit}&rdquo;</p>
                     ))}
                   </div>
                 </div>
@@ -529,7 +529,7 @@ export default function MinorityReportClient({ userId, data, history, hasApiKey 
         {/* Channels */}
         <Section title="📡 Canales y Objetivos">
           <div className="mb-3">
-            <span className="text-xs font-semibold text-muted uppercase tracking-wide">Canales</span>
+            <span className="text-xs font-semibold text-on-surface-variant uppercase tracking-wide">Canales</span>
             <div className="flex flex-wrap gap-2 mt-1">
               {(data?.channels?.canales || []).map((ch: string) => (
                 <span key={ch} className="pill pill-accent">{ch}</span>
@@ -537,7 +537,7 @@ export default function MinorityReportClient({ userId, data, history, hasApiKey 
             </div>
           </div>
           <div>
-            <span className="text-xs font-semibold text-muted uppercase tracking-wide">Objetivos</span>
+            <span className="text-xs font-semibold text-on-surface-variant uppercase tracking-wide">Objetivos</span>
             <div className="flex flex-wrap gap-2 mt-1">
               {(data?.channels?.objetivosPrincipales || []).map((obj: string) => (
                 <span key={obj} className="pill pill-dark">{obj}</span>
@@ -551,12 +551,12 @@ export default function MinorityReportClient({ userId, data, history, hasApiKey 
           <Section title="📚 Historial de sugerencias">
             <div className="space-y-2">
               {history.slice(0, 10).map((h, i) => (
-                <div key={i} className="flex items-center gap-3 text-sm border-b border-borde pb-2 last:border-0">
-                  <span className="text-muted-light text-xs flex-shrink-0">{h.date}</span>
+                <div key={i} className="flex items-center gap-3 text-sm border-b border-outline pb-2 last:border-0">
+                  <span className="text-on-surface-variant-light text-xs flex-shrink-0">{h.date}</span>
                   <span className="pill pill-dark text-xs">{h.pilar}</span>
-                  <span className="text-muted">→</span>
-                  <span className="text-negro">{h.subtema}</span>
-                  <span className="text-muted-light text-xs ml-auto">{h.formato}</span>
+                  <span className="text-on-surface-variant">→</span>
+                  <span className="text-on-surface">{h.subtema}</span>
+                  <span className="text-on-surface-variant-light text-xs ml-auto">{h.formato}</span>
                 </div>
               ))}
             </div>
