@@ -282,18 +282,19 @@ export default function AppShell({
         } lg:translate-x-0 ${sidebarCollapsed ? "lg:w-[68px]" : "lg:w-[250px]"} w-[270px]`}
       >
         {/* Header */}
-        <div className="px-4 py-6 flex items-center justify-between flex-shrink-0">
-          <Link href="/dashboard" className="flex items-center gap-3 overflow-hidden min-w-0">
+        <div className={`py-5 flex items-center flex-shrink-0 ${sidebarCollapsed ? "px-0 justify-center" : "px-4 justify-between"}`}>
+          <Link href="/dashboard" className={`flex items-center overflow-hidden min-w-0 ${sidebarCollapsed ? "justify-center" : "gap-3"}`}>
             <img
               src="/gorilla-logo.png"
               alt="Logo"
-              className="w-8 h-8 rounded-xl bg-primary-container object-cover"
+              className={`rounded-xl bg-primary-container object-cover flex-shrink-0 ${sidebarCollapsed ? "w-10 h-10" : "w-8 h-8"}`}
               onError={(e) => {
                 (e.target as HTMLImageElement).style.display = 'none';
-                (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
+                const fallback = (e.target as HTMLImageElement).nextElementSibling as HTMLElement;
+                if (fallback) fallback.classList.remove('hidden');
               }}
             />
-            <span className="w-8 h-8 rounded-xl gradient-denim flex items-center justify-center text-white text-sm font-bold hidden">SBV</span>
+            <span className={`rounded-xl gradient-denim flex items-center justify-center text-white font-bold hidden flex-shrink-0 ${sidebarCollapsed ? "w-10 h-10 text-base" : "w-8 h-8 text-sm"}`}>SBV</span>
             {!sidebarCollapsed && (
               <div className="flex flex-col min-w-0">
                 <span className="font-headline text-lg font-bold text-on-surface leading-tight truncate">
@@ -305,13 +306,15 @@ export default function AppShell({
               </div>
             )}
           </Link>
-          <button
-            onClick={() => { setSidebarCollapsed(!sidebarCollapsed); setMobileOpen(false); }}
-            className="hidden lg:flex items-center justify-center w-7 h-7 rounded-lg text-outline hover:text-primary hover:bg-primary/5 transition-all flex-shrink-0"
-            aria-label={sidebarCollapsed ? "Expandir" : "Colapsar"}
-          >
-            <Icon name={sidebarCollapsed ? "chevron_right" : "chevron_left"} className="text-base" />
-          </button>
+          {!sidebarCollapsed && (
+            <button
+              onClick={() => { setSidebarCollapsed(!sidebarCollapsed); setMobileOpen(false); }}
+              className="hidden lg:flex items-center justify-center w-7 h-7 rounded-lg text-outline hover:text-primary hover:bg-primary/5 transition-all flex-shrink-0"
+              aria-label="Colapsar"
+            >
+              <Icon name="chevron_left" className="text-base" />
+            </button>
+          )}
           <button
             onClick={() => setMobileOpen(false)}
             className="lg:hidden flex items-center justify-center w-8 h-8 rounded-lg text-outline hover:text-on-surface transition-colors"
@@ -320,6 +323,17 @@ export default function AppShell({
             <Icon name="close" />
           </button>
         </div>
+
+        {/* Expand button when collapsed — below logo */}
+        {sidebarCollapsed && (
+          <button
+            onClick={() => setSidebarCollapsed(false)}
+            className="hidden lg:flex items-center justify-center w-full py-1.5 text-outline hover:text-primary transition-all"
+            aria-label="Expandir"
+          >
+            <Icon name="chevron_right" className="text-base" />
+          </button>
+        )}
 
         {/* Nav items */}
         <div className="flex-1 overflow-y-auto py-2 px-3 font-body text-sm tracking-tight">
