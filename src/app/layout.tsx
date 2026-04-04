@@ -16,7 +16,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className="font-body bg-crema text-negro min-h-screen">
+      <head>
+        {/* Material Symbols — must load via <link> for Next.js */}
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+        />
+        {/* Bricolage Grotesque + DM Sans + Plus Jakarta Sans */}
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Epilogue:wght@400;600;700;800&display=swap"
+        />
+      </head>
+      <body className="font-body bg-surface text-on-surface min-h-screen antialiased">
         {children}
       </body>
     </html>
