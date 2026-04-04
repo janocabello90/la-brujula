@@ -15,9 +15,11 @@ interface Props {
   initialData: PiramideData;
   userId: string;
   isAdmin?: boolean;
+  userName?: string;
+  userEmail?: string;
 }
 
-export default function PiramideClient({ initialData, userId, isAdmin = false }: Props) {
+export default function PiramideClient({ initialData, userId, isAdmin = false, userName = "", userEmail = "" }: Props) {
   const [data, setData] = useState<PiramideData>(initialData);
   const [activeStep, setActiveStep] = useState<PiramideStep>(initialData.current_step);
   const [saving, setSaving] = useState(false);
@@ -144,6 +146,19 @@ export default function PiramideClient({ initialData, userId, isAdmin = false }:
 
     setSaving(false);
     setData(updated as PiramideData);
+
+    // Notify admin when all steps are completed (Pirámide finished)
+    if (newCompleted.length === PIRAMIDE_STEPS.length && !isAdmin) {
+      fetch("/api/admin/notify-exercise", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          exerciseType: "piramide",
+          studentName: userName || userEmail.split("@")[0],
+          studentEmail: userEmail,
+        }),
+      }).catch(() => {}); // fire-and-forget
+    }
 
     if (nextIndex < PIRAMIDE_STEPS.length) {
       setActiveStep(PIRAMIDE_STEPS[nextIndex].id);

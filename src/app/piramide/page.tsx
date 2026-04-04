@@ -46,9 +46,22 @@ export default async function PiramidePage() {
     piramide = newPiramide;
   }
 
+  // Fetch profile for notification data
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("display_name, email")
+    .eq("id", user.id)
+    .single();
+
   return (
     <AppShell fullWidth>
-      <PiramideClient initialData={piramide as PiramideData} userId={user.id} isAdmin={isAdmin} />
+      <PiramideClient
+        initialData={piramide as PiramideData}
+        userId={user.id}
+        isAdmin={isAdmin}
+        userName={profile?.display_name || user.email?.split("@")[0] || ""}
+        userEmail={user.email || ""}
+      />
     </AppShell>
   );
 }

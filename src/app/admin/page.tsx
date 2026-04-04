@@ -25,6 +25,11 @@ export interface AdminUser {
   temaRaiz: string;
   // Activity
   lastSuggestionAt: string | null;
+  // Access control
+  role: string;        // 'free' | 'premium' | 'vip' | 'admin'
+  isActive: boolean;
+  expiresAt: string | null;
+  notes: string;
 }
 
 export interface AdminStats {
@@ -54,7 +59,7 @@ export default async function AdminPage() {
   // Fetch all profiles
   const { data: profiles } = await supabase
     .from("profiles")
-    .select("id, email, display_name, api_key, onboarding_completed, created_at")
+    .select("id, email, display_name, api_key, onboarding_completed, created_at, role, is_active, expires_at, notes")
     .order("created_at", { ascending: false });
 
   if (!profiles) redirect("/dashboard");
@@ -130,6 +135,10 @@ export default async function AdminPage() {
       hasInsight: !!bd.insight?.insight,
       temaRaiz: bd.briefing?.temaRaiz || "",
       lastSuggestionAt: lastSuggestionMap[p.id] || null,
+      role: p.role || 'free',
+      isActive: p.is_active !== false,  // default true
+      expiresAt: p.expires_at || null,
+      notes: p.notes || '',
     };
   });
 

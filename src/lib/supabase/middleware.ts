@@ -35,10 +35,46 @@ export async function updateSession(request: NextRequest) {
   const protectedPaths = ['/dashboard', '/onboarding', '/minority-report', '/maestro', '/planner', '/settings', '/admin', '/ideas', '/piezas', '/arbol', '/espejo', '/rutas', '/piramide', '/tour', '/entrevistador', '/reto']
   const isProtected = protectedPaths.some(path => request.nextUrl.pathname.startsWith(path))
 
+  // Pages that bypass access control (user can see them even if blocked)
+  const accessControlBypass = ['/cuenta-bloqueada', '/settings']
+  const isBypassed = accessControlBypass.some(path => request.nextUrl.pathname.startsWith(path))
+
   if (isProtected && !user) {
     const url = request.nextUrl.clone()
     url.pathname = '/acceso-buena-vida'
     return NextResponse.redirect(url)
+  }
+
+  // Access control: check is_active and expires_at for authenticated users on protected routes
+  if (isProtected && user && !isBypassed) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('is_active, expires_at, role')
+      .eq('id', user.id)
+      .single()
+
+    if (profile) {
+      // Admin always passes
+      if (profile.role === 'admin') {
+        return supabaseResponse
+      }
+
+      // Check if account is deactivated
+      if (profile.is_active === false) {
+        const url = request.nextUrl.clone()
+        url.pathname = '/cuenta-bloqueada'
+        url.searchParams.set('reason', 'inactive')
+        return NextResponse.redirect(url)
+      }
+
+      // Check if access has expired
+      if (profile.expires_at && new Date(profile.expires_at) < new Date()) {
+        const url = request.nextUrl.clone()
+        url.pathname = '/cuenta-bloqueada'
+        url.searchParams.set('reason', 'expired')
+        return NextResponse.redirect(url)
+      }
+    }
   }
 
   // Redirect old /login to home

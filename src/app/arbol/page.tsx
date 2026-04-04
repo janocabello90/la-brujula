@@ -13,7 +13,7 @@ export default async function ArbolPage() {
   // Check profile exists
   const { data: profile } = await supabase
     .from("profiles")
-    .select("display_name")
+    .select("display_name, email")
     .eq("id", user.id)
     .single();
 
@@ -37,6 +37,7 @@ export default async function ArbolPage() {
     <ArbolClient
       userId={user.id}
       userName={profile.display_name || ""}
+      userEmail={profile.email || user.email || ""}
       initialData={arbolData}
       brujulaData={brujulaData}
     />

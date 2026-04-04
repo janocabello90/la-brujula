@@ -107,11 +107,12 @@ const ARQUETIPOS = [
 interface Props {
   userId: string;
   userName: string;
+  userEmail?: string;
   initialData: any | null;
   brujulaData: any | null;
 }
 
-export default function ArbolClient({ userId, userName, initialData, brujulaData }: Props) {
+export default function ArbolClient({ userId, userName, userEmail = "", initialData, brujulaData }: Props) {
   const [view, setView] = useState<"questionnaire" | "canvas">(
     initialData?.completed ? "canvas" : "questionnaire"
   );
@@ -245,6 +246,18 @@ export default function ArbolClient({ userId, userName, initialData, brujulaData
       setView("canvas");
       // Auto-run diagnostic when completing the tree
       runDiagnostic();
+      // Notify admin when Árbol is completed (first time)
+      if (!initialData?.completed) {
+        fetch("/api/admin/notify-exercise", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            exerciseType: "arbol",
+            studentName: userName || userEmail.split("@")[0],
+            studentEmail: userEmail,
+          }),
+        }).catch(() => {}); // fire-and-forget
+      }
     }
   };
 
