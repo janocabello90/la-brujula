@@ -17,7 +17,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const { projectId, projectType, content, pilar, canal, tono } =
+    const { projectId, projectType, title, content, pilar, canal, tono, brujulaContext } =
       await request.json();
 
     if (!projectId || !projectType) {

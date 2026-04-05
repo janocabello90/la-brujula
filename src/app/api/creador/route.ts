@@ -66,6 +66,7 @@ export async function POST(request: Request) {
     const {
       title,
       project_type,
+      content,
       source_suggestion,
       canal,
       pilar,
@@ -86,6 +87,7 @@ export async function POST(request: Request) {
         user_id: user.id,
         title: title || "",
         project_type,
+        content: content || {},
         source_suggestion: source_suggestion || {},
         canal: canal || "",
         pilar: pilar || "",

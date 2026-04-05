@@ -14,7 +14,7 @@ interface CreatorProject {
   id: string;
   user_id: string;
   title: string;
-  type: "video_short" | "video_long" | "article" | "newsletter" | "post" | "carousel";
+  project_type: "video_short" | "video_long" | "article" | "newsletter" | "post" | "carousel";
   status: "draft" | "published" | "archived";
   created_at: string;
   updated_at: string;
@@ -74,7 +74,7 @@ export default function CreadorClient({
   const filteredProjects = projects.filter(
     (p) =>
       p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      PROJECT_TYPES[p.type].label.toLowerCase().includes(searchTerm.toLowerCase())
+      PROJECT_TYPES[p.project_type].label.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const draftProjects = filteredProjects.filter((p) => p.status === "draft");
@@ -288,14 +288,14 @@ export default function CreadorClient({
                 >
                   <div className="flex items-start gap-3 mb-4">
                     <div className="p-2.5 rounded-xl bg-primary/10 text-primary flex-shrink-0">
-                      <Icon name={PROJECT_TYPES[project.type].icon} />
+                      <Icon name={PROJECT_TYPES[project.project_type].icon} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-medium text-on-surface text-sm line-clamp-2 mb-0.5">
                         {project.title}
                       </h3>
                       <p className="text-xs text-on-surface-variant">
-                        {PROJECT_TYPES[project.type].label}
+                        {PROJECT_TYPES[project.project_type].label}
                       </p>
                     </div>
                   </div>
@@ -370,14 +370,14 @@ export default function CreadorClient({
                 >
                   <div className="flex items-start gap-3 mb-4">
                     <div className="p-2.5 rounded-xl bg-success/10 text-success flex-shrink-0">
-                      <Icon name={PROJECT_TYPES[project.type].icon} />
+                      <Icon name={PROJECT_TYPES[project.project_type].icon} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-medium text-on-surface text-sm line-clamp-2 mb-0.5">
                         {project.title}
                       </h3>
                       <p className="text-xs text-on-surface-variant">
-                        {PROJECT_TYPES[project.type].label}
+                        {PROJECT_TYPES[project.project_type].label}
                       </p>
                     </div>
                   </div>
@@ -472,7 +472,7 @@ export default function CreadorClient({
                         <tr key={project.id} className="border-b border-outline/10 hover:bg-surface-container-low/50 transition-colors">
                           <td className="px-5 py-4 text-sm text-on-surface font-medium">{project.title}</td>
                           <td className="px-4 py-4 text-center text-xs text-on-surface-variant">
-                            {PROJECT_TYPES[project.type].label}
+                            {PROJECT_TYPES[project.project_type].label}
                           </td>
                           <td className="px-4 py-4 text-center text-sm text-on-surface font-medium">
                             {project.views || 0}

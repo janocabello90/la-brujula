@@ -32,7 +32,7 @@ export default async function EditorPage({ params }: PageProps) {
 
   // Fetch slides if carousel
   let slides: any[] = [];
-  if (project.type === "carousel") {
+  if (project.project_type === "carousel") {
     const { data } = await supabase
       .from("creator_slides")
       .select("*")

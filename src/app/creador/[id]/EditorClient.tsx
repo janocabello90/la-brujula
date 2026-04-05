@@ -11,11 +11,16 @@ interface CreatorProject {
   id: string;
   user_id: string;
   title: string;
-  type: "video_short" | "video_long" | "article" | "newsletter" | "post" | "carousel";
+  project_type: "video_short" | "video_long" | "article" | "newsletter" | "post" | "carousel";
   status: "draft" | "published" | "archived";
   content?: any;
   ai_insights?: any;
+  source_suggestion?: any;
   analytics?: Record<string, number>;
+  canal?: string;
+  pilar?: string;
+  formato?: string;
+  tono?: string;
   created_at: string;
   updated_at: string;
 }
@@ -97,7 +102,7 @@ export default function EditorClient({
   const [project, setProject] = useState<CreatorProject>(initialProject);
   const [title, setTitle] = useState(initialProject.title);
   const [content, setContent] = useState(
-    initialProject.content || getDefaultContent(initialProject.type as EditorMode)
+    initialProject.content || getDefaultContent(initialProject.project_type as EditorMode)
   );
   const [slides, setSlides] = useState<CreatorSlide[]>(initialSlides);
   const [insights, setInsights] = useState(initialProject.ai_insights || null);
@@ -112,7 +117,7 @@ export default function EditorClient({
   const [toast, setToast] = useState("");
   const [isEditing, setIsEditing] = useState(false);
 
-  const projectType = project.type as EditorMode;
+  const projectType = project.project_type as EditorMode;
   const isVideoMode = projectType === "video_short" || projectType === "video_long";
   const isTextMode = projectType === "article" || projectType === "newsletter" || projectType === "post";
   const isCarouselMode = projectType === "carousel";
@@ -188,14 +193,18 @@ export default function EditorClient({
           title,
           content,
           brujulaContext,
+          pilar: project.pilar || "",
+          canal: project.canal || "",
+          tono: project.tono || "",
         }),
       });
 
       if (!response.ok) throw new Error("Failed to generate insights");
 
       const data = await response.json();
-      setInsights(data);
-      autoSave({ insights: data });
+      const newInsights = data.insights || data;
+      setInsights(newInsights);
+      autoSave({ insights: newInsights });
       showToast("Insights generados");
     } catch (error) {
       console.error("Insights error:", error);
@@ -238,21 +247,32 @@ export default function EditorClient({
 
       if (!response.ok) throw new Error("Chat error");
 
-      const data = await response.json();
+      // Read streaming response
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let fullText = "";
+
       const assistantMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         project_id: project.id,
         role: "assistant",
-        content: data.response,
+        content: "",
         created_at: new Date().toISOString(),
       };
-
       setChatMessages((prev) => [...prev, assistantMessage]);
 
-      // Save chat message
-      await supabase
-        .from("creator_chat_history")
-        .insert([userMessage, assistantMessage]);
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          fullText += decoder.decode(value, { stream: true });
+          setChatMessages((prev) =>
+            prev.map((m) =>
+              m.id === assistantMessage.id ? { ...m, content: fullText } : m
+            )
+          );
+        }
+      }
     } catch (error) {
       console.error("Chat error:", error);
       showToast("Error en el chat");
@@ -449,13 +469,13 @@ export default function EditorClient({
               {insights ? (
                 <div className="space-y-4">
                   {/* Ideas de Titular */}
-                  {insights.headlines && (
+                  {insights.titulares && (
                     <div>
                       <p className="text-xs font-semibold text-on-surface-variant/60 uppercase tracking-widest mb-2">
                         Ideas de Titular
                       </p>
                       <div className="space-y-2">
-                        {insights.headlines.slice(0, 3).map((h: string, i: number) => (
+                        {insights.titulares.slice(0, 3).map((h: string, i: number) => (
                           <div
                             key={i}
                             className="flex items-start gap-2 p-2.5 rounded-lg bg-surface-container-low hover:bg-primary/5 group cursor-pointer transition-colors"
@@ -470,50 +490,43 @@ export default function EditorClient({
                   )}
 
                   {/* Gancho de Apertura */}
-                  {insights.hook && (
+                  {insights.gancho_apertura && (
                     <div>
                       <p className="text-xs font-semibold text-on-surface-variant/60 uppercase tracking-widest mb-2">
                         Gancho de Apertura
                       </p>
                       <blockquote className="text-xs text-on-surface/70 border-l-2 border-primary/20 pl-3 italic">
-                        {insights.hook}
+                        {insights.gancho_apertura}
                       </blockquote>
                     </div>
                   )}
 
-                  {/* Métricas */}
-                  {insights.metrics && (
+                  {/* Enfoque y Estrategia */}
+                  {(insights.enfoque || insights.estrategia) && (
                     <div>
                       <p className="text-xs font-semibold text-on-surface-variant/60 uppercase tracking-widest mb-2">
                         Enfoque y Estrategia
                       </p>
-                      <div className="space-y-2">
-                        {Object.entries(insights.metrics).map(([key, value]: [string, any]) => (
-                          <div key={key}>
-                            <div className="flex items-center justify-between mb-1">
-                              <span className="text-xs text-on-surface-variant capitalize">{key}</span>
-                              <span className="text-xs font-semibold text-primary">{value}%</span>
-                            </div>
-                            <div className="w-full h-1.5 bg-surface-container-low rounded-full overflow-hidden">
-                              <div
-                                className="h-full bg-primary/60 rounded-full"
-                                style={{ width: `${value}%` }}
-                              />
-                            </div>
-                          </div>
-                        ))}
-                      </div>
+                      {insights.enfoque && (
+                        <p className="text-xs text-on-surface/80 mb-2">{insights.enfoque}</p>
+                      )}
+                      {insights.estrategia && (
+                        <p className="text-xs text-on-surface-variant/70 italic">{insights.estrategia}</p>
+                      )}
+                      {insights.por_que_ahora && (
+                        <p className="text-xs text-primary/70 mt-2 font-medium">{insights.por_que_ahora}</p>
+                      )}
                     </div>
                   )}
 
-                  {/* Creative Sparks */}
-                  {insights.sparks && (
+                  {/* Pistas Creativas */}
+                  {insights.pistas_creativas && (
                     <div>
                       <p className="text-xs font-semibold text-on-surface-variant/60 uppercase tracking-widest mb-2">
                         Pistas Creativas
                       </p>
                       <div className="flex flex-wrap gap-1.5">
-                        {insights.sparks.slice(0, 5).map((spark: string, i: number) => (
+                        {insights.pistas_creativas.slice(0, 5).map((spark: string, i: number) => (
                           <span
                             key={i}
                             className="px-2.5 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-medium"
@@ -525,13 +538,13 @@ export default function EditorClient({
                     </div>
                   )}
 
-                  {/* CTA Suggestion */}
-                  {insights.cta && (
+                  {/* Cierre / CTA */}
+                  {insights.cierre_cta && (
                     <div>
                       <p className="text-xs font-semibold text-on-surface-variant/60 uppercase tracking-widest mb-2">
                         Cierre / CTA
                       </p>
-                      <p className="text-xs text-on-surface/70">{insights.cta}</p>
+                      <p className="text-xs text-on-surface/70">{insights.cierre_cta}</p>
                     </div>
                   )}
                 </div>
