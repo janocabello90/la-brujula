@@ -327,8 +327,7 @@ export default function EditorClient({
 
   // ─── Publish ───
 
-  const togglePublish = async () => {
-    const newStatus = project.status === "published" ? "draft" : "published";
+  const changeStatus = async (newStatus: "draft" | "published" | "archived") => {
     try {
       const { error } = await supabase
         .from("creator_projects")
@@ -341,9 +340,14 @@ export default function EditorClient({
 
       if (error) throw error;
       setProject({ ...project, status: newStatus });
-      showToast(newStatus === "published" ? "Publicado" : "Movido a borradores");
+      const labels: Record<string, string> = {
+        draft: "Movido a borradores",
+        published: "Publicado",
+        archived: "Guardado en nevera",
+      };
+      showToast(labels[newStatus]);
     } catch (error) {
-      console.error("Publish toggle error:", error);
+      console.error("Status change error:", error);
       showToast("Error al cambiar estado");
     }
   };
@@ -440,23 +444,45 @@ export default function EditorClient({
               <Icon name="download" className="text-lg" />
             </button>
 
-            {/* Publish / Unpublish */}
-            {project.status === "draft" ? (
+            {/* Nevera */}
+            {project.status !== "archived" && (
               <button
-                onClick={togglePublish}
+                onClick={() => changeStatus("archived")}
+                className="px-3 py-2 text-sm text-on-surface-variant hover:text-blue-600 rounded-xl hover:bg-blue-50 transition-colors"
+                title="Guardar en nevera"
+              >
+                <Icon name="ac_unit" className="text-lg" />
+              </button>
+            )}
+
+            {/* Status actions */}
+            {project.status === "draft" && (
+              <button
+                onClick={() => changeStatus("published")}
                 className="px-4 py-2.5 text-sm font-medium rounded-xl gradient-denim text-white hover:shadow-lg transition-all"
               >
                 Publicar
               </button>
-            ) : project.status === "published" ? (
+            )}
+            {project.status === "published" && (
               <button
-                onClick={togglePublish}
+                onClick={() => changeStatus("draft")}
                 className="px-4 py-2.5 text-sm font-medium rounded-xl bg-green-100 text-green-700 hover:bg-red-50 hover:text-red-600 transition-all group"
               >
                 <span className="group-hover:hidden">Publicado</span>
                 <span className="hidden group-hover:inline">Despublicar</span>
               </button>
-            ) : null}
+            )}
+            {project.status === "archived" && (
+              <button
+                onClick={() => changeStatus("draft")}
+                className="px-4 py-2.5 text-sm font-medium rounded-xl bg-blue-50 text-blue-700 hover:bg-surface-container-low hover:text-on-surface transition-all group"
+              >
+                <Icon name="ac_unit" className="text-sm mr-1.5 align-middle" />
+                <span className="group-hover:hidden">En nevera</span>
+                <span className="hidden group-hover:inline">Sacar de nevera</span>
+              </button>
+            )}
           </div>
         </div>
       </div>

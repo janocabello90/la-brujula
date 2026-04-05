@@ -54,7 +54,7 @@ export default function CreadorClient({
   const router = useRouter();
   const supabase = createClient();
 
-  const [activeTab, setActiveTab] = useState<"drafts" | "published" | "analytics">("drafts");
+  const [activeTab, setActiveTab] = useState<"drafts" | "published" | "nevera" | "analytics">("drafts");
   const [searchTerm, setSearchTerm] = useState("");
   const [showNewProjectModal, setShowNewProjectModal] = useState(false);
   const [newProjectTitle, setNewProjectTitle] = useState("");
@@ -79,6 +79,7 @@ export default function CreadorClient({
 
   const draftProjects = filteredProjects.filter((p) => p.status === "draft");
   const publishedProjects = filteredProjects.filter((p) => p.status === "published");
+  const archivedProjects = filteredProjects.filter((p) => p.status === "archived");
 
   const createNewProject = async () => {
     if (!newProjectTitle.trim() || !newProjectType) {
@@ -138,10 +139,8 @@ export default function CreadorClient({
     }
   };
 
-  const togglePublish = async (id: string) => {
+  const changeStatus = async (id: string, newStatus: "draft" | "published" | "archived") => {
     setPublishingId(id);
-    const project = projects.find((p) => p.id === id);
-    const newStatus = project?.status === "published" ? "draft" : "published";
     try {
       const { error } = await supabase
         .from("creator_projects")
@@ -154,7 +153,12 @@ export default function CreadorClient({
 
       if (error) throw error;
       router.refresh();
-      showToast(newStatus === "published" ? "Publicado" : "Movido a borradores");
+      const labels: Record<string, string> = {
+        draft: "Movido a borradores",
+        published: "Publicado",
+        archived: "Guardado en nevera",
+      };
+      showToast(labels[newStatus]);
     } catch (error) {
       console.error(error);
       showToast("Error al cambiar estado");
@@ -254,6 +258,16 @@ export default function CreadorClient({
           Publicados ({publishedProjects.length})
         </button>
         <button
+          onClick={() => setActiveTab("nevera")}
+          className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
+            activeTab === "nevera"
+              ? "border-blue-500 text-on-surface"
+              : "border-transparent text-on-surface-variant hover:text-on-surface"
+          }`}
+        >
+          Nevera ({archivedProjects.length})
+        </button>
+        <button
           onClick={() => setActiveTab("analytics")}
           className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
             activeTab === "analytics"
@@ -335,11 +349,19 @@ export default function CreadorClient({
                       Editar
                     </Link>
                     <button
-                      onClick={() => togglePublish(project.id)}
+                      onClick={() => changeStatus(project.id, "published")}
                       disabled={publishingId === project.id}
                       className="flex-1 px-3 py-2 text-xs font-medium text-white gradient-denim rounded-lg hover:shadow-button transition-all disabled:opacity-50"
                     >
                       {publishingId === project.id ? "..." : "Publicar"}
+                    </button>
+                    <button
+                      onClick={() => changeStatus(project.id, "archived")}
+                      disabled={publishingId === project.id}
+                      className="px-2.5 py-2 text-xs text-on-surface-variant hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50"
+                      title="Guardar en nevera"
+                    >
+                      <Icon name="ac_unit" className="text-sm" />
                     </button>
                     <button
                       onClick={() => deleteProject(project.id)}
@@ -407,11 +429,80 @@ export default function CreadorClient({
                       Ver
                     </Link>
                     <button
-                      onClick={() => togglePublish(project.id)}
+                      onClick={() => changeStatus(project.id, "draft")}
                       disabled={publishingId === project.id}
                       className="px-3 py-2 text-xs font-medium text-on-surface-variant hover:bg-amber-50 hover:text-amber-700 rounded-lg transition-colors disabled:opacity-50"
                     >
                       {publishingId === project.id ? "..." : "Despublicar"}
+                    </button>
+                    <button
+                      onClick={() => changeStatus(project.id, "archived")}
+                      disabled={publishingId === project.id}
+                      className="px-2.5 py-2 text-xs text-on-surface-variant hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50"
+                      title="Guardar en nevera"
+                    >
+                      <Icon name="ac_unit" className="text-sm" />
+                    </button>
+                    <button
+                      onClick={() => deleteProject(project.id)}
+                      disabled={deletingId === project.id}
+                      className="px-3 py-2 text-xs font-medium text-error hover:bg-error/10 rounded-lg transition-colors disabled:opacity-50"
+                    >
+                      {deletingId === project.id ? "..." : "✕"}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {activeTab === "nevera" && (
+        <div>
+          {archivedProjects.length === 0 ? (
+            <div className="text-center py-12">
+              <Icon name="ac_unit" className="text-4xl text-blue-300 mb-3 block" />
+              <p className="text-on-surface-variant text-sm">
+                {searchTerm
+                  ? "No hay contenido en nevera que coincida"
+                  : "Tu nevera está vacía. Guarda aquí ideas que quieras retomar más adelante."}
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {archivedProjects.map((project) => (
+                <div
+                  key={project.id}
+                  className="surface-card signature-shadow rounded-2xl p-5 opacity-80 hover:opacity-100 transition-opacity"
+                >
+                  <div className="flex items-start gap-3 mb-4">
+                    <div className="p-2.5 rounded-xl bg-blue-50 text-blue-500 flex-shrink-0">
+                      <Icon name={PROJECT_TYPES[project.project_type].icon} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-medium text-on-surface text-sm line-clamp-2 mb-0.5">
+                        {project.title || "Sin título"}
+                      </h3>
+                      <p className="text-xs text-on-surface-variant">
+                        {PROJECT_TYPES[project.project_type].label}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 pt-3 border-t border-outline/20">
+                    <Link
+                      href={`/creador/${project.id}`}
+                      className="flex-1 px-3 py-2 text-xs font-medium text-on-surface hover:bg-primary/5 rounded-lg transition-colors"
+                    >
+                      Editar
+                    </Link>
+                    <button
+                      onClick={() => changeStatus(project.id, "draft")}
+                      disabled={publishingId === project.id}
+                      className="flex-1 px-3 py-2 text-xs font-medium text-blue-700 hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50"
+                    >
+                      {publishingId === project.id ? "..." : "Sacar de nevera"}
                     </button>
                     <button
                       onClick={() => deleteProject(project.id)}
