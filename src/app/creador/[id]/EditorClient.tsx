@@ -309,22 +309,24 @@ export default function EditorClient({
 
   // ─── Publish ───
 
-  const publishProject = async () => {
+  const togglePublish = async () => {
+    const newStatus = project.status === "published" ? "draft" : "published";
     try {
       const { error } = await supabase
         .from("creator_projects")
         .update({
-          status: "published",
+          status: newStatus,
+          published_at: newStatus === "published" ? new Date().toISOString() : null,
           updated_at: new Date().toISOString(),
         })
         .eq("id", project.id);
 
       if (error) throw error;
-      setProject({ ...project, status: "published" });
-      showToast("Proyecto publicado");
+      setProject({ ...project, status: newStatus });
+      showToast(newStatus === "published" ? "Publicado" : "Movido a borradores");
     } catch (error) {
-      console.error("Publish error:", error);
-      showToast("Error al publicar");
+      console.error("Publish toggle error:", error);
+      showToast("Error al cambiar estado");
     }
   };
 
@@ -420,21 +422,23 @@ export default function EditorClient({
               <Icon name="download" className="text-lg" />
             </button>
 
-            {/* Publish */}
-            {project.status === "draft" && (
+            {/* Publish / Unpublish */}
+            {project.status === "draft" ? (
               <button
-                onClick={publishProject}
+                onClick={togglePublish}
                 className="px-4 py-2.5 text-sm font-medium rounded-xl gradient-denim text-white hover:shadow-lg transition-all"
               >
                 Publicar
               </button>
-            )}
-
-            {project.status === "published" && (
-              <span className="px-4 py-2.5 text-sm font-medium rounded-xl bg-green-100 text-green-700">
-                Publicado
-              </span>
-            )}
+            ) : project.status === "published" ? (
+              <button
+                onClick={togglePublish}
+                className="px-4 py-2.5 text-sm font-medium rounded-xl bg-green-100 text-green-700 hover:bg-red-50 hover:text-red-600 transition-all group"
+              >
+                <span className="group-hover:hidden">Publicado</span>
+                <span className="hidden group-hover:inline">Despublicar</span>
+              </button>
+            ) : null}
           </div>
         </div>
       </div>

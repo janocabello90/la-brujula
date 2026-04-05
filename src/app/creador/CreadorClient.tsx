@@ -138,20 +138,26 @@ export default function CreadorClient({
     }
   };
 
-  const publishProject = async (id: string) => {
+  const togglePublish = async (id: string) => {
     setPublishingId(id);
+    const project = projects.find((p) => p.id === id);
+    const newStatus = project?.status === "published" ? "draft" : "published";
     try {
       const { error } = await supabase
         .from("creator_projects")
-        .update({ status: "published", updated_at: new Date().toISOString() })
+        .update({
+          status: newStatus,
+          published_at: newStatus === "published" ? new Date().toISOString() : null,
+          updated_at: new Date().toISOString(),
+        })
         .eq("id", id);
 
       if (error) throw error;
       router.refresh();
-      showToast("Proyecto publicado");
+      showToast(newStatus === "published" ? "Publicado" : "Movido a borradores");
     } catch (error) {
       console.error(error);
-      showToast("Error al publicar proyecto");
+      showToast("Error al cambiar estado");
     } finally {
       setPublishingId(null);
     }
@@ -329,7 +335,7 @@ export default function CreadorClient({
                       Editar
                     </Link>
                     <button
-                      onClick={() => publishProject(project.id)}
+                      onClick={() => togglePublish(project.id)}
                       disabled={publishingId === project.id}
                       className="flex-1 px-3 py-2 text-xs font-medium text-white gradient-denim rounded-lg hover:shadow-button transition-all disabled:opacity-50"
                     >
@@ -400,6 +406,13 @@ export default function CreadorClient({
                     >
                       Ver
                     </Link>
+                    <button
+                      onClick={() => togglePublish(project.id)}
+                      disabled={publishingId === project.id}
+                      className="px-3 py-2 text-xs font-medium text-on-surface-variant hover:bg-amber-50 hover:text-amber-700 rounded-lg transition-colors disabled:opacity-50"
+                    >
+                      {publishingId === project.id ? "..." : "Despublicar"}
+                    </button>
                     <button
                       onClick={() => deleteProject(project.id)}
                       disabled={deletingId === project.id}
