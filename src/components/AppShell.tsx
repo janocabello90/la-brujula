@@ -302,7 +302,7 @@ export default function AppShell({
                   El Sistema
                 </span>
                 <span className="text-[10px] tracking-widest text-primary/60 font-medium">
-                  Una Buena Vida
+                  Marca personal para una buena vida
                 </span>
               </div>
             )}
