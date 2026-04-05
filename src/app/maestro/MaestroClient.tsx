@@ -138,66 +138,43 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
     }
   };
 
-  const detectProjectType = (suggestion: SuggestionResult): string => {
-    const canal = (selection.canal || "").toLowerCase();
-    const formato = (suggestion.formato || "").toLowerCase();
+  const [showFormatPicker, setShowFormatPicker] = useState(false);
 
-    if (canal.includes("youtube") || formato.includes("vídeo largo")) {
-      return "video_long";
-    }
-    if (canal.includes("instagram") || canal.includes("tiktok") || formato.includes("reel") || formato.includes("vídeo corto")) {
-      return "video_short";
-    }
-    if (formato.includes("carrusel") || formato.includes("carousel")) {
-      return "carousel";
-    }
-    if (formato.includes("newsletter")) {
-      return "newsletter";
-    }
-    if (formato.includes("artículo") || formato.includes("blog")) {
-      return "article";
-    }
+  const FORMAT_OPTIONS = [
+    { id: "video_short", label: "Vídeo Corto", desc: "Reels, TikTok, Shorts", icon: "movie" },
+    { id: "video_long", label: "Vídeo Largo", desc: "YouTube, Podcast", icon: "videocam" },
+    { id: "article", label: "Artículo", desc: "Blog, largo formato", icon: "article" },
+    { id: "newsletter", label: "Newsletter", desc: "Email editorial", icon: "mail" },
+    { id: "post", label: "Post", desc: "Redes sociales", icon: "edit_note" },
+    { id: "carousel", label: "Carrusel", desc: "Slides visuales", icon: "view_carousel" },
+  ];
 
-    return "post";
-  };
-
-  const handleTrabajarSobreIdeaClick = async () => {
+  const handleCreateWithFormat = async (projectType: string) => {
     if (!result) return;
 
     setCreadorSaving(true);
+    setShowFormatPicker(false);
 
     try {
-      const projectType = detectProjectType(result);
       const title = result.titulares?.[0] || result.subtema || "Sin título";
 
-      // Prepare content based on project type
       let content: any = {};
 
       if (projectType === "video_long" || projectType === "video_short") {
         content = {
           hook: result.gancho || "",
+          retention: "",
           closing: result.cta || "",
           steps: [{ text: result.enfoque || "" }],
+          visual_notes: "",
         };
-      } else if (projectType === "article" || projectType === "newsletter") {
+      } else if (projectType === "article" || projectType === "newsletter" || projectType === "post") {
         content = {
           body: (result.enfoque || "") + "\n\n" + (result.pistas || []).join("\n"),
           subtitle: result.subtema || "",
         };
       } else if (projectType === "carousel") {
-        content = {
-          slides: [
-            {
-              title: result.titulares?.[0] || "",
-              description: result.enfoque || "",
-            },
-          ],
-        };
-      } else {
-        content = {
-          body: result.enfoque || "",
-          title: title,
-        };
+        content = {};
       }
 
       const res = await fetch("/api/creador", {
@@ -490,13 +467,38 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
             {/* Action buttons */}
             <div className="border-t border-surface-mid pt-4 mt-4 space-y-3">
               {/* Trabajar sobre esta idea */}
-              <button
-                onClick={handleTrabajarSobreIdeaClick}
-                disabled={creadorSaving}
-                className="w-full py-3 gradient-yellow text-on-surface rounded-2xl font-bold hover:shadow-card-hover transition-shadow text-sm disabled:opacity-50"
-              >
-                {creadorSaving ? "Preparando..." : "🎨 Trabajar sobre esta idea"}
-              </button>
+              {creadorSaving ? (
+                <div className="w-full py-3 gradient-yellow text-on-surface rounded-2xl font-bold text-sm text-center opacity-70">
+                  Preparando...
+                </div>
+              ) : showFormatPicker ? (
+                <div className="surface-card signature-shadow rounded-2xl p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="text-sm font-headline text-on-surface">Elige el formato</p>
+                    <button onClick={() => setShowFormatPicker(false)} className="text-on-surface-variant hover:text-on-surface text-xs">✕</button>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {FORMAT_OPTIONS.map((opt) => (
+                      <button
+                        key={opt.id}
+                        onClick={() => handleCreateWithFormat(opt.id)}
+                        className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-surface-container-low hover:bg-primary/10 transition-colors group"
+                      >
+                        <span className="material-symbols-outlined text-xl text-on-surface-variant group-hover:text-primary transition-colors">{opt.icon}</span>
+                        <span className="text-xs font-medium text-on-surface">{opt.label}</span>
+                        <span className="text-[10px] text-on-surface-variant leading-tight">{opt.desc}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setShowFormatPicker(true)}
+                  className="w-full py-3 gradient-yellow text-on-surface rounded-2xl font-bold hover:shadow-card-hover transition-shadow text-sm"
+                >
+                  🎨 Trabajar sobre esta idea
+                </button>
+              )}
 
               {/* Planificar */}
               {!planSaved ? (

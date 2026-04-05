@@ -105,7 +105,25 @@ export default function EditorClient({
     initialProject.content || getDefaultContent(initialProject.project_type as EditorMode)
   );
   const [slides, setSlides] = useState<CreatorSlide[]>(initialSlides);
-  const [insights, setInsights] = useState(initialProject.ai_insights || null);
+  // Auto-populate insights from source_suggestion if no ai_insights yet
+  const [insights, setInsights] = useState(() => {
+    if (initialProject.ai_insights && Object.keys(initialProject.ai_insights).length > 0) {
+      return initialProject.ai_insights;
+    }
+    const src = initialProject.source_suggestion;
+    if (src && (src.titulares || src.gancho || src.enfoque)) {
+      return {
+        titulares: src.titulares || [],
+        gancho_apertura: src.gancho || "",
+        enfoque: src.enfoque || "",
+        pistas_creativas: src.pistas || [],
+        cierre_cta: src.cta || "",
+        estrategia: src.estrategia || "",
+        por_que_ahora: src.porQueAhora || "",
+      };
+    }
+    return null;
+  });
   const [analytics, setAnalytics] = useState(initialProject.analytics || {});
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [showChat, setShowChat] = useState(false);
