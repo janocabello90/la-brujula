@@ -210,7 +210,7 @@ export default function CreadorClient({
           className="flex items-center gap-2 px-5 py-3 rounded-2xl gradient-yellow text-on-surface font-bold text-sm shadow-button hover:shadow-button-hover transition-all flex-shrink-0"
         >
           <Icon name="add" className="text-lg" />
-          Nuevo Proyecto
+          Nuevo Contenido
         </button>
       </div>
 
@@ -527,7 +527,7 @@ export default function CreadorClient({
         <div className="fixed inset-0 bg-on-surface/20 backdrop-blur-sm z-40 flex items-center justify-center p-4">
           <div className="bg-surface rounded-2xl signature-shadow max-w-md w-full p-6">
             <div className="mb-6">
-              <h2 className="font-headline text-xl text-on-surface mb-1">Nuevo Proyecto</h2>
+              <h2 className="font-headline text-xl text-on-surface mb-1">Nuevo Contenido</h2>
               <p className="text-on-surface-variant text-sm">Crea tu próximo contenido</p>
             </div>
 
