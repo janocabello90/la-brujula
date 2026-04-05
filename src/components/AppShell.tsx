@@ -20,6 +20,7 @@ const FREE_TOOLS = [
   { href: "/minority-report", label: "Mi Mapa", icon: "map" },
   { href: "/ideas", label: "Ideas", icon: "lightbulb" },
   { href: "/maestro", label: "Maestro", icon: "psychology" },
+  { href: "/creador", label: "Creador", icon: "brush" },
   { href: "/piezas", label: "Piezas", icon: "edit_note" },
   { href: "/planner", label: "Planificador", icon: "calendar_month" },
 ];

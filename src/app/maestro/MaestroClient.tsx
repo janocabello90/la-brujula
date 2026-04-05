@@ -53,6 +53,7 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
   const [pieceSaving, setPieceSaving] = useState(false);
   const [currentQuote, setCurrentQuote] = useState<Quote>(FALLBACK_QUOTES[0]);
   const [quoteFading, setQuoteFading] = useState(false);
+  const [creadorSaving, setCreadorSaving] = useState(false);
   const quotesRef = useRef<Quote[]>(FALLBACK_QUOTES);
 
   // ─── Load quotes from Supabase on mount ──────────────────
@@ -134,6 +135,104 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
       setError(err.message || "Error inesperado");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const detectProjectType = (suggestion: SuggestionResult): string => {
+    const canal = (selection.canal || "").toLowerCase();
+    const formato = (suggestion.formato || "").toLowerCase();
+
+    if (canal.includes("youtube") || formato.includes("vídeo largo")) {
+      return "video_long";
+    }
+    if (canal.includes("instagram") || canal.includes("tiktok") || formato.includes("reel") || formato.includes("vídeo corto")) {
+      return "video_short";
+    }
+    if (formato.includes("carrusel") || formato.includes("carousel")) {
+      return "carousel";
+    }
+    if (formato.includes("newsletter")) {
+      return "newsletter";
+    }
+    if (formato.includes("artículo") || formato.includes("blog")) {
+      return "article";
+    }
+
+    return "post";
+  };
+
+  const handleTrabajarSobreIdeaClick = async () => {
+    if (!result) return;
+
+    setCreadorSaving(true);
+
+    try {
+      const projectType = detectProjectType(result);
+      const title = result.titulares?.[0] || result.subtema || "Sin título";
+
+      // Prepare content based on project type
+      let content: any = {};
+
+      if (projectType === "video_long" || projectType === "video_short") {
+        content = {
+          hook: result.gancho || "",
+          closing: result.cta || "",
+          steps: [{ text: result.enfoque || "" }],
+        };
+      } else if (projectType === "article" || projectType === "newsletter") {
+        content = {
+          body: (result.enfoque || "") + "\n\n" + (result.pistas || []).join("\n"),
+          subtitle: result.subtema || "",
+        };
+      } else if (projectType === "carousel") {
+        content = {
+          slides: [
+            {
+              title: result.titulares?.[0] || "",
+              description: result.enfoque || "",
+            },
+          ],
+        };
+      } else {
+        content = {
+          body: result.enfoque || "",
+          title: title,
+        };
+      }
+
+      const res = await fetch("/api/creador", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId,
+          title,
+          project_type: projectType,
+          content,
+          source_suggestion: result,
+          canal: selection.canal || "",
+          pilar: result.pilar || "",
+          formato: result.formato || "",
+          tono: result.tono || "",
+        }),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || "Error al crear el proyecto");
+      }
+
+      const data = await res.json();
+      const projectId = data.project?.id || data.id;
+
+      if (projectId) {
+        window.location.href = `/creador/${projectId}`;
+      } else {
+        setError("No se pudo obtener el ID del proyecto");
+        setCreadorSaving(false);
+      }
+    } catch (err: any) {
+      setError(err.message || "Error al crear el proyecto");
+      setCreadorSaving(false);
     }
   };
 
@@ -390,6 +489,15 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
 
             {/* Action buttons */}
             <div className="border-t border-surface-mid pt-4 mt-4 space-y-3">
+              {/* Trabajar sobre esta idea */}
+              <button
+                onClick={handleTrabajarSobreIdeaClick}
+                disabled={creadorSaving}
+                className="w-full py-3 gradient-yellow text-on-surface rounded-2xl font-bold hover:shadow-card-hover transition-shadow text-sm disabled:opacity-50"
+              >
+                {creadorSaving ? "Preparando..." : "🎨 Trabajar sobre esta idea"}
+              </button>
+
               {/* Planificar */}
               {!planSaved ? (
                 !showPlanForm ? (
