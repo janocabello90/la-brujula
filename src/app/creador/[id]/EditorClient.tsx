@@ -435,13 +435,13 @@ export default function EditorClient({
               </div>
             )}
 
-            {/* Export */}
+            {/* Copiar al portapapeles */}
             <button
               onClick={exportContent}
               className="px-3 py-2 text-sm text-on-surface-variant hover:text-on-surface rounded-xl hover:bg-surface-container-low transition-colors"
-              title="Exportar contenido"
+              title="Copiar al portapapeles"
             >
-              <Icon name="download" className="text-lg" />
+              <Icon name="content_copy" className="text-lg" />
             </button>
 
             {/* Nevera */}

@@ -94,11 +94,9 @@ export default function CreadorClient({
         .insert({
           user_id: userId,
           title: newProjectTitle,
-          type: newProjectType,
+          project_type: newProjectType,
           status: "draft",
           content: {},
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
         })
         .select()
         .single();
