@@ -5,7 +5,8 @@ export const metadata: Metadata = {
   title: "El Sistema de Buena Vida — Jano Cabello",
   description: "Conocimiento y sistemas para seguir generando valor. Tres herramientas conectadas para construir, estructurar y ejecutar tu marca personal con estrategia.",
   icons: {
-    icon: "/favicon.svg",
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
   }
 };
 
