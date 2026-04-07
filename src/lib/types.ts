@@ -82,6 +82,11 @@ export interface SuggestionResult {
   cta: string;
   estrategia: string;
   porQueAhora: string;
+  tendencia?: {
+    nombre: string;
+    objetivo: string;
+    aplicacion: string;
+  } | null;
   // Legacy field (may exist in old history entries)
   sugerencia?: string;
 }

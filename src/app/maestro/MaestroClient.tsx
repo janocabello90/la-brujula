@@ -456,6 +456,21 @@ export default function MaestroClient({ userId, data, apiKey }: Props) {
               </div>
             )}
 
+            {/* Tendencia en Redes */}
+            {result.tendencia && (
+              <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-2xl p-4 mt-4 signature-shadow">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="material-symbols-outlined text-purple-600 text-lg">trending_up</span>
+                  <h4 className="text-xs font-bold text-purple-700 uppercase tracking-wider">Tendencia en Redes</h4>
+                  <span className="ml-auto pill text-[10px] px-2 py-0.5 bg-purple-100 text-purple-700 font-bold rounded-full">
+                    {result.tendencia.objetivo}
+                  </span>
+                </div>
+                <p className="text-sm font-headline text-on-surface font-bold mb-1">{result.tendencia.nombre}</p>
+                <p className="text-sm text-on-surface/80 leading-relaxed">{result.tendencia.aplicacion}</p>
+              </div>
+            )}
+
             {/* Legacy: show old sugerencia if present (old history entries) */}
             {result.sugerencia && !result.pistas && (
               <div className="border-t border-surface-mid pt-4 mt-4">

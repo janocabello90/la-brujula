@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
 import Anthropic from "@anthropic-ai/sdk";
-import { FORMAT_MAP } from "@/lib/constants";
+import { FORMAT_MAP, TRENDING_FORMATS } from "@/lib/constants";
 
 export async function POST(request: Request) {
   try {
@@ -130,6 +130,14 @@ ${
     : ""
 }
 
+=== TENDENCIAS EN REDES ===
+
+Estos son formatos que están funcionando especialmente bien ahora en redes sociales. Si alguno encaja con el objetivo y la energía del creador, úsalo o adáptalo. No fuerces una tendencia si no viene a cuento — pero si encaja, menciónala.
+
+${TRENDING_FORMATS.map((t) => `${t.id}. ${t.nombre} → Objetivo: ${t.objetivo}. ${t.desc}`).join("\n")}
+
+Si usas una tendencia, inclúyela en el campo "tendencia" del JSON. Si no aplica ninguna, pon null.
+
 === INSTRUCCIONES DE CALIDAD ===
 
 TITULARES:
@@ -174,7 +182,8 @@ JSON válido sin markdown ni backticks:
   "pistas": ["chispa 1", "chispa 2", "chispa 3", "chispa 4"],
   "cta": "cierre con intención",
   "estrategia": "por qué funciona",
-  "porQueAhora": "por qué ahora"
+  "porQueAhora": "por qué ahora",
+  "tendencia": { "nombre": "nombre del formato trending", "objetivo": "métrica principal", "aplicacion": "cómo aplicar esta tendencia a ESTA pieza concreta" } o null si no aplica
 }`;
 
     // Call Anthropic

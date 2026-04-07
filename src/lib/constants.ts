@@ -38,6 +38,18 @@ export const FORMAT_MAP: Record<string, string[]> = {
   'minimo': ['Story rápida', 'Frase + imagen', 'Encuesta / Pregunta', 'Repost con opinión breve', 'Comentario en post ajeno']
 };
 
+// ─── Tendencias en Redes (banco de formatos trending) ──────
+export const TRENDING_FORMATS = [
+  { id: 1, nombre: "Dos columnas", objetivo: "Guardados + compartidos", desc: "Divide la pantalla o el carrusel en dos columnas contrastando ideas, opciones o antes/después. Genera guardados porque la gente quiere volver a consultarlo." },
+  { id: 2, nombre: "Contrarian hook", objetivo: "Alcance a nuevos", desc: "Abre con una afirmación que va contra la corriente. Rompe el patrón del scroll y genera debate, lo que dispara el alcance orgánico." },
+  { id: 3, nombre: "Antes/después con giro", objetivo: "Repeticiones", desc: "Muestra una transformación pero con un giro inesperado que hace que la gente quiera verlo de nuevo. Formato rey para vídeo corto." },
+  { id: 4, nombre: "POV íntimo", objetivo: "Conexión + seguimiento", desc: "Habla en primera persona desde un momento real, vulnerable o cotidiano. Crea vínculo emocional y convierte viewers en seguidores." },
+  { id: 5, nombre: "Mis herramientas", objetivo: "Guardados masivos", desc: "Comparte las herramientas, apps, libros o recursos que usas. La gente guarda compulsivamente este tipo de contenido para 'verlo después'." },
+  { id: 6, nombre: "Mini historia con giro", objetivo: "Comentarios + DMs", desc: "Cuenta una historia breve con un final inesperado o una lección que pilla desprevenido. Genera comentarios y mensajes privados." },
+  { id: 7, nombre: "El dato que nadie sabe", objetivo: "Viralidad por DM", desc: "Comparte un dato, estadística o insight poco conocido que la gente quiere compartir por privado con alguien específico." },
+  { id: 8, nombre: "Día en mi vida", objetivo: "Confianza + autoridad", desc: "Muestra tu rutina, tu proceso o un día real. Humaniza tu marca y genera confianza porque la gente ve que practicas lo que predicas." },
+];
+
 export const DEFAULT_STATE = {
   briefing: { temaRaiz: '', propuestaValor: '', etiquetaProfesional: '', porQueTu: '' },
   buyer: { nombre: '', edad: '', profesion: '', queQuiere: '', queLeFrena: '', queConsumo: '', dondeEsta: '', lenguaje: '' },
