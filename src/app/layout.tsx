@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import AuthListener from "@/components/AuthListener";
 
 export const metadata: Metadata = {
   title: "El Sistema de Buena Vida — Jano Cabello",
@@ -30,6 +31,7 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body bg-surface text-on-surface min-h-screen antialiased">
+        <AuthListener />
         {children}
       </body>
     </html>

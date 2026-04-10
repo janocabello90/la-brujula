@@ -23,7 +23,7 @@ export async function POST(request: Request) {
 
   // Send password reset email (acts as a re-access link)
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${request.headers.get("origin") || "https://sistema.janocabello.com"}/auth/callback?next=/dashboard`,
+    redirectTo: `${request.headers.get("origin") || "https://sistema.janocabello.com"}/auth/callback?next=/actualizar-contrasena`,
   });
 
   if (error) {
