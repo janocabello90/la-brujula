@@ -84,6 +84,11 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
+  // Allow password update page (user arrives via recovery link)
+  if (request.nextUrl.pathname === '/actualizar-contrasena') {
+    return supabaseResponse
+  }
+
   // Redirect logged-in users from acceso page to dashboard
   if (request.nextUrl.pathname === '/acceso-buena-vida' && user) {
     const url = request.nextUrl.clone()
