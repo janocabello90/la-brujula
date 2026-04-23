@@ -115,6 +115,12 @@ export default function PiramideClient({ initialData, userId, isAdmin = false, u
 
   // Complete current step and move to next
   const completeStep = async () => {
+    // Cancel any pending autosave to prevent race condition
+    if (saveTimeout.current) {
+      clearTimeout(saveTimeout.current);
+      saveTimeout.current = null;
+    }
+
     const newCompleted = data.steps_completed?.includes(activeStep)
       ? data.steps_completed
       : [...(data.steps_completed || []), activeStep];
@@ -139,12 +145,19 @@ export default function PiramideClient({ initialData, userId, isAdmin = false, u
       updated_at: new Date().toISOString(),
     };
 
-    await supabase
+    const { error } = await supabase
       .from("piramide_data")
       .update(updatePayload)
       .eq("user_id", userId);
 
     setSaving(false);
+
+    if (error) {
+      console.error("Error completing step:", error);
+      setSaved(false);
+      return; // Don't update UI if DB save failed
+    }
+
     setData(updated as PiramideData);
 
     // Notify admin when all steps are completed (Pirámide finished)

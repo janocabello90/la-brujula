@@ -242,7 +242,8 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
       });
 
       if (!res.ok) {
-        throw new Error("Error al iniciar la entrevista");
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || "Error al iniciar la entrevista");
       }
 
       const data = await res.json();
@@ -256,7 +257,7 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
       }
     } catch (err: any) {
       console.error("Error starting interview:", err);
-      setMessages([{ role: "assistant", content: "Hubo un error al iniciar la entrevista. Intenta de nuevo." }]);
+      setMessages([{ role: "assistant", content: `⚠️ ${err.message || "Hubo un error al iniciar la entrevista. Intenta de nuevo."}` }]);
     } finally {
       setLoading(false);
     }
@@ -289,7 +290,8 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
       });
 
       if (!res.ok) {
-        throw new Error("Error al enviar el mensaje");
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || "Error al enviar el mensaje");
       }
 
       const data = await res.json();
@@ -303,7 +305,7 @@ export default function EntrevistadorClient({ userId, apiKey, frases: initialFra
       console.error("Error sending message:", err);
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "Hubo un error. Intenta de nuevo." },
+        { role: "assistant", content: `⚠️ ${err.message || "Hubo un error. Intenta de nuevo."}` },
       ]);
     } finally {
       setLoading(false);

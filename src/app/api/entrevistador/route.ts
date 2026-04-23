@@ -294,8 +294,8 @@ Sé el entrevistador. Habla español de España (Madrid, Barcelona, informal).`;
         .eq("user_id", userId);
     }
 
-    // Save extracted phrases if any
-    if (frases.length > 0) {
+    // Save extracted phrases if any (only if we have a valid session)
+    if (frases.length > 0 && newSessionId) {
       await supabase.from("entrevistador_frases").insert(
         frases.map((f) => ({
           user_id: userId,

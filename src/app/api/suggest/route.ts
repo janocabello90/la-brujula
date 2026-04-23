@@ -210,12 +210,18 @@ JSON válido sin markdown ni backticks:
       // Try to parse JSON directly
       suggestion = JSON.parse(responseText);
     } catch {
-      // Try to extract JSON from response
-      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        suggestion = JSON.parse(jsonMatch[0]);
-      } else {
-        throw new Error("No se pudo interpretar la respuesta del Maestro");
+      // Try to extract JSON from response — strip markdown code fences first
+      const cleaned = responseText.replace(/```(?:json)?\s*/g, "").replace(/```\s*$/g, "").trim();
+      try {
+        suggestion = JSON.parse(cleaned);
+      } catch {
+        // Last resort: extract first complete JSON object
+        const jsonMatch = cleaned.match(/\{(?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*\}/);
+        if (jsonMatch) {
+          suggestion = JSON.parse(jsonMatch[0]);
+        } else {
+          throw new Error("No se pudo interpretar la respuesta del Maestro");
+        }
       }
     }
 
