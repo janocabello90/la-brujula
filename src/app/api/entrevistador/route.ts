@@ -336,6 +336,18 @@ Sé el entrevistador. Habla español de España (Madrid, Barcelona, informal).`;
       );
     }
 
+    // Handle insufficient credits / billing errors
+    if (err?.status === 400 && err?.error?.type === "invalid_request_error" &&
+        (err?.message?.includes("credit balance") || err?.error?.message?.includes("credit balance"))) {
+      return NextResponse.json(
+        {
+          error:
+            "Tu cuenta de Anthropic no tiene créditos suficientes. Recarga en console.anthropic.com → Plans & Billing.",
+        },
+        { status: 402 }
+      );
+    }
+
     return NextResponse.json(
       { error: err.message || "Error interno del servidor" },
       { status: 500 }
